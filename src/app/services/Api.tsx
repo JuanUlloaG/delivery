@@ -29,7 +29,8 @@ export const login = async (user: string, password: string) => {
     config.headers["access-token"] = store.getState().auth.token
     const fakeuser = { name: 'carlos', email: "carlangas@elmejor.com", token: "" }
     return axios.post('http://192.168.1.100:3001/users/auth', params).then((response: AxiosResponse) => {
-        if (response.status == 200) {
+    console.log(response);    
+    if (response.status == 200) {
             fakeuser.name = "carlos"
             fakeuser.email = "carlangas@elmejor.com"
             fakeuser.token = response.data.token
