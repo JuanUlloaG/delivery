@@ -2,10 +2,12 @@ import React, { useContext, useState } from 'react'
 import { AuthNavProps } from '../../types/AuthParamLIst'
 import { AuthContext } from '../../providers/AuthProvider'
 import { Center } from '../../components/Center'
-import { Text, Button, StyleSheet, View, Dimensions } from 'react-native'
-import colors from '../../assets/Colors'
-import { Size } from '../../services/Service'
-import { TextInput } from "../../components/TextInput";
+import { Text, Button, StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native'
+import colors from '../../assets/Colors';
+import { Size } from '../../services/Service';
+import { CustomInput } from "../../components/TextInput";
+import { CustomPicker } from "../../components/CustomPicker";
+import { CustomButton } from '../../components/CustomButton';
 
 
 interface LoginProps {
@@ -14,50 +16,51 @@ interface LoginProps {
 
 export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     const { login } = useContext(AuthContext)
-    const [value, setvalue] = useState("");
+    const [rut, setrut] = useState("");
+    const [password, setPassword] = useState("");
+    const [local, setlocal] = useState("");
 
-    const onChangeText = (text: string) => {
+    const onChangeRut = (text: string) => {
+        setrut(text)
+    }
+    const onChangePassword = (text: string) => {
+        setPassword(text)
+    }
+    const onChangePicker = (itemValue: string, itemIndex: number) => {
 
+    }
+
+    const loginAction = () => {
+        login()
     }
     return (
         <Center>
-            <Text style={styles.title}>Te damos la bienvenida: {route.name}</Text>
-            {/* <View style={
-                {
-                    alignItems: 'flex-start',
-                    paddingStart: Size(95),
-                    width: Dimensions.get('screen').width - Size(95),
-                    height: Size(117),
-                    borderRadius: Size(27),
-                    borderWidth: Size(1),
-                    borderColor: "rgba(117, 117, 117, 255)",
-                    justifyContent: 'center',
-                    alignContent: 'center',
-                    marginTop: Size(66)
-                }
-            } >
-                <TextInput
-                    style={{ width: Dimensions.get('screen').width - Size(95), height: Size(117), justifyContent: 'center', alignItems: 'center' }}
-                    //  onChangeText={text => onChangeText(text)}
-                    value={""}
-                    placeholder="Ingresa Rut" />
-            </View> */}
-            <TextInput value={value} onChangeText={onChangeText} />
-
+            <Text style={styles.title}>Te damos la bienvenida</Text>
+            <CustomInput value={rut} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} />
+            <CustomInput value={password} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} />
+            <CustomPicker options={[]} onValueChange={onChangePicker} />
+            <CustomButton login={loginAction} />
+            <TouchableOpacity style={{ marginTop: 11 }}>
+                <Text style={styles.passwordForget}>¿Olvidaste tu contraseña?</Text>
+            </TouchableOpacity>
         </Center>
     )
 }
 
 
 const styles = StyleSheet.create({
-                title: {
-                fontFamily: 'BogleWeb-Bold',
+    title: {
+        fontFamily: 'BogleWeb-Bold',
         fontSize: 19,
         color: colors.black
+    },
+    passwordForget: {
+        fontFamily: 'AvenirNextRegular',
+        fontSize: Size(50)
     }
 });
 
 
-            {/* <Button title="log me in" onPress={() => {
+{/* <Button title="log me in" onPress={() => {
                 login()
             }} /> */}
