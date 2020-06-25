@@ -8,11 +8,11 @@ import AsyncStorage from "@react-native-community/async-storage";
 export const getHomeItems = () => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(getHomeList());
-        dispatch(fetchItemsSuccess([]));
-        // HomeList().then((response: any) => {
-        //     if (response.length) dispatch(fetchItemsSuccess(response));
-        //     else { dispatch(fetchItemsFail()); }
-        // })
+        // dispatch(fetchItemsSuccess([]));
+        HomeList().then((response: any) => {
+            if (response.length) dispatch(fetchItemsSuccess(response));
+            else { dispatch(fetchItemsFail()); }
+        })
     }
 }
 
