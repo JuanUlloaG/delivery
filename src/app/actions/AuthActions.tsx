@@ -8,11 +8,11 @@ export type AuthType = AuthUnverifiedUserAction | AuthUnapprovedUserAction | Aut
 export const loginAction = (user: { user: string, password: string }) => {
     return (dispatch: Dispatch<Action>) => {
         let fakeUser = {name:"carlangas", email:"elmejor@carlangas.com", token:"token-1"}
-        dispatch(loginUserSuccess(fakeUser.name, fakeUser.email, fakeUser.token));
-        // login(user.user, user.password).then((response: any) => {
-        //     if (response.success) dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.email, response.fakeuser.token));
-        //     else { dispatch(loginUserFail()); }
-        // })
+        // dispatch(loginUserSuccess(fakeUser.name, fakeUser.email, fakeUser.token));
+        login(user.user, user.password).then((response: any) => {
+            if (response.success) dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.email, response.fakeuser.token));
+            else { dispatch(loginUserFail()); }
+        })
     }
 }
 
