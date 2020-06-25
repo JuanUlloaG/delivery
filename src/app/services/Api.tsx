@@ -11,8 +11,8 @@ let config = {
 export const HomeList = async () => {
     config.headers["access-token"] = store.getState().auth.token
     return axios.get('http://192.168.1.100:3001/users', config).then((response: AxiosResponse) => {
-        if (response.status == 200) {
-            return response.data;
+    if (response.status == 200) {
+            return response.data.data;
         }
         else {
             return [];
