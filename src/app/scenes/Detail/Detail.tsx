@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 
 interface Props {
     navigation: any,
-    auth: object
+    auth: object,
+    route: any
 }
 
 interface State {
@@ -14,10 +15,14 @@ interface State {
 
 class Detail extends React.Component<Props, State> {
     render() {
-        console.log(this.props.auth);
+        this.props.navigation.setOptions({
+            headerTitle: "Orden Nº " + this.props.route.params.name
+        });
+        
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Text>Detail Screen</Text>
+
                 <Button title="Press me" onPress={() => {
                     this.props.navigation.navigate("Edit")
                 }} />
