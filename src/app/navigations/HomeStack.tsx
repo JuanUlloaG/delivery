@@ -8,6 +8,7 @@ import Home from '../scenes/Home/Home';
 import { DetailStack } from './DetailStack';
 import { Size } from '../services/Service';
 import colors from '../assets/Colors';
+import fonts from '../assets/Fonts';
 
 
 interface HomeStackProps {
@@ -22,7 +23,7 @@ function HomeNavigator({ navigation, route }) {
     return (
         <Stack2.Navigator initialRouteName="Home">
             <Stack2.Screen name="Home" component={Home} options={(navigation) => ({
-                headerTitle: route.name,
+                headerTitle: "Lista de pedidos",
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
@@ -30,8 +31,8 @@ function HomeNavigator({ navigation, route }) {
                     textAlign: 'center',
                     flexGrow: 1,
                     alignSelf: 'center',
-                    color: 'white',
-                    fontFamily: 'BogleWeb-Bold',
+                    color: colors.white,
+                    fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(77),
                 },
                 headerStatusBarHeight: Size(35)
@@ -61,7 +62,7 @@ export const HomeStack: React.FC<HomeStackProps> = ({ }) => {
     const { logout } = useContext(AuthContext)
     return (
         <Stack.Navigator initialRouteName='Home' headerMode='none'>
-            <Stack.Screen name='Home' component={HomeNavigator} options={{ title: "poto", headerStyle: { backgroundColor: "blue", } }} />
+            <Stack.Screen name='Home' component={HomeNavigator} />
             <Stack.Screen name="Detail" component={DetailStack} />
         </Stack.Navigator>
     );

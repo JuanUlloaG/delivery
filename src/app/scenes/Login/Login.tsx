@@ -8,6 +8,7 @@ import { Size } from '../../services/Service';
 import { CustomInput } from "../../components/TextInput";
 import { CustomPicker } from "../../components/CustomPicker";
 import { CustomButton } from '../../components/CustomButton';
+import fonts from '../../assets/Fonts'
 
 
 interface LoginProps {
@@ -50,7 +51,7 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
 
 const styles = StyleSheet.create({
     title: {
-        fontFamily: 'BogleWeb-Bold',
+        fontFamily: fonts.primaryFontTitle,
         fontSize: 19,
         color: colors.black
     },

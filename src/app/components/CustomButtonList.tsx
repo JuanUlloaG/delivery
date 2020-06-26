@@ -3,31 +3,31 @@ import { View, Text, Dimensions, TextInput, Picker, StyleSheet, TouchableOpacity
 import { Size } from '../services/Service';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from '../assets/Colors';
+import fonts from '../assets/Fonts';
 
-interface CustomButtonProps {
-    login: () => any
+interface CustomButtonLisProps {
+    onPress: () => any
 }
 
-export const CustomButton: React.FC<CustomButtonProps> = (props) => {
+export const CustomButtonList: React.FC<CustomButtonLisProps> = (props) => {
     return (
         <TouchableOpacity style={
             {
-                marginTop: 36,
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: Dimensions.get('screen').width - Size(95),
-                height: Size(142),
+                width: Size(324),
+                height: Size(117),
                 borderRadius: Size(32),
                 backgroundColor: colors.lightBlue
             }
         } >
-            <Text onPress={() => { props.login() }} style={
+            <Text onPress={() => { props.onPress() }} style={
                 {
-                    fontFamily: "AvenirNextBold",
-                    fontSize: Size(56),
-                    color: "rgba(0, 0, 0, 255)"
+                    fontFamily: fonts.primaryFontTitle,
+                    fontSize: Size(51),
+                    color: colors.mediumGray
                 }
-            } > Iniciar sesión </Text>
+            } > Seleccionar </Text>
         </TouchableOpacity>
     );
 }
