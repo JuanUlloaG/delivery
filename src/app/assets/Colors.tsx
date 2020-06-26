@@ -1,6 +1,7 @@
 const colors = {
     darkBlue: '#00265E',
     lightBlue: '#C3E9ED',
+    ultraLightBlue: '#E4E9F1',
     lightYellow: '#FAC361',
     darkYellow: '#F4C56F',
     lightBlack: '#333333',
@@ -12,6 +13,9 @@ const colors = {
     black: '#000000',
     gray: '#979797',
     lightgray: '#696767',
+    mediumGray: '#333333',
+    ultraLightgray: '#D8D8D8',
+    white: '#FFFFFF',
 };
 
 
