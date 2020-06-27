@@ -9,7 +9,7 @@ import { CustomInput } from "../../components/TextInput";
 import { CustomPicker } from "../../components/CustomPicker";
 import { CustomButton } from '../../components/CustomButton';
 import fonts from '../../assets/Fonts'
-
+import { RFValue } from "react-native-responsive-fontsize";
 
 interface LoginProps {
 
@@ -52,12 +52,12 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
 const styles = StyleSheet.create({
     title: {
         fontFamily: fonts.primaryFontTitle,
-        fontSize: 19,
+        fontSize: RFValue(25),
         color: colors.black
     },
     passwordForget: {
         fontFamily: 'AvenirNextRegular',
-        fontSize: Size(50)
+        fontSize: RFValue(22)
     }
 });
 

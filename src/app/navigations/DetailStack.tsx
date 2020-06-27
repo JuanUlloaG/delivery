@@ -40,16 +40,16 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontSize: Size(77),
                 },
                 headerStatusBarHeight: Size(35),
-                // headerTitle: route.name,
+                headerTitle: "Detalle",
                 // headerRight: () => (
 
                 // ),
                 headerLeft: () => (
                     // platform == "ios" &&
-                    <TouchableOpacity onPress={() => navigation.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                             <Antdesing name='left' size={24} color={colors.white} />
-                            <Text style={{ color: colors.white }}>Volver</Text>
+                            {/* <Text style={{ color: colors.white }}></Text> */}
                         </View>
                     </TouchableOpacity>
                 )
