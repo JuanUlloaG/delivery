@@ -15,8 +15,11 @@ const colors = {
     lightgray: '#696767',
     mediumGray: '#333333',
     ultraLightgray: '#D8D8D8',
+    higLightgray: '#DFDFDF',
+    lightgrayDisabled: '#E3E3E3',
     white: '#FFFFFF',
 };
+
 
 
 export default colors
