@@ -4,6 +4,7 @@ import { AppParamList } from '../types/AppParamList';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Antdesing from "react-native-vector-icons/AntDesign";
 import { HomeStack } from './HomeStack';
+import colors from '../assets/Colors';
 
 interface AppTabProps {
 
@@ -31,7 +32,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                 },
             })}
             tabBarOptions={{
-                activeTintColor: 'tomato',
+                activeTintColor: colors.darkYellow,
                 inactiveTintColor: 'gray',
             }}
         >
