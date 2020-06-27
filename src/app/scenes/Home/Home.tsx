@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
-import { FlatList, Button, Platform, View, Text, Dimensions } from 'react-native'
+import { FlatList, Button, Platform, View, Text, Dimensions, StyleSheet } from 'react-native'
 import { getHomeItems } from '../../actions/HomeListAction'
 import Loading from '../Loading/Loading'
 import { Size } from '../../services/Service'
@@ -52,40 +52,37 @@ class Home extends React.Component<HomeProps, State> {
     render() {
         return (
             <Center>
-                <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: colors.ultraLightgray }}>
-                    <View style={{ flex: 8, justifyContent: 'center', alignItems: 'center', marginLeft: 50 }}>
-                        <Text style={{ fontSize: RFValue(25), fontFamily: fonts.primaryFont }}>Selecciona tu Nº de pedido</Text>
+                <View style={styles.header}>
+                    <View style={styles.headerSectionTitle}>
+                        <Text style={styles.headerSectionTitleText}>Selecciona tu Nº de pedido</Text>
                     </View>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start', height: Size(76) }}>
-                        <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: colors.ultraLightBlue, width: Size(84), height: Size(66), marginTop: 18, borderRadius: 4 }}>
+                    <View style={styles.headerSectionButton}>
+                        <View style={styles.headerSectionButtonContainer}>
                             <Icon name='swap-vert' size={RFValue(21)} color={colors.darkBlue} />
                         </View>
                     </View>
                 </View>
-                <View style={{ flex: 10 }}>
+                <View style={styles.body}>
                     {
                         !this.props.home.isFetching &&
                         <FlatList
-                            contentContainerStyle={{ flex: 0 }}
-                            style={{ width: wp(100) }}
+                            style={styles.bodyList}
                             data={this.getData()}
                             extraData={this.props}
                             keyExtractor={(item, index) => item.id.toString()}
                             renderItem={({ item }) => {
                                 return (
-                                    <View key={item.id} style={{ justifyContent: 'center', flexDirection: 'row', width: wp(100), height: Size(234), borderBottomWidth: 1, borderBottomColor: colors.ultraLightgray }}>
-                                        <View style={{ flex: 2, justifyContent: 'center' }}>
-                                            <View style={{ marginHorizontal: Size(94) }}>
-                                                <Text style={{ fontSize: RFValue(25), fontFamily: fonts.primaryFontTitle }}>{"Pedido Nº " + item.id}</Text>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                    <View style={{ width: 10, height: 10, borderRadius: 10 / 2, backgroundColor: colors.lightYellow, marginRight: 5 }} />
+                                    <View key={item.id} style={styles.bodyListContainer}>
+                                        <View style={styles.bodyListContainerSectionInfo}>
+                                            <View style={styles.bodyListContainerSectionInfoContainer}>
+                                                <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº " + item.id}</Text>
+                                                <View style={styles.bodyListContainerSectionInfoContainerDetail}>
+                                                    <View style={styles.bodyListContainerSectionInfoContainerPoint} />
                                                     <CountDown date={item.date} />
-                                                    {/* <Text style={{ fontSize: Size(40), fontFamily: fonts.primaryFont }}>{item.name}</Text> */}
-                                                    {/* {console.log(item.date)} */}
                                                 </View>
                                             </View>
                                         </View>
-                                        <View style={{ flex: 1, justifyContent: 'center' }}>
+                                        <View style={styles.bodyListContainerButton}>
                                             <CustomButtonList onPress={() => { this.navigate(item.id) }} title="Seleccionar" disable={false} size={"M"} />
                                         </View>
                                     </View>
@@ -98,11 +95,85 @@ class Home extends React.Component<HomeProps, State> {
                     this.props.home.isFetching &&
                     <Loading />
                 }
-
             </Center>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    header: {
+        flex: 1,
+        justifyContent: 'center',
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: colors.ultraLightgray
+    },
+    headerSectionTitle: {
+        flex: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 50
+    },
+    headerSectionTitleText: {
+        fontSize: RFValue(25),
+        fontFamily: fonts.primaryFont
+    },
+    headerSectionButton: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        height: Size(76)
+    },
+    headerSectionButtonContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.ultraLightBlue,
+        width: Size(84),
+        height: Size(66),
+        marginTop: 18,
+        borderRadius: 4
+    },
+    body: {
+        flex: 10
+    },
+    bodyList: {
+        width: wp(100)
+    },
+    bodyListContainer: {
+        justifyContent: 'center',
+        flexDirection: 'row',
+        width: wp(100),
+        height: Size(234),
+        borderBottomWidth: 1,
+        borderBottomColor: colors.ultraLightgray
+    },
+    bodyListContainerSectionInfo: {
+        flex: 2,
+        justifyContent: 'center'
+    },
+    bodyListContainerSectionInfoContainer: {
+        marginHorizontal: Size(94)
+    },
+    bodyListContainerSectionInfoContainerTitle: {
+        fontSize: RFValue(25),
+        fontFamily: fonts.primaryFontTitle
+    },
+    bodyListContainerSectionInfoContainerDetail: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    bodyListContainerSectionInfoContainerPoint: {
+        width: 10,
+        height: 10,
+        borderRadius: 10 / 2,
+        backgroundColor: colors.lightYellow,
+        marginRight: 5
+    },
+    bodyListContainerButton: {
+        flex: 1,
+        justifyContent: 'center'
+    }
+})
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
