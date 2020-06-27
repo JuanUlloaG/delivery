@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import colors from '../assets/Colors';
 
 interface CenterProps {
 
@@ -7,8 +8,17 @@ interface CenterProps {
 
 export const Center: React.FC<CenterProps> = ({ children }) => {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'white' }}>
+        <View style={styles.center}>
             {children}
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    center: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: colors.white
+    }
+})
