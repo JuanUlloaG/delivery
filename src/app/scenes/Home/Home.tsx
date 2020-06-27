@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Icon from "react-native-vector-icons/MaterialIcons";
-
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
-import { FlatList, Button, Platform, View, Text, Dimensions, StyleSheet } from 'react-native'
+import { FlatList, View, Text, StyleSheet } from 'react-native'
 import { getHomeItems } from '../../actions/HomeListAction'
 import Loading from '../Loading/Loading'
 import { Size } from '../../services/Service'
