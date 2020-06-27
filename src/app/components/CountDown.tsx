@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import moment from 'moment';
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import fonts from '../assets/Fonts';
+import colors from '../assets/Colors';
 
 
 
@@ -37,7 +38,15 @@ export default function CountDown(props: CountDownProps) {
 
     return (
         <View>
-            <Text style={{ fontSize: RFValue(15), fontFamily: fonts.primaryFont }}>{"Tiempo restante: " + minutes + " : " + seconds + "s"}</Text>
+            <Text style={styles.text}>{"Tiempo restante: " + minutes + " : " + seconds + "s"}</Text>
         </View>
     )
 }
+
+
+const styles = StyleSheet.create({
+    text: {
+        fontSize: RFValue(15),
+        fontFamily: fonts.primaryFont
+    }
+})
