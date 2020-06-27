@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, Dimensions, TextInput, StyleSheet } from 'react-native';
+import { View,TextInput, StyleSheet } from 'react-native';
 import { Size } from '../services/Service';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from '../assets/Colors';
