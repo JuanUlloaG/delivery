@@ -3,6 +3,9 @@ import { View, Text, Dimensions, TextInput, Picker, StyleSheet } from 'react-nat
 import { Size } from '../services/Service';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from '../assets/Colors';
+import { RFValue } from "react-native-responsive-fontsize";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 interface CustomPickerProps {
     options: [],
@@ -33,8 +36,7 @@ export const CustomPicker: React.FC<CustomPickerProps> = (props) => {
 const styles = StyleSheet.create({
     pickerContainer: {
         alignItems: 'center',
-        paddingStart: Size(95),
-        width: Dimensions.get('screen').width - Size(95),
+        width: wp(100) - Size(95),
         height: Size(117),
         borderRadius: Size(27),
         borderWidth: Size(1),
@@ -46,6 +48,7 @@ const styles = StyleSheet.create({
     },
     pickerStyle: {
         height: Size(117),
-        width: Dimensions.get('screen').width * 0.95
+        width: wp(100) - Size(220),
+        marginRight:10
     }
 });

@@ -3,6 +3,8 @@ import { View, Text, Dimensions, TextInput, StyleSheet } from 'react-native';
 import { Size } from '../services/Service';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from '../assets/Colors';
+import { RFValue } from "react-native-responsive-fontsize";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 interface CustomInputProps {
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
     intputContainer: {
         alignItems: 'center',
         paddingStart: Size(95),
-        width: Dimensions.get('screen').width - Size(95),
+        width: wp(100) - Size(95),
         height: Size(117),
         borderRadius: Size(27),
         borderWidth: Size(1),
@@ -42,8 +44,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     InputTextStyle: {
-        width: Dimensions.get('screen').width - Size(95),
-        height: Size(117),
+        width: wp(100) - Size(95),
+        // height: Size(117),
         justifyContent: 'center',
         alignItems: 'center'
     }
