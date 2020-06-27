@@ -22,28 +22,21 @@ export const CustomButtonList: React.FC<CustomButtonLisProps> = (props) => {
     let fontsize = Size(51)
     fontsize = props.size && props.size == "M" ? Size(51) : props.size == "L" ? Size(60) : Size(39)
     return (
-        <TouchableOpacity style={
-            {
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: wp(width),
-                height: hp(6),
-                borderRadius: Size(32),
-                backgroundColor: !props.disable ? colors.lightBlue : colors.lightgrayDisabled
-            }
-        } >
-            <Text onPress={() => { !props.disable && props.onPress() }} style={
-                {
-                    fontFamily: fonts.primaryFontTitle,
-                    fontSize: RFValue(fontsize),
-                    color: colors.mediumGray
-                }
-            } > {props.title} </Text>
+        <TouchableOpacity style={[styles.buttonContainer, { width: wp(width), backgroundColor: !props.disable ? colors.lightBlue : colors.lightgrayDisabled }]} >
+            <Text onPress={() => { !props.disable && props.onPress() }} style={[styles.buttonText, { fontSize: RFValue(fontsize), }]} > {props.title} </Text>
         </TouchableOpacity>
     );
 }
 
-
 const styles = StyleSheet.create({
-
+    buttonContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: hp(6),
+        borderRadius: Size(32),
+    },
+    buttonText: {
+        fontFamily: fonts.primaryFontTitle,
+        color: colors.mediumGray
+    }
 });
