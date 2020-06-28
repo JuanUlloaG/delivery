@@ -34,6 +34,8 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
             tabBarOptions={{
                 activeTintColor: colors.darkYellow,
                 inactiveTintColor: colors.gray,
+                keyboardHidesTabBar: true,
+                
             }}
         >
             <Tabs.Screen name='Home' component={HomeStack} />
