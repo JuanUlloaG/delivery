@@ -37,8 +37,8 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     return (
         <Center>
             <Text style={styles.title}>Te damos la bienvenida</Text>
-            <CustomInput value={rut} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} />
-            <CustomInput value={password} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} />
+            <CustomInput value={rut} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} editable={true} />
+            <CustomInput value={password} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} editable={true} />
             <CustomPicker options={[]} onValueChange={onChangePicker} />
             <CustomButton login={loginAction} />
             <TouchableOpacity style={{ marginTop: 11 }}>
