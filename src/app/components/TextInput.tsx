@@ -1,5 +1,5 @@
 import React from 'react'
-import { View,TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import { Size } from '../services/Service';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from '../assets/Colors';
@@ -11,7 +11,8 @@ interface CustomInputProps {
     value: string,
     onChangeText: (text: string) => any,
     placeholder: string,
-    type: boolean
+    type: boolean,
+    editable: boolean
 }
 
 export const CustomInput: React.FC<CustomInputProps> = (props) => {
@@ -23,6 +24,7 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
                 onChangeText={(text: string) => props.onChangeText(text)}
                 value={props.value}
                 placeholder={props.placeholder}
+                editable={props.editable}
                 secureTextEntry={props.type} />
         </View>
     );
