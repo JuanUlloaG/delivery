@@ -123,6 +123,15 @@ class Detail extends React.Component<Props, State> {
         });
     }
 
+    validatePickedItems() {
+        let pickedProductArray = [...this.state.pickedProductArray]
+        let picked = true
+        pickedProductArray.map((product) => {
+            if (product.picked === false) picked = false
+        })
+        return picked
+    }
+
     dissmissModal() {
         Animated.parallel([
             Animated.timing(this.state.opacity, {
@@ -248,7 +257,7 @@ class Detail extends React.Component<Props, State> {
                                         </View>
                                     </View>
                                     <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                        <CustomButtonList onPress={() => this.toggleModal()} title="Siguiente" disable={false} size={"L"} />
+                                        <CustomButtonList onPress={() => this.validatePickedItems() && this.toggleModal()} title="Siguiente" disable={!this.validatePickedItems()} size={"L"} />
                                     </View>
                                 </View>
                             </View>
