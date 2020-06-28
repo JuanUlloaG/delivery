@@ -152,18 +152,9 @@ class Detail extends React.Component<Props, State> {
         const animatedStyle = {
             height: this.state.animationValue
         }
-        const animatedOpacity = {
-            opacity: this.state.opacity
-        }
 
         if (Object.keys(order).length) {
 
-            let pickedProductArray
-            pickedProductArray = Array.from(Array(order.products[this.state.index].quantity).keys())
-            let canadded = false, canremove = false
-            if (this.state.pickeditems.length < order.products[this.state.index].quantity) canadded = true
-            if (this.state.pickeditems.length > 0) canremove = true
-            console.log(this.state.bagContainer);
             return (
                 <Center>
 
