@@ -15,6 +15,7 @@ interface State {
     name: string;
     email: string;
     token: string;
+    profile: string;
     isFetching: boolean;
     error: boolean
 }
@@ -24,6 +25,7 @@ const defaultState: State = {
     name: '',
     email: '',
     token: '',
+    profile: '',
     isFetching: false,
     error: false
 };
@@ -38,6 +40,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 name: action.data.name,
                 email: action.data.email,
                 token: action.data.token,
+                profile: action.data.profile,
                 isFetching: true,
                 error: false
             }
@@ -47,6 +50,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 name: action.data.name,
                 email: action.data.email,
                 token: action.data.token,
+                profile: action.data.profile,
                 isFetching: true,
                 error: false
             }
@@ -60,6 +64,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 name: "",
                 email: "",
                 token: "",
+                profile: "",
                 isFetching: true,
                 error: false
             }
@@ -70,6 +75,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 isFetching: false,
                 email: action.data.email,
                 token: action.data.token,
+                profile: action.data.profile,
                 error: false
             }
         case 'FETCHING_LOGIN_FAIL':
@@ -79,6 +85,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 isFetching: false,
                 email: action.data.email,
                 token: action.data.token,
+                profile: action.data.profile,
                 error: true
             }
         default:
