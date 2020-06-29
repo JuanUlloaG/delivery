@@ -31,7 +31,8 @@ interface State {
     opacity: Animation,
     bagNumber: string,
     bagContainer: Array<any>,
-    pickedProductArray: Array<any>
+    pickedProductArray: Array<any>,
+    resume: boolean
 }
 
 class Detail extends React.Component<Props, State> {
@@ -45,7 +46,8 @@ class Detail extends React.Component<Props, State> {
             opacity: new Animated.Value(0),
             bagNumber: "123265467646546",
             bagContainer: [],
-            pickedProductArray: []
+            pickedProductArray: [],
+            resume: false
         }
     }
 
@@ -83,9 +85,13 @@ class Detail extends React.Component<Props, State> {
         if (this.state.index < order.products.length - 1) {
             this.loadItems(this.state.index + 1)
             this.setState({ index: this.state.index + 1, bagContainer: bagContainer })
+            this.dissmissModal()
+        } else {
+            this.setState({ bagContainer: bagContainer, resume: true })
+            this.dissmissModal()
         }
 
-        this.dissmissModal()
+
     }
 
     captureBagNumber() {
@@ -147,120 +153,147 @@ class Detail extends React.Component<Props, State> {
                 useNativeDriver: false
             })
         ]).start(() => {
-            console.log("dismiss∆");
+            console.log("dismiss");
         });
     }
 
 
     render() {
+        const title = !this.state.resume ? "Detalle" : "Resumen"
         this.props.navigation.setOptions({
-            // headerTitle: "Orden Nº " + this.props.route.params.name
+            headerTitle: title
         });
         const order = this.filterData()
 
         const animatedStyle = {
             height: this.state.animationValue
         }
+        console.log(this.state.bagContainer);
 
         if (Object.keys(order).length) {
 
             return (
                 <Center>
-
                     <View style={styles.headerContainer}>
-                        <View style={styles.headerContainerTitle}>
-                            <Text style={styles.headerContainerTitleText}>Pedido Nº {order.id} </Text>
-                        </View>
-                        <View style={styles.headerContainerCount}>
-                            <View style={styles.headerContainerCountContainer} >
-                                <Text style={styles.headerContainerCountContainerText}> Producto {this.state.index + 1} de {order.products.length} </Text>
-                            </View>
-                        </View>
+                        {
+                            !this.state.resume ?
+                                <>
+                                    <View style={styles.headerContainerTitle}>
+                                        <Text style={styles.headerContainerTitleText}>Pedido Nº {order.id} </Text>
+                                    </View>
+                                    <View style={styles.headerContainerCount}>
+                                        <View style={styles.headerContainerCountContainer} >
+                                            <Text style={styles.headerContainerCountContainerText}> Producto {this.state.index + 1} de {order.products.length} </Text>
+                                        </View>
+                                    </View>
+                                </> :
+                                <View style={styles.resumeHeaderInfo}>
+                                    <Text style={styles.headerContainerTitleText}>El Pedido Nº {order.id} tiene {this.state.bagContainer.length} bolsa(s): </Text>
+                                </View>
+                        }
                     </View>
                     <View style={styles.bodyContainer}>
                         <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
-                            <View style={styles.bodyContainerScrollViewContainer}>
-                                <View style={styles.bodyContainerScrollViewContainerInfo}>
-                                    <View style={styles.bodyContainerScrollViewContainerInfoSection}>
-                                        <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                            Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].name} </Text>
-                                        </Text>
-                                        <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                            Descripción: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
-                                        </Text>
-                                        <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                            SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].sku} </Text>
-                                        </Text>
-                                        <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                            Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
-                                        </Text>
-                                        <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>Cantidad Pickeada: {this.state.pickeditems.length}</Text>
-                                    </View>
-                                </View>
+                            {
+                                !this.state.resume ?
+                                    <View style={styles.bodyContainerScrollViewContainer}>
+                                        <View style={styles.bodyContainerScrollViewContainerInfo}>
+                                            <View style={styles.bodyContainerScrollViewContainerInfoSection}>
+                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                    Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].name} </Text>
+                                                </Text>
+                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                    Descripción: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
+                                                </Text>
+                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                    SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].sku} </Text>
+                                                </Text>
+                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                    Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
+                                                </Text>
+                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>Cantidad Pickeada: {this.state.pickeditems.length}</Text>
+                                            </View>
+                                        </View>
 
-                                <View style={styles.bodyContainerScrollViewContainerPicked}>
-                                    {
-                                        this.state.pickedProductArray.map((product: any, index: number) => {
-                                            return (
-                                                <View style={styles.bodyContainerScrollViewContainerPickedSection} key={index}>
-                                                    <View style={styles.bodyContainerScrollViewContainerPickedSectionTitle}>
-                                                        <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Producto {index + 1}</Text>
-                                                    </View>
-                                                    <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
-                                                        <TouchableOpacity onPress={() => { this.removeProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                            <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.picked && { backgroundColor: colors.mediumRed }]}>
-                                                                <Icon name="clear" color={colors.black} size={Size(68)} />
+                                        <View style={styles.bodyContainerScrollViewContainerPicked}>
+                                            {
+                                                this.state.pickedProductArray.map((product: any, index: number) => {
+                                                    return (
+                                                        <View style={styles.bodyContainerScrollViewContainerPickedSection} key={index}>
+                                                            <View style={styles.bodyContainerScrollViewContainerPickedSectionTitle}>
+                                                                <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Producto {index + 1}</Text>
                                                             </View>
-                                                        </TouchableOpacity>
-                                                        <TouchableOpacity onPress={() => { this.addProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                            <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.lightgrayDisabled }]}>
-                                                                <Icon name="check" color={colors.white} size={Size(68)} />
+                                                            <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
+                                                                <TouchableOpacity onPress={() => { this.removeProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                    <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.picked && { backgroundColor: colors.mediumRed }]}>
+                                                                        <Icon name="clear" color={colors.black} size={Size(68)} />
+                                                                    </View>
+                                                                </TouchableOpacity>
+                                                                <TouchableOpacity onPress={() => { this.addProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                    <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.lightgrayDisabled }]}>
+                                                                        <Icon name="check" color={colors.white} size={Size(68)} />
+                                                                    </View>
+                                                                </TouchableOpacity>
                                                             </View>
-                                                        </TouchableOpacity>
-                                                    </View>
+                                                        </View>
+                                                    )
+                                                })
+                                            }
+                                        </View>
+
+                                        <View style={styles.bodyContainerScrollViewContainerPosition}>
+                                            <View style={styles.bodyContainerScrollViewContainerPositionSection}>
+                                                <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Posicion</Text>
+                                                <Icon name="check" color={colors.darkBlue} size={Size(68)} />
+                                            </View>
+                                        </View>
+
+                                        <View style={styles.bodyContainerScrollViewContainerImage}>
+                                            <View style={styles.baseFlex}>
+                                                <View style={styles.baseFlex}>
+                                                    <Text style={styles.bodyContainerScrollViewContainerImageText}>Imagen del producto</Text>
                                                 </View>
-                                            )
-                                        })
-                                    }
-                                </View>
+                                                <View style={styles.bodyContainerScrollViewContainerImageContainer}>
+                                                    <Image
+                                                        style={styles.bodyContainerScrollViewContainerImageContainerImage}
+                                                        source={{ uri: order.products[this.state.index].image }}
+                                                    />
+                                                </View>
+                                            </View>
+                                        </View>
+                                        <View style={styles.bodyContainerScrollViewContainerButtons}>
+                                            <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
+                                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                    <IconChange name="retweet" color={colors.white} size={Size(68)} />
+                                                </View>
+                                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                    <Icon name="add" color={colors.white} size={Size(68)} />
+                                                </View>
+                                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                    <Icon name="phone" color={colors.white} size={Size(68)} />
+                                                </View>
+                                            </View>
+                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                                <CustomButtonList onPress={() => this.validatePickedItems() && this.toggleModal()} title="Siguiente" disable={!this.validatePickedItems()} size={"L"} />
+                                            </View>
+                                        </View>
+                                    </View> :
+                                    <View style={styles.resumeBody}>
+                                        <View style={styles.resumeBodyInfo}>
+                                            {
+                                                this.state.bagContainer.map((bag, index) => {
+                                                    return (
+                                                        <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bag}</Text>
+                                                    )
+                                                })
+                                            }
+                                        </View>
+                                        <View style={styles.resumeBodyInfoIcon}>
+                                            <IconBar name="checkbox-marked-circle-outline" color={colors.darkGreen} size={RFValue(190)} />
+                                        </View>
+                                    </View>
+                            }
 
-                                <View style={styles.bodyContainerScrollViewContainerPosition}>
-                                    <View style={styles.bodyContainerScrollViewContainerPositionSection}>
-                                        <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Posicion</Text>
-                                        <Icon name="check" color={colors.darkBlue} size={Size(68)} />
-                                    </View>
-                                </View>
-
-                                <View style={styles.bodyContainerScrollViewContainerImage}>
-                                    <View style={styles.baseFlex}>
-                                        <View style={styles.baseFlex}>
-                                            <Text style={styles.bodyContainerScrollViewContainerImageText}>Imagen del producto</Text>
-                                        </View>
-                                        <View style={styles.bodyContainerScrollViewContainerImageContainer}>
-                                            <Image
-                                                style={styles.bodyContainerScrollViewContainerImageContainerImage}
-                                                source={{ uri: order.products[this.state.index].image }}
-                                            />
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={styles.bodyContainerScrollViewContainerButtons}>
-                                    <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
-                                        <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                            <IconChange name="retweet" color={colors.white} size={Size(68)} />
-                                        </View>
-                                        <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                            <Icon name="add" color={colors.white} size={Size(68)} />
-                                        </View>
-                                        <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                            <Icon name="phone" color={colors.white} size={Size(68)} />
-                                        </View>
-                                    </View>
-                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                        <CustomButtonList onPress={() => this.validatePickedItems() && this.toggleModal()} title="Siguiente" disable={!this.validatePickedItems()} size={"L"} />
-                                    </View>
-                                </View>
-                            </View>
                         </ScrollView>
                     </View>
                     <Animated.View style={[styles.modalAnimated, animatedStyle]}>
@@ -568,6 +601,27 @@ const styles = StyleSheet.create({
     modalSectionBodyPrinter: {
         flex: 2,
         justifyContent: 'center',
+        alignItems: 'center'
+    },
+    resumeHeaderInfo: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    resumeBody: {
+        flex: 1
+    },
+    resumeBodyInfo: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    resumeBodyInfoText: {
+        fontFamily: fonts.primaryFont,
+        fontSize: RFValue(21)
+    },
+    resumeBodyInfoIcon: {
+        flex: 1,
         alignItems: 'center'
     }
 
