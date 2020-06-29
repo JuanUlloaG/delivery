@@ -7,10 +7,10 @@ export type AuthType = AuthUnverifiedUserAction | AuthUnapprovedUserAction | Aut
 
 export const loginAction = (user: { user: string, password: string }) => {
     return (dispatch: Dispatch<Action>) => {
-        let fakeUser = {name:"carlangas", email:"elmejor@carlangas.com", token:"token-1"}
+        let fakeUser = { name: "carlangas", email: "elmejor@carlangas.com", token: "token-1" }
         // dispatch(loginUserSuccess(fakeUser.name, fakeUser.email, fakeUser.token));
         login(user.user, user.password).then((response: any) => {
-            if (response.success) dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.email, response.fakeuser.token));
+            if (response.success) dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.email, response.fakeuser.token, response.fakeuser.profile));
             else { dispatch(loginUserFail()); }
         })
     }
@@ -31,26 +31,26 @@ export const verifyUser = (name: string): AuthVerifyUserAction => ({
     name: name
 });
 
-export const loginUser = (name: string, email: string, token: string): AuthLoginUserAction => ({
+export const loginUser = (name: string, email: string, token: string, profile: string): AuthLoginUserAction => ({
     type: 'LOGIN_USER',
-    data: { name: name, email: email, token: token }
+    data: { name: name, email: email, token: token, profile: profile }
 });
 
 export const logOutUser = (): AuthLogOutUserAction => ({
     type: 'LOGOUT_USER',
-    data: { name: "", email: "", token: "" }
+    data: { name: "", email: "", token: "", profile: "" }
 });
 
 export const loginFetch = (): AuthLoginAction => ({
     type: 'FETCHING_LOGIN',
 });
 
-export const loginUserSuccess = (name: string, email: string, token: string): AuthLoginActionSuccess => ({
+export const loginUserSuccess = (name: string, email: string, token: string, profile: string): AuthLoginActionSuccess => ({
     type: 'FETCHING_LOGIN_SUCCESS',
-    data: { name: name, email: email, token: token }
+    data: { name: name, email: email, token: token, profile: profile }
 });
 
 export const loginUserFail = (): AuthLoginActionFail => ({
     type: 'FETCHING_LOGIN_FAIL',
-    data: { name: "", email: "", token: "" }
+    data: { name: "", email: "", token: "", profile: "" }
 });
