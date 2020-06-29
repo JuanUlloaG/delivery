@@ -5,6 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Antdesing from "react-native-vector-icons/AntDesign";
 import { HomeStack } from './HomeStack';
 import colors from '../assets/Colors';
+import { AuthContext } from "../providers/AuthProvider";
 
 interface AppTabProps {
 
@@ -13,6 +14,7 @@ interface AppTabProps {
 const Tabs = createBottomTabNavigator<AppParamList>()
 
 export const AppTab: React.FC<AppTabProps> = ({ }) => {
+    
     return (
         <Tabs.Navigator
             screenOptions={({ route }) => ({
@@ -35,7 +37,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                 activeTintColor: colors.darkYellow,
                 inactiveTintColor: colors.gray,
                 keyboardHidesTabBar: true,
-                
+
             }}
         >
             <Tabs.Screen name='Home' component={HomeStack} />

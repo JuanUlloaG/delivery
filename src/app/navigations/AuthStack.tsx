@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AuthParamList } from '../types/AuthParamLIst';
 import { Login } from '../scenes/Login/Login';
 import { Register } from '../scenes/Register/Register';
+
 interface AuthStackProps {
 
 }

@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import Antdesing from "react-native-vector-icons/AntDesign";
 import { DetailParamList } from 'src/types/DetailParamList';
 import { Button, View, Text, Platform } from 'react-native';
 import Detail from '../scenes/Detail/Detail';
+import DeliveryDetail from '../scenes/Detail/DeliveryDetail';
 import { Edit } from '../scenes/Edit/Edit';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import colors from '../assets/Colors';
 import fonts from '../assets/Fonts';
 import { Size } from '../services/Service';
+import { AuthContext } from '../providers/AuthProvider';
 
 interface DetailStackProps {
 
@@ -17,6 +19,7 @@ interface DetailStackProps {
 const Stack = createStackNavigator<DetailParamList>()
 
 export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) => {
+    const { logout, getProfile } = useContext(AuthContext)
     const platform = Platform.OS
     const mode = platform === "ios" ? "modal" : "card"
     const scOptions = platform === "ios" ? {
@@ -24,9 +27,13 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
         gestureEnabled: true,
         cardOverlayEnabled: true,
     } : {}
+
+    let component: any = Detail
+    console.log(getProfile());
+    component = getProfile() == "2" ? Detail : DeliveryDetail
     return (
         <Stack.Navigator mode={mode} screenOptions={scOptions}>
-            <Stack.Screen name="Detail" component={Detail} options={(navigation) => ({
+            <Stack.Screen name="Detail" component={component} options={(navigation) => ({
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
