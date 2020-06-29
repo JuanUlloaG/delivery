@@ -10,8 +10,11 @@ let config = {
 
 export const HomeList = async () => {
     config.headers["access-token"] = store.getState().auth.token
-    return axios.get('http://192.168.1.100:3001/users', config).then((response: AxiosResponse) => {
-    if (response.status == 200) {
+    let route = "orders"
+    route = store.getState().auth.profile == "2" ? '/orders' : '/orders/delivery'
+    console.log('http://192.168.1.100:3001' + route);
+    return axios.get('http://192.168.1.100:3001' + route, config).then((response: AxiosResponse) => {
+        if (response.status == 200) {
             return response.data.data;
         }
         else {
@@ -27,13 +30,13 @@ export const login = async (user: string, password: string) => {
         "contrasena": password
     }
     config.headers["access-token"] = store.getState().auth.token
-    const fakeuser = { name: 'carlos', email: "carlangas@elmejor.com", token: "" }
+    const fakeuser = { name: 'carlos', email: "carlangas@elmejor.com", token: "", profile: "" }
     return axios.post('http://192.168.1.100:3001/users/auth', params).then((response: AxiosResponse) => {
-    console.log(response);    
-    if (response.status == 200) {
+        if (response.status == 200) {
             fakeuser.name = "carlos"
             fakeuser.email = "carlangas@elmejor.com"
             fakeuser.token = response.data.token
+            fakeuser.profile = response.data.profile
             return { fakeuser: fakeuser, success: true };
         }
         else {
