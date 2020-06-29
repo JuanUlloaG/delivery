@@ -174,15 +174,9 @@ class Detail extends React.Component<Props, State> {
         if (Object.keys(order).length) {
             return (
                 <Center>
-                    <View style={styles.headerContainer}>
-                        {
-                            <View style={styles.resumeHeaderInfo}>
-                                <Text style={styles.headerContainerTitleText}>El Pedido Nº {order.id} tiene {order.bags.length} bolsa(s): </Text>
-                            </View>
-                        }
-                    </View>
+
                     <View style={styles.bodyContainer}>
-                        <View style={{ flex: 1 }}>
+                        <View style={{ flex: 2 }}>
                             <View style={styles.modalSectionBodyTitle}>
                                 <Text style={styles.modalSectionBodyTitleText}>Pickea el bulto</Text>
                             </View>
@@ -193,7 +187,7 @@ class Detail extends React.Component<Props, State> {
                                 <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 1 }}>
+                        <View style={{ flex: 2 }}>
                             <View style={styles.modalSectionBodyTitle}>
                                 <Text style={styles.modalSectionBodyTitleText}>Lista de todos los bultos asociados </Text>
                             </View>
@@ -217,6 +211,15 @@ class Detail extends React.Component<Props, State> {
                                     }
                                 </ScrollView>
                             </View>
+                        </View>
+                        <View style={styles.headerContainer}>
+                            {
+                                <View style={styles.resumeHeaderInfo}>
+                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                        <CustomButtonList onPress={() => { }} title="Siguiente" disable={false} size={"L"} />
+                                    </View>
+                                </View>
+                            }
                         </View>
                     </View>
                 </Center>
