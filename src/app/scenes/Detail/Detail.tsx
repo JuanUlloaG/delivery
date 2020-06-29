@@ -119,13 +119,13 @@ class Detail extends React.Component<Props, State> {
             }),
             Animated.spring(this.state.animationValue, {
                 toValue: HEIGHT_MODAL,
-                velocity: 10,
+                velocity: 7,
                 tension: 2,
                 friction: 8,
                 useNativeDriver: false
             })
         ]).start(() => {
-            console.log("object");
+            // console.log("object");
         });
     }
 
@@ -147,13 +147,13 @@ class Detail extends React.Component<Props, State> {
             }),
             Animated.spring(this.state.animationValue, {
                 toValue: 0,
-                velocity: 10,
+                velocity: 7,
                 tension: 2,
                 friction: 8,
                 useNativeDriver: false
             })
         ]).start(() => {
-            console.log("dismiss");
+            // console.log("dismiss");
         });
     }
 
@@ -168,7 +168,6 @@ class Detail extends React.Component<Props, State> {
         const animatedStyle = {
             height: this.state.animationValue
         }
-        console.log(this.state.bagContainer);
 
         if (Object.keys(order).length) {
 
