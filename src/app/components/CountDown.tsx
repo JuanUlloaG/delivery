@@ -20,25 +20,33 @@ export default function CountDown(props: CountDownProps) {
     // let finishMinute = date.add(15, "minute").minute()
     // let minute = (initMinute - initMinute)
     // console.log(date.add(15, "minute").minute());
-    const [minutes, setMinutes] = useState(14)
+    const [minutes, setMinutes] = useState(1)
     const [seconds, setSeconds] = useState(59)
+    const [finish, setfinish] = useState(false)
 
     useEffect(() => {
         let timer = 0
-        if (seconds > 0 && minutes >= 0) {
+        if (seconds > 0) {
             timer = setInterval(() => setSeconds(seconds - 1), 1000);
         }
-        if (timer == 0 && minutes >= 0) {
-            setSeconds(60)
+        if (timer == 0 && minutes > 0) {
+            setSeconds(59)
             setMinutes(minutes - 1)
         }
+        if (seconds == 0 && minutes == 0) setfinish(true)
 
         return () => clearInterval(timer);
     }, [seconds]);
 
+    let sec = seconds < 10 ? "0" + seconds : seconds
+
     return (
         <View>
-            <Text style={styles.text}>{"Tiempo restante: " + minutes + " : " + seconds + "s"}</Text>
+            {
+                finish ?
+                    <Text style={styles.textFinish}>{"Tiempo restante: "}<Text style={styles.warning}> Agotado </Text> </Text> :
+                    <Text style={styles.text}>{"Tiempo restante: " + minutes + " : " + sec + "s"}</Text>
+            }
         </View>
     )
 }
@@ -48,5 +56,15 @@ const styles = StyleSheet.create({
     text: {
         fontSize: RFValue(15),
         fontFamily: fonts.primaryFont
+    },
+    textFinish: {
+        fontSize: RFValue(15),
+        fontFamily: fonts.primaryFont,
+        // backgroundColor:colors.mediumRed
+    },
+    warning: {
+        fontSize: RFValue(15),
+        fontFamily: fonts.primaryFont,
+        backgroundColor: colors.mediumRed
     }
 })
