@@ -3,7 +3,8 @@ import { RouteProp } from "@react-navigation/native"
 
 export type AuthParamList = {
     Login: undefined
-    Register: undefined
+    Register: undefined,
+    Started: undefined
 }
 
 export interface AuthUnverifiedUserAction {
@@ -22,11 +23,11 @@ export interface AuthVerifyUserAction {
 
 export interface AuthLoginUserAction {
     type: 'LOGIN_USER';
-    data: { name: string, email: string, token: string };
+    data: { name: string, email: string, token: string, profile: string };
 }
 export interface AuthLogOutUserAction {
     type: 'LOGOUT_USER';
-    data: { name: string, email: string, token: string };
+    data: { name: string, email: string, token: string, profile: string };
 }
 
 
@@ -36,12 +37,12 @@ export interface AuthLoginAction {
 
 export interface AuthLoginActionSuccess {
     type: 'FETCHING_LOGIN_SUCCESS';
-    data: { name: string, email: string, token: string };
+    data: { name: string, email: string, token: string, profile: string };
 }
 
 export interface AuthLoginActionFail {
     type: 'FETCHING_LOGIN_FAIL';
-    data: { name: string, email: string, token: string };
+    data: { name: string, email: string, token: string, profile: string };
 }
 
 export type AuthNavProps<T extends keyof AuthParamList> = {
