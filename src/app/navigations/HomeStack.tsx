@@ -19,7 +19,7 @@ const Stack = createStackNavigator<HomeParamList>()
 const Stack2 = createStackNavigator<HomeParamList>()
 
 function HomeNavigator({ navigation, route }) {
-    const { logout } = useContext(AuthContext)
+    const { logout, getProfile } = useContext(AuthContext)
     return (
         <Stack2.Navigator initialRouteName="Home">
             <Stack2.Screen name="Home" component={Home} options={(navigation) => ({
