@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
 import { connect } from 'react-redux'
 import { Center } from '../../components/Center';
 import colors from '../../assets/Colors';
@@ -13,9 +13,14 @@ import { CustomButtonList } from '../../components/CustomButtonList';
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { CustomInput } from '../../components/TextInput';
+import { RNCamera } from "react-native-camera";
+
+
 var { width, height } = Dimensions.get('window');
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
+
+
 
 interface Props {
     navigation: any,
@@ -32,10 +37,11 @@ interface State {
     bagNumber: string,
     bagContainer: Array<any>,
     pickedProductArray: Array<any>,
-    resume: boolean
+    resume: boolean,
+    torchOn: boolean
 }
 
-class Detail extends React.Component<Props, State> {
+class DetailDelivery extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -47,7 +53,8 @@ class Detail extends React.Component<Props, State> {
             bagNumber: "123265467646546",
             bagContainer: [],
             pickedProductArray: [],
-            resume: false
+            resume: false,
+            torchOn: false
         }
     }
 
@@ -160,6 +167,18 @@ class Detail extends React.Component<Props, State> {
         });
     }
 
+    handleTourch(value: boolean) {
+        if (value === true) {
+            this.setState({ torchOn: false });
+        } else {
+            this.setState({ torchOn: true });
+        }
+    }
+
+    onBarCodeRead = (e) => {
+        Alert.alert("Barcode value is" + e.data, "Barcode type is" + e.type);
+    }
+
 
     render() {
         const title = !this.state.resume ? "Detalle" : "Resumen"
@@ -183,7 +202,7 @@ class Detail extends React.Component<Props, State> {
                             <View style={styles.modalSectionBodyInput}>
                                 <CustomInput value={this.state.bagNumber} onChangeText={() => { }} placeholder="Numero de bolsa" type={false} editable={false} />
                             </View>
-                            <TouchableOpacity onPress={() => { this.captureBagNumber() }} style={styles.modalSectionBodyScanBar}>
+                            <TouchableOpacity onPress={() => this.handleTourch(this.state.torchOn)} style={styles.modalSectionBodyScanBar}>
                                 <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
                             </TouchableOpacity>
                         </View>
@@ -221,7 +240,31 @@ class Detail extends React.Component<Props, State> {
                                 </View>
                             }
                         </View>
+                        {/* <RNCamera
+                            // ref={(ref) => {
+                            //     this.camera = ref;
+                            // }}
+                            // style={{ flex: 1 }}
+                            // type={RNCamera.Constants.Type.back}
+                            // flashMode={RNCamera.Constants.FlashMode.on}
+                            // androidCameraPermissionOptions={{
+                            //     title: 'Permission to use camera',
+                            //     message: 'We need your permission to use your camera',
+                            //     buttonPositive: 'Ok',
+                            //     buttonNegative: 'Cancel',
+                            // }}
+                            style={styles.preview}
+                            // torchMode={this.state.torchOn ? RNCamera.Constants : RNCamera.constants.TorchMode.off}
+                            onBarCodeRead={this.onBarCodeRead}
+                            ref={cam => this.camera = cam}
+                            // aspect={RNCamera.Constants}
+                            captureAudio={false}
+                            onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                                console.log(barcodes);
+                            }}
+                        /> */}
                     </View>
+
                 </Center>
             );
         }
@@ -520,7 +563,24 @@ const styles = StyleSheet.create({
     resumeBodyInfoIcon: {
         flex: 1,
         alignItems: 'center'
-    }
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    cameraIcon: {
+        margin: 5,
+        height: 40,
+        width: 40
+    },
+    bottomOverlay: {
+        position: "absolute",
+        width: "100%",
+        flex: 20,
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
 
 });
 
@@ -533,7 +593,7 @@ const mapStateToProps = (state: any) => ({
 
 // }
 
-export default connect(mapStateToProps)(Detail)
+export default connect(mapStateToProps)(DetailDelivery)
 
 
 // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
