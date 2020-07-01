@@ -22,6 +22,8 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     const [local, setlocal] = useState("");
 
     const onChangeRut = (text: string) => {
+        console.log(text);
+        let rut = [text.slice(0,text.length-1), "-", text.slice(text.length-1)].join('');
         setrut(text)
     }
     const onChangePassword = (text: string) => {
@@ -34,6 +36,7 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     const loginAction = () => {
         login(rut, password)
     }
+
     return (
         <Center>
             <Text style={styles.title}>Te damos la bienvenida</Text>
