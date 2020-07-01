@@ -16,6 +16,10 @@ export interface AuthUnapprovedUserAction {
     name: string;
 }
 
+export interface AuthPass {
+    user: { uuser: string, password: string }
+}
+
 export interface AuthVerifyUserAction {
     type: 'VERIFY_USER';
     name: string;

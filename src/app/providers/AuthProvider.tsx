@@ -4,7 +4,16 @@ import { connect } from 'react-redux';
 import store from '../store/Store';
 import { loginUser, logOutUser, loginAction } from '../actions';
 import axios, { AxiosResponse } from "axios";
-
+import { AuthUnverifiedUserAction, AuthVerifyUserAction, AuthUnapprovedUserAction, AuthLogOutUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail, AuthLoginUserAction } from '../types/AuthParamLIst';
+type AuthAction =
+    | AuthUnverifiedUserAction
+    | AuthVerifyUserAction
+    | AuthUnapprovedUserAction
+    | AuthLogOutUserAction
+    | AuthLoginAction
+    | AuthLoginActionSuccess
+    | AuthLoginActionFail
+    | AuthLoginUserAction;
 
 
 
@@ -19,7 +28,7 @@ export const AuthContext = React.createContext<{
     getProfile: () => String
 }>({
     user: { name: "", email: "", token: "" },
-    login: () => { },
+    login: (user: string, password: string) => { },
     logout: () => { },
     getToken: Boolean,
     getProfile: String
@@ -37,8 +46,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const login = (user: string, password: string) => {
         if (!store.getState().auth.token) {
             let params: {} = {
-                "usuario": "carlos",
-                "contrasena": "123456"
+                "usuario": user,
+                "contrasena": password
             }
             store.dispatch(loginAction({ user: params.usuario, password: params.contrasena }))
 

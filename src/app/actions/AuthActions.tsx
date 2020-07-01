@@ -7,13 +7,14 @@ export type AuthType = AuthUnverifiedUserAction | AuthUnapprovedUserAction | Aut
 
 export const loginAction = (user: { user: string, password: string }) => {
     return (dispatch: Dispatch<Action>) => {
-        let fakeUser = { name: "carlangas", email: "elmejor@carlangas.com", token: "token-1" }
+        let fakeUser = { user: user.user, password: user.password};
         // dispatch(loginUserSuccess(fakeUser.name, fakeUser.email, fakeUser.token));
         login(user.user, user.password).then((response: any) => {
-            if (response.success) dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.email, response.fakeuser.token, response.fakeuser.profile));
+            if (response.success)
+                dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.email, response.fakeuser.token, response.fakeuser.profile));
             else { dispatch(loginUserFail()); }
-        })
-    }
+        });
+    };
 }
 
 export const unverifiedUser = (email: string): AuthUnverifiedUserAction => ({
