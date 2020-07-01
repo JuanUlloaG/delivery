@@ -13,7 +13,7 @@ type User = null | { name: String, email: String, token: String }
 
 export const AuthContext = React.createContext<{
     user: User,
-    login: () => void,
+    login: (user: string, password: string) => void,
     logout: () => void,
     getToken: () => Boolean,
     getProfile: () => String
@@ -34,7 +34,7 @@ interface AuthProviderProps {
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User>({ name: store.getState().auth.name, email: store.getState().auth.email, token: store.getState().auth.token })
 
-    const login = () => {
+    const login = (user: string, password: string) => {
         if (!store.getState().auth.token) {
             let params: {} = {
                 "usuario": "carlos",

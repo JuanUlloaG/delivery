@@ -32,7 +32,7 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     }
 
     const loginAction = () => {
-        login()
+        login(rut, password)
     }
     return (
         <Center>
