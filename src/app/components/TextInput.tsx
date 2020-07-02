@@ -12,7 +12,8 @@ interface CustomInputProps {
     onChangeText: (text: string) => any,
     placeholder: string,
     type: boolean,
-    editable: boolean
+    editable: boolean,
+    onBlur: () => void
 }
 
 export const CustomInput: React.FC<CustomInputProps> = (props) => {
@@ -25,6 +26,7 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
                 value={props.value}
                 placeholder={props.placeholder}
                 editable={props.editable}
+                onBlur={() => props.onBlur()}
                 secureTextEntry={props.type} />
         </View>
     );
