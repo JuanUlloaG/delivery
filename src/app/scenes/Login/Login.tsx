@@ -9,8 +9,10 @@ import { CustomInput } from "../../components/TextInput";
 import { CustomPicker } from "../../components/CustomPicker";
 import { CustomButton } from '../../components/CustomButton';
 import fonts from '../../assets/Fonts'
+import store from '../../store/Store';
 import { RFValue } from "react-native-responsive-fontsize";
 import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler'
+
 
 interface LoginProps {
 
@@ -44,10 +46,9 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
         if (rut && password) login(rut, password)
         else { Alert.alert("Información", "Debes completar todos los datos para iniciar sesión") }
     }
-
     return (
         <Center>
-            <ScrollView >
+            <ScrollView contentContainerStyle={styles.scrollView} >
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={styles.title}>Te damos la bienvenida</Text>
                     <CustomInput value={rut} onBlur={focusLose} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} editable={true} />
@@ -74,10 +75,11 @@ const styles = StyleSheet.create({
     passwordForget: {
         fontFamily: 'AvenirNextRegular',
         fontSize: RFValue(22)
+    },
+    scrollView: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
-
-{/* <Button title="log me in" onPress={() => {
-                login()
-            }} /> */}
