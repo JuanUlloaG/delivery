@@ -4,6 +4,7 @@ import Antdesing from "react-native-vector-icons/AntDesign";
 import { DetailParamList } from 'src/types/DetailParamList';
 import { Button, View, Text, Platform } from 'react-native';
 import Detail from '../scenes/Detail/Detail';
+import DetailAddres from '../scenes/Detail/DetailAddres';
 import DeliveryDetail from '../scenes/Detail/DeliveryDetail';
 import { Edit } from '../scenes/Edit/Edit';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -28,9 +29,10 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
         cardOverlayEnabled: true,
     } : {}
 
-    let component: any = Detail
-    console.log(getProfile());
-    component = getProfile() == "2" ? Detail : DeliveryDetail
+    let component: any = Detail;
+
+    component = getProfile() == "2" ? DetailAddres : DetailAddres
+
     return (
         <Stack.Navigator mode={mode} screenOptions={scOptions}>
             <Stack.Screen name="Detail" component={component} options={(navigation) => ({
@@ -62,6 +64,30 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                 )
             })
             } />
+            {/* <Stack.Screen name="Detail" component={component} options={(navigation) => ({
+                headerStyle: {
+                    backgroundColor: colors.darkBlue,
+                },
+                headerTitleStyle: {
+                    textAlign: 'center',
+                    flexGrow: 1,
+                    marginRight: 50,
+                    alignSelf: 'center',
+                    color: colors.white,
+                    fontFamily: fonts.primaryFontTitle,
+                    fontSize: Size(77),
+                },
+                headerStatusBarHeight: Size(35),
+                headerTitle: "Detalle",
+                headerLeft: () => (
+                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Antdesing name='left' size={24} color={colors.white} />
+                        </View>
+                    </TouchableOpacity>
+                )
+            })
+            } /> */}
             <Stack.Screen name="Edit" component={Edit} />
         </Stack.Navigator>
     );
