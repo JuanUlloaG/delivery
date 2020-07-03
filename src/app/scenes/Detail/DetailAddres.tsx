@@ -120,37 +120,57 @@ class DetailAddres extends React.Component<Props, State> {
                     <View style={{ flex: 1 }}>
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ width: wp(100), height: hp(35) }}>
-                                <View style={{ flex: 1, margin: 10, borderWidth: 1 }}>
+                                <View style={{ flex: 1, margin: 15, borderWidth: 1 }}>
                                     <Text>Aqui el mapa</Text>
                                 </View>
                             </View>
-                            <View style={{ width: wp(100), height: hp(20), backgroundColor: 'lime', justifyContent: 'center' }}>
-                                <Text>Holas</Text>
-                                <Text>Holas</Text>
-                                <Text>Holas</Text>
-                                <Text>Holas</Text>
-                                <Text>Holas</Text>
+                            <View style={{ width: wp(100), height: hp(20) }}>
+                                <View style={{ flex: 1, marginLeft: 20, justifyContent: 'center' }}>
+                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                        Cliente: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].name} </Text>
+                                    </Text>
+                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                        Nº de Bolsas: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
+                                    </Text>
+                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                        Cantidad de productos: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].sku} </Text>
+                                    </Text>
+                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                        Recibe un Tercero: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
+                                    </Text>
+                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                        Comentarios: {"this.state.pickeditems.length"}</Text>
+                                </View>
                             </View>
-                            <View style={{ width: wp(100), height: hp(15), backgroundColor: 'tomato' }}>
-                                <Text>Comentario</Text>
+                            <View style={{ width: wp(100), flex: 1 }}>
+                                <View style={{ flex: 1, marginLeft: 20 }}>
+                                    <Text>Barra de bolsas</Text>
+                                    {
+                                        order.bags.map((bag: any, index: number) => {
+                                            return (
+                                                <View key={index} style={{ height: hp(4), flexDirection: 'row', marginTop: 2 }}>
+                                                    <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bag} </Text>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                </View>
                             </View>
-                            <View style={{ width: wp(100), flex: 1, backgroundColor: 'lime' }}>
-                                <Text>Holas</Text>
-                                <Text>Holas</Text>
-                                <Text>Holas</Text>
-                            </View>
-                            <View style={{ width: wp(100), height: hp(15), backgroundColor: 'tomato' }}>
-                                <Text>Boton</Text>
+                            <View style={{ width: wp(100), height: hp(15) }}>
+                                {
+                                    <View style={styles.resumeHeaderInfo}>
+                                        <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                            <CustomButtonList onPress={() => { }} title="Siguiente" disable={false} size={"L"} />
+                                        </View>
+                                    </View>
+                                }
                             </View>
                             {/* <View style={{ flex: 1, backgroundColor: 'tomato' }}>
                                 <Text>Holas</Text>
                             </View> */}
-
                         </ScrollView>
-
                     </View>
                 </Center>
-
             );
         }
         return (
@@ -164,7 +184,24 @@ class DetailAddres extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-
+    bodyContainerScrollViewContainerInfoSectionText: {
+        fontSize: RFValue(18),
+        fontFamily: fonts.primaryFont
+    },
+    resumeBodyInfoText: {
+        fontFamily: fonts.primaryFont,
+        fontSize: RFValue(21)
+    },
+    resumeHeaderInfo: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    bodyContainerScrollViewContainerButtonsSectionButtonNext: {
+        flex: 1,
+        marginTop: 30,
+        marginBottom: 20
+    },
 });
 
 const mapStateToProps = (state: any) => ({
