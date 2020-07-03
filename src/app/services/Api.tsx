@@ -12,7 +12,6 @@ export const HomeList = async () => {
     config.headers["access-token"] = store.getState().auth.token
     let route = "orders"
     route = store.getState().auth.profile == "2" ? '/orders' : '/orders/delivery'
-    console.log('http://192.168.1.100:3001' + route);
     return axios.get('http://192.168.1.100:3001' + route, config).then((response: AxiosResponse) => {
         if (response.status == 200) {
             return response.data.data;
