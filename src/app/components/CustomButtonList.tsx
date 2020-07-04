@@ -7,7 +7,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import colors from '../assets/Colors';
 import fonts from '../assets/Fonts';
 
-type size = "M" | "L" | "S"
+type size = "M" | "L" | "S" | "XL"
 
 interface CustomButtonLisProps {
     onPress: () => any,
@@ -18,9 +18,27 @@ interface CustomButtonLisProps {
 
 export const CustomButtonList: React.FC<CustomButtonLisProps> = (props) => {
     let width = 30
-    width = props.size && props.size == "M" ? 30 : props.size == "L" ? 38 : 24
     let fontsize = Size(51)
-    fontsize = props.size && props.size == "M" ? Size(51) : props.size == "L" ? Size(60) : Size(39)
+    switch (props.size) {
+        case "M":
+            width = 30
+            fontsize = Size(51)
+            break;
+        case "L":
+            width = 38
+            fontsize = Size(60)
+            break;
+        case "XL":
+            width = 46
+            fontsize = Size(60)
+            break;
+
+        default:
+            width = 24
+            fontsize = Size(39)
+            break;
+    }
+
     return (
         <TouchableOpacity style={[styles.buttonContainer, { width: wp(width), backgroundColor: !props.disable ? colors.lightBlue : colors.lightgrayDisabled }]} >
             <Text onPress={() => { !props.disable && props.onPress() }} style={[styles.buttonText, { fontSize: RFValue(fontsize), }]} > {props.title} </Text>
