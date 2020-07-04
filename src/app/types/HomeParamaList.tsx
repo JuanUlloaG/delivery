@@ -3,6 +3,7 @@ import { RouteProp } from "@react-navigation/native"
 
 export type HomeParamList = {
     Home: undefined;
+    HomeAddres: undefined;
     Detail: {
         name: string
     };
