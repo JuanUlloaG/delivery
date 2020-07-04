@@ -66,7 +66,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     function getProfile(): String {
-        console.log(store.getState());
         if (store.getState().auth.token) return store.getState().auth.profile
         return ""
     }
