@@ -8,7 +8,6 @@ import { StackNavigationEventMap } from "@react-navigation/stack/lib/typescript/
 import { SearchParamList } from "./types/SearchParamaList";
 
 function Detail({ navigation, route }: HomeNavProps<'Edit'>) {
-    console.log(route);
     if (route) {
         return (
             <Center>
