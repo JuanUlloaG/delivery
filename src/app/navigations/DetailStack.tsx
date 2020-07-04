@@ -6,6 +6,7 @@ import { Button, View, Text, Platform } from 'react-native';
 import Detail from '../scenes/Detail/Detail';
 import DetailAddres from '../scenes/Detail/DetailAddres';
 import DeliveryDetail from '../scenes/Detail/DeliveryDetail';
+import Delivery from '../scenes/Detail/Delivery';
 import { Edit } from '../scenes/Edit/Edit';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import colors from '../assets/Colors';
@@ -29,13 +30,54 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
         cardOverlayEnabled: true,
     } : {}
 
-    let component: any = Detail;
 
-    component = getProfile() == "2" ? DetailAddres : DetailAddres
+
+    const getComponent = () => {
+        let profile = parseInt(getProfile())
+        switch (profile) {
+            case 2:
+                return Detail
+            case 3:
+                return DeliveryDetail
+            case 4:
+                return DetailAddres
+            default:
+                return Detail
+        }
+    }
+    const getTitle = () => {
+        let profile = parseInt(getProfile())
+        switch (profile) {
+            case 2:
+                return "Detalle"
+            case 3:
+                return "Detalle"
+            case 4:
+                return "Detalle"
+            default:
+                return "Detalle"
+        }
+    }
+    const getName = () => {
+        let profile = parseInt(getProfile())
+        switch (profile) {
+            case 2:
+                return "Detail"
+            case 3:
+                return "Detail"
+            case 4:
+                return "Detail"
+            default:
+                return "Detail"
+        }
+    }
+    const component = getComponent()
+    const title = getTitle()
+    const name = getName()
 
     return (
         <Stack.Navigator mode={mode} screenOptions={scOptions}>
-            <Stack.Screen name="Detail" component={component} options={(navigation) => ({
+            <Stack.Screen name={name} component={component} options={(navigation) => ({
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
@@ -49,7 +91,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontSize: Size(77),
                 },
                 headerStatusBarHeight: Size(35),
-                headerTitle: "Detalle",
+                headerTitle: title,
                 // headerRight: () => (
 
                 // ),
@@ -58,13 +100,12 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                             <Antdesing name='left' size={24} color={colors.white} />
-                            {/* <Text style={{ color: colors.white }}></Text> */}
                         </View>
                     </TouchableOpacity>
                 )
             })
             } />
-            {/* <Stack.Screen name="Detail" component={component} options={(navigation) => ({
+            <Stack.Screen name={"Delivery"} component={Delivery} options={(navigation) => ({
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
@@ -78,8 +119,12 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontSize: Size(77),
                 },
                 headerStatusBarHeight: Size(35),
-                headerTitle: "Detalle",
+                headerTitle: title,
+                // headerRight: () => (
+
+                // ),
                 headerLeft: () => (
+                    // platform == "ios" &&
                     <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                             <Antdesing name='left' size={24} color={colors.white} />
@@ -87,8 +132,9 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     </TouchableOpacity>
                 )
             })
-            } /> */}
+            } />
             <Stack.Screen name="Edit" component={Edit} />
+            {/* <Stack.Screen name="Delivery" component={Delivery} /> */}
         </Stack.Navigator>
     );
 }
