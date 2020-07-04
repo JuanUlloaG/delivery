@@ -56,7 +56,7 @@ class Home extends React.Component<HomeAddresProps, State> {
 
                     </View>
                     <View style={styles.headerSectionButton}>
-                        <View style={{ width: wp(24), marginTop: 15 }}>
+                        <View style={{ width: wp(26), marginTop: 15 }}>
                             <Text style={styles.headerSectionTitleText}>Ordernar</Text>
                         </View>
                         <View style={styles.headerSectionButtonContainer}>
