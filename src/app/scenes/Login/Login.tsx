@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AuthNavProps } from '../../types/AuthParamLIst'
 import { AuthContext } from '../../providers/AuthProvider'
 import { Center } from '../../components/Center'
-import { Text, Button, StyleSheet, View, Dimensions, TouchableOpacity, Alert, Keyboard } from 'react-native'
+import { Text, Button, StyleSheet, View, Dimensions, TouchableOpacity, Alert, Keyboard, ActivityIndicator } from 'react-native'
 import colors from '../../assets/Colors';
 import { Size } from '../../services/Service';
 import { CustomInput } from "../../components/TextInput";
@@ -46,6 +46,13 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
         if (rut && password) login(rut, password)
         else { Alert.alert("Información", "Debes completar todos los datos para iniciar sesión") }
     }
+    if (store.getState().auth.isFetching) {
+        return (
+            <Center>
+                <ActivityIndicator size='large' />
+            </Center>
+        )
+    }
     return (
         <Center>
             <ScrollView contentContainerStyle={styles.scrollView} >
@@ -59,7 +66,6 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
                         <Text style={styles.passwordForget}>¿Olvidaste tu contraseña?</Text>
                     </TouchableOpacity>
                 </TouchableWithoutFeedback>
-
             </ScrollView>
         </Center>
     )
