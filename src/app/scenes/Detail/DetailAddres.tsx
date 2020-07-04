@@ -64,7 +64,8 @@ class DetailAddres extends React.Component<Props, State> {
     }
 
     goToDetail() {
-        this.props.navigation.navigate('Delivery', {})
+        const order = this.filterData()
+        this.props.navigation.navigate('Delivery', { order })
     }
 
     toggleModal() {
