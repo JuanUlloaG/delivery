@@ -63,6 +63,10 @@ class DetailAddres extends React.Component<Props, State> {
 
     }
 
+    goToDetail() {
+        this.props.navigation.navigate('Delivery', {})
+    }
+
     toggleModal() {
         // Animated.parallel([
         //     Animated.timing(this.state.opacity, {
@@ -120,8 +124,12 @@ class DetailAddres extends React.Component<Props, State> {
                     <View style={{ flex: 1 }}>
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ width: wp(100), height: hp(35) }}>
-                                <View style={{ flex: 1, margin: 15, borderWidth: 1 }}>
-                                    <Text>Aqui el mapa</Text>
+                                <View style={{ flex: 1, margin: 15 }}>
+                                    <Image style={{ width: wp(92), height: hp(30) }} source={{ uri: "https://storage.googleapis.com/support-forums-api/attachment/thread-9014924-11470506657998028469.JPG" }} />
+                                </View>
+                                <View style={{ flex: 1, marginVertical: -5, justifyContent: 'flex-end', width: wp(96), alignItems: 'flex-end', flexDirection: 'row' }}>
+                                    <Text>Ver mapa</Text>
+                                    <Icon name="location-on" color={colors.darkYellow} size={Size(55)} />
                                 </View>
                             </View>
                             <View style={{ width: wp(100), height: hp(20) }}>
@@ -160,7 +168,7 @@ class DetailAddres extends React.Component<Props, State> {
                                 {
                                     <View style={styles.resumeHeaderInfo}>
                                         <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                            <CustomButtonList onPress={() => { }} title="Siguiente" disable={false} size={"L"} />
+                                            <CustomButtonList onPress={() => { this.goToDetail() }} title="Entregar Bolsas" disable={false} size={"L"} />
                                         </View>
                                     </View>
                                 }
