@@ -37,6 +37,7 @@ interface State {
     bagNumber: string,
     bagContainer: Array<any>,
     pickedProductArray: Array<any>,
+    bags: Array<any>,
     resume: boolean,
     torchOn: boolean
 }
@@ -50,11 +51,12 @@ class DetailDelivery extends React.Component<Props, State> {
             index: 0,
             animationValue: new Animated.Value(0),
             opacity: new Animated.Value(0),
-            bagNumber: "123265467646546",
+            bagNumber: "",
             bagContainer: [],
             pickedProductArray: [],
             resume: false,
-            torchOn: false
+            torchOn: false,
+            bags: []
         }
     }
 
@@ -68,7 +70,6 @@ class DetailDelivery extends React.Component<Props, State> {
 
     componentDidMount() {
         let data = this.filterData()
-        console.log(data);
         this.loadItems(0)
     }
 
@@ -101,10 +102,6 @@ class DetailDelivery extends React.Component<Props, State> {
         // }
 
 
-    }
-
-    captureBagNumber() {
-        // this.setState({ bagNumber: number })
     }
 
     addProductPicked(index: number) {
@@ -175,8 +172,19 @@ class DetailDelivery extends React.Component<Props, State> {
         }
     }
 
+    captureBagNumber() {
+        this.setState({ torchOn: true })
+    }
+
+    disableCamera() {
+        this.setState({ torchOn: false })
+    }
+
     onBarCodeRead = (e) => {
-        Alert.alert("Barcode value is" + e.data, "Barcode type is" + e.type);
+        let bags = [...this.state.bags]
+        console.log(e.data);
+        bags.push(e.data)
+        this.setState({ bags, bagNumber: e.data, torchOn: false })
     }
 
 
@@ -190,6 +198,7 @@ class DetailDelivery extends React.Component<Props, State> {
         const animatedStyle = {
             height: this.state.animationValue
         }
+
         if (Object.keys(order).length) {
             return (
                 <Center>
@@ -202,7 +211,7 @@ class DetailDelivery extends React.Component<Props, State> {
                             <View style={styles.modalSectionBodyInput}>
                                 <CustomInput value={this.state.bagNumber} onChangeText={() => { }} placeholder="Numero de bolsa" type={false} editable={false} />
                             </View>
-                            <TouchableOpacity onPress={() => this.handleTourch(this.state.torchOn)} style={styles.modalSectionBodyScanBar}>
+                            <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
                                 <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
                             </TouchableOpacity>
                         </View>
@@ -219,8 +228,12 @@ class DetailDelivery extends React.Component<Props, State> {
                                                     order.bags.map((bag: any, index: number) => {
                                                         return (
                                                             <View key={index} style={{ height: hp(7), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                                                <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bag} </Text>
-                                                                <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
+                                                                <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bag)? colors.darkGreen:colors.black }]}>Nº {bag.bag} </Text>
+                                                                {
+                                                                    this.state.bags.includes(bag.bag) &&
+                                                                    <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
+                                                                }
+
                                                             </View>
                                                         )
                                                     })
@@ -240,29 +253,44 @@ class DetailDelivery extends React.Component<Props, State> {
                                 </View>
                             }
                         </View>
-                        {/* <RNCamera
-                            // ref={(ref) => {
-                            //     this.camera = ref;
-                            // }}
-                            // style={{ flex: 1 }}
-                            // type={RNCamera.Constants.Type.back}
-                            // flashMode={RNCamera.Constants.FlashMode.on}
-                            // androidCameraPermissionOptions={{
-                            //     title: 'Permission to use camera',
-                            //     message: 'We need your permission to use your camera',
-                            //     buttonPositive: 'Ok',
-                            //     buttonNegative: 'Cancel',
-                            // }}
-                            style={styles.preview}
-                            // torchMode={this.state.torchOn ? RNCamera.Constants : RNCamera.constants.TorchMode.off}
-                            onBarCodeRead={this.onBarCodeRead}
-                            ref={cam => this.camera = cam}
-                            // aspect={RNCamera.Constants}
-                            captureAudio={false}
-                            onGoogleVisionBarcodesDetected={({ barcodes }) => {
-                                console.log(barcodes);
-                            }}
-                        /> */}
+                        {
+                            (this.state.torchOn) &&
+                            <View style={{
+                                width: wp(100),
+                                height: hp(76),
+                                flexDirection: 'column',
+                                position: 'absolute',
+                                zIndex: 1000,
+                                backgroundColor: 'black',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center'
+                            }}>
+                                <RNCamera
+
+                                    style={{ width: wp(100), height: hp(50) }}
+                                    onBarCodeRead={this.onBarCodeRead}
+                                    ref={cam => this.camera = cam}
+                                    // aspect={RNCamera.Constants}
+                                    autoFocus={RNCamera.Constants.AutoFocus.on}
+                                    captureAudio={false}
+                                    onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                                    }}
+                                />
+                                <View style={{ position: 'absolute', bottom: 0 }}>
+                                    <TouchableOpacity onPress={() => this.disableCamera()} style={{
+                                        flex: 1,
+                                        backgroundColor: '#fff',
+                                        borderRadius: 5,
+                                        padding: 15,
+                                        paddingHorizontal: 20,
+                                        alignSelf: 'center',
+                                        margin: 20,
+                                    }}>
+                                        <Text style={{ fontSize: 14 }}> Terminar </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        }
                     </View>
 
                 </Center>
