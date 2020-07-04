@@ -27,6 +27,7 @@ interface Props {
     auth: object,
     route: any,
     home: { isFetching: boolean, data: [any] },
+    camera: RNCamera
 }
 
 interface State {
@@ -58,19 +59,19 @@ class Delivery extends React.Component<Props, State> {
             torchOn: false,
             bags: []
         }
+
     }
 
     filterData() {
-        let result = this.props.home.data.filter((row) => {
-            return row.id === this.props.route.params.ordernumber
-        })
-        if (result.length) return result[0]
+
+        if (this.props.route.params.order) return this.props.route.params.order
         return {}
     }
 
     componentDidMount() {
+
         let data = this.filterData()
-        this.loadItems(0)
+        // this.loadItems(0)
     }
 
     loadItems(index: number) {
@@ -209,7 +210,7 @@ class Delivery extends React.Component<Props, State> {
                                 <Text style={styles.modalSectionBodyTitleText}>Pickea el bulto</Text>
                             </View>
                             <View style={styles.modalSectionBodyInput}>
-                                <CustomInput value={this.state.bagNumber} onChangeText={() => { }} placeholder="Numero de bolsa" type={false} editable={false} />
+                                <CustomInput onBlur={() => { }} value={this.state.bagNumber} onChangeText={() => { }} placeholder="Numero de bolsa" type={false} editable={false} />
                             </View>
                             <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
                                 <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
@@ -228,7 +229,7 @@ class Delivery extends React.Component<Props, State> {
                                                     order.bags.map((bag: any, index: number) => {
                                                         return (
                                                             <View key={index} style={{ height: hp(7), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                                                <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bag)? colors.darkGreen:colors.black }]}>Nº {bag.bag} </Text>
+                                                                <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bag) ? colors.darkGreen : colors.black }]}>Nº {bag.bag} </Text>
                                                                 {
                                                                     this.state.bags.includes(bag.bag) &&
                                                                     <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
@@ -248,7 +249,7 @@ class Delivery extends React.Component<Props, State> {
                             {
                                 <View style={styles.resumeHeaderInfo}>
                                     <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                        <CustomButtonList onPress={() => { }} title="Siguiente" disable={false} size={"L"} />
+                                        <CustomButtonList onPress={() => { }} title="Pedido Entregado" disable={false} size={"XL"} />
                                     </View>
                                 </View>
                             }
