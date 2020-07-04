@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
 import { connect } from 'react-redux'
 import { Center } from '../../components/Center';
 import colors from '../../assets/Colors';
@@ -14,6 +14,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { CustomInput } from '../../components/TextInput';
 var { width, height } = Dimensions.get('window');
+import { RNCamera } from "react-native-camera";
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
 
@@ -32,7 +33,8 @@ interface State {
     bagNumber: string,
     bagContainer: Array<any>,
     pickedProductArray: Array<any>,
-    resume: boolean
+    resume: boolean,
+    torchOn: boolean
 }
 
 class Detail extends React.Component<Props, State> {
@@ -44,10 +46,11 @@ class Detail extends React.Component<Props, State> {
             index: 0,
             animationValue: new Animated.Value(0),
             opacity: new Animated.Value(0),
-            bagNumber: "123265467646546",
+            bagNumber: "",
             bagContainer: [],
             pickedProductArray: [],
-            resume: false
+            resume: false,
+            torchOn: false
         }
     }
 
@@ -95,7 +98,11 @@ class Detail extends React.Component<Props, State> {
     }
 
     captureBagNumber() {
-        // this.setState({ bagNumber: number })
+        this.setState({ torchOn: true })
+    }
+
+    disableCamera() {
+        this.setState({ torchOn: false })
     }
 
     addProductPicked(index: number) {
@@ -157,6 +164,20 @@ class Detail extends React.Component<Props, State> {
         });
     }
 
+    handleTourch(value: boolean) {
+        if (value === true) {
+            this.setState({ torchOn: false });
+        } else {
+            this.setState({ torchOn: true });
+        }
+    }
+
+    onBarCodeRead = (e: any) => {
+        
+        this.setState({ bagNumber: e.data, torchOn: false })
+        // Alert.alert("Barcode value is" + e.data, "Barcode type is" + e.type);
+    }
+
 
     render() {
         const title = !this.state.resume ? "Detalle" : "Resumen"
@@ -173,6 +194,8 @@ class Detail extends React.Component<Props, State> {
 
             return (
                 <Center>
+
+
                     <View style={styles.headerContainer}>
                         {
                             !this.state.resume ?
@@ -220,7 +243,7 @@ class Detail extends React.Component<Props, State> {
                                                     return (
                                                         <View style={styles.bodyContainerScrollViewContainerPickedSection} key={index}>
                                                             <View style={styles.bodyContainerScrollViewContainerPickedSectionTitle}>
-                                                                <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Producto {index + 1}</Text>
+                                                                <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Unidad {index + 1}</Text>
                                                             </View>
                                                             <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
                                                                 <TouchableOpacity onPress={() => { this.removeProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
@@ -243,7 +266,11 @@ class Detail extends React.Component<Props, State> {
                                         <View style={styles.bodyContainerScrollViewContainerPosition}>
                                             <View style={styles.bodyContainerScrollViewContainerPositionSection}>
                                                 <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Posicion</Text>
-                                                <Icon name="check" color={colors.darkBlue} size={Size(68)} />
+                                                {
+                                                    order.products[this.state.index].location ?
+                                                        <IconChange name="isv" color={colors.darkBlue} size={Size(68)} /> :
+                                                        <IconBar name="library-shelves" color={colors.darkBlue} size={Size(68)} />
+                                                }
                                             </View>
                                         </View>
 
@@ -295,7 +322,7 @@ class Detail extends React.Component<Props, State> {
 
                         </ScrollView>
                     </View>
-                    <Animated.View style={[styles.modalAnimated, animatedStyle]}>
+                    <Animated.View style={[styles.modalAnimated, { zIndex: 0, }, animatedStyle]}>
                         <Animated.View style={{ flex: 1, opacity: this.state.opacity }}>
                             <View style={styles.modalSectionInfo}>
                                 <TouchableOpacity onPress={() => { this.dissmissModal() }} style={styles.modalSectionInfoCancelButton}>
@@ -323,8 +350,49 @@ class Detail extends React.Component<Props, State> {
                                 </View>
                             </View>
                         </Animated.View>
+                        {
+                            (this.state.torchOn && !this.state.bagNumber) && 
+                            <View style={{
+                                width: wp(100),
+                                height: hp(100),
+                                flexDirection: 'column',
+                                position: 'absolute',
+                                zIndex: 1000,
+                                backgroundColor: 'black'
+                            }}>
+                                <RNCamera
+
+                                    style={{ width: wp(100), height: hp(55), justifyContent: 'center', alignItems: 'center' }}
+                                    onBarCodeRead={this.onBarCodeRead}
+                                    ref={cam => this.camera = cam}
+                                    // aspect={RNCamera.Constants}
+                                    captureAudio={false}
+                                    onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                                        console.log(barcodes);
+                                    }}
+                                />
+                                <View style={{ position: 'absolute', bottom: 0, marginBottom: 120, marginLeft: 100 }}>
+                                    <TouchableOpacity onPress={() => this.disableCamera()} style={{
+                                        flex: 1,
+                                        backgroundColor: '#fff',
+                                        borderRadius: 5,
+                                        padding: 15,
+                                        paddingHorizontal: 20,
+                                        alignSelf: 'center',
+                                        margin: 20,
+                                    }}>
+                                        <Text style={{ fontSize: 14 }}> Terminar </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        }
+
                     </Animated.View>
-                </Center>
+
+
+
+
+                </Center >
 
             );
         }
@@ -622,7 +690,24 @@ const styles = StyleSheet.create({
     resumeBodyInfoIcon: {
         flex: 1,
         alignItems: 'center'
-    }
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    cameraIcon: {
+        margin: 5,
+        height: 40,
+        width: 40
+    },
+    bottomOverlay: {
+        position: "absolute",
+        width: "100%",
+        flex: 20,
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
 
 });
 
