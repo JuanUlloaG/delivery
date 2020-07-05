@@ -6,6 +6,7 @@ import { AuthContext } from '../providers/AuthProvider';
 import { HomeParamList, HomeNavProps } from '../types/HomeParamaList';
 import Home from '../scenes/Home/Home';
 import HomeAddres from '../scenes/Home/HomeAddres';
+import HomeDelivery from '../scenes/Home/HomeDelivery';
 import { DetailStack } from './DetailStack';
 import { Size } from '../services/Service';
 import colors from '../assets/Colors';
@@ -27,10 +28,10 @@ function HomeNavigator({ navigation, route }) {
         switch (getProfile()) {
             case 2:
                 return Home
-            case 3:
-                return Home
+            // case 3:
+            //     return Home
             case 4:
-                return HomeAddres
+                return HomeDelivery
             default:
                 return Home
         }
@@ -39,10 +40,10 @@ function HomeNavigator({ navigation, route }) {
         switch (getProfile()) {
             case 2:
                 return "Lista de pedidos"
-            case 3:
-                return "Recepcion de pedidos"
+            // case 3:
+            //     return "Recepcion de pedidos"
             case 4:
-                return "Pedidos Pendientes de entrega"
+                return "Delivery"
             default:
                 return "Lista de pedidos"
         }
@@ -64,7 +65,7 @@ function HomeNavigator({ navigation, route }) {
     const name = getName()
 
     return (
-        <Stack2.Navigator initialRouteName="HomeAddres">
+        <Stack2.Navigator initialRouteName={name}>
             <Stack2.Screen name={name} component={component} options={(navigation) => ({
                 headerTitle: title,
                 headerStyle: {
