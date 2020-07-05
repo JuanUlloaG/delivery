@@ -61,7 +61,13 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
                     <CustomInput value={rut} onBlur={focusLose} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} editable={true} />
                     <CustomInput value={password} onBlur={() => { }} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} editable={true} />
                     <CustomPicker options={[]} onValueChange={onChangePicker} />
-                    <CustomButton login={loginAction} />
+                    <CustomButton onPress={loginAction} size={"l"}>
+                        <Text style={{
+                            fontFamily: "AvenirNextBold",
+                            fontSize: RFValue(Size(56)),
+                            color: "rgba(0, 0, 0, 255)"
+                        }}>Iniciar Sesión</Text>
+                    </CustomButton>
                     <TouchableOpacity style={{ marginTop: 11 }}>
                         <Text style={styles.passwordForget}>¿Olvidaste tu contraseña?</Text>
                     </TouchableOpacity>
