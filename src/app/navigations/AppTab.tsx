@@ -5,8 +5,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Antdesing from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { HomeStack } from './HomeStack';
+
 import colors from '../assets/Colors';
 import { AuthContext } from "../providers/AuthProvider";
+import { Profile } from '../scenes/Profile/Profile';
+import { Search } from '../scenes/Search/Search';
 
 interface AppTabProps {
 
@@ -44,8 +47,8 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
             }}
         >
             <Tabs.Screen name='Pickear' component={HomeStack} />
-            <Tabs.Screen name='Search' component={HomeStack} />
-            <Tabs.Screen name='Profile' component={HomeStack} />
+            <Tabs.Screen name='Search' component={Search} />
+            <Tabs.Screen name='Profile' component={Profile} />
             {/* <Tabs.Screen name='Profile' component={HomeStack} /> */}
             {/* <Tabs.Screen name='Search' component={SearchStack} /> */}
         </Tabs.Navigator>
