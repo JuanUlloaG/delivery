@@ -6,13 +6,9 @@ import colors from '../../assets/Colors';
 import { Size } from '../../services/Service';
 import fonts from '../../assets/Fonts';
 import Icon from "react-native-vector-icons/MaterialIcons";
-import IconChange from "react-native-vector-icons/AntDesign";
-import IconBar from "react-native-vector-icons/MaterialCommunityIcons";
-import Iconprinter from "react-native-vector-icons/Feather";
-import { CustomButtonList } from '../../components/CustomButtonList';
+import { CustomButton } from '../../components/CustomButton';
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { CustomInput } from '../../components/TextInput';
 var { width, height } = Dimensions.get('window');
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
@@ -69,41 +65,11 @@ class DetailAddres extends React.Component<Props, State> {
     }
 
     toggleModal() {
-        // Animated.parallel([
-        //     Animated.timing(this.state.opacity, {
-        //         toValue: 1,
-        //         useNativeDriver: false,
-        //         duration: 300
-        //     }),
-        //     Animated.spring(this.state.animationValue, {
-        //         toValue: HEIGHT_MODAL,
-        //         velocity: 7,
-        //         tension: 2,
-        //         friction: 8,
-        //         useNativeDriver: false
-        //     })
-        // ]).start(() => {
-        //     // console.log("object");
-        // });
+
     }
 
     dissmissModal() {
-        // Animated.parallel([
-        //     Animated.timing(this.state.opacity, {
-        //         toValue: 0,
-        //         useNativeDriver: false,
-        //         duration: 100
-        //     }),
-        //     Animated.spring(this.state.animationValue, {
-        //         toValue: 0,
-        //         velocity: 7,
-        //         tension: 2,
-        //         friction: 8,
-        //         useNativeDriver: false
-        //     })
-        // ]).start(() => {
-        //     // console.log("dismiss");
-        // });
+
     }
 
 
@@ -168,15 +134,17 @@ class DetailAddres extends React.Component<Props, State> {
                             <View style={{ width: wp(100), height: hp(15) }}>
                                 {
                                     <View style={styles.resumeHeaderInfo}>
-                                        <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                            <CustomButtonList onPress={() => { this.goToDetail() }} title="Entregar Bolsas" disable={false} size={"L"} />
-                                        </View>
+                                        <CustomButton onPress={() => this.goToDetail()} size={"m"}>
+                                            <Text style={{
+                                                fontFamily: fonts.primaryFont,
+                                                fontSize: RFValue(Size(56)),
+                                                color: "rgba(0, 0, 0, 255)"
+                                            }}>Pedido Entregado</Text>
+                                        </CustomButton>
+                                        <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext} />
                                     </View>
                                 }
                             </View>
-                            {/* <View style={{ flex: 1, backgroundColor: 'tomato' }}>
-                                <Text>Holas</Text>
-                            </View> */}
                         </ScrollView>
                     </View>
                 </Center>
@@ -223,14 +191,5 @@ const mapStateToProps = (state: any) => ({
 // }
 
 export default connect(mapStateToProps)(DetailAddres)
-
-
-// <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            //     <Text>DetailAddres Screen</Text>
-
-            //     <Button title="Press me" onPress={() => {
-            //         this.props.navigation.navigate("Edit")
-            //     }} />
-            // </View>
 
 
