@@ -43,7 +43,7 @@ class Home extends React.Component<HomeAddresProps, State> {
 
     navigate(id: string) {
         this.props.navigation.navigate('Detail', {
-            screen: 'Detail',
+            screen: 'DetailAddres',
             params: { ordernumber: id },
         });
     }
