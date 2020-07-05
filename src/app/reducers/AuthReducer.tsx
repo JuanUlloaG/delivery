@@ -51,7 +51,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 email: action.data.email,
                 token: action.data.token,
                 profile: action.data.profile,
-                isFetching: true,
+                isFetching: false,
                 error: false
             }
         case 'UNAPPROVED_USER':
