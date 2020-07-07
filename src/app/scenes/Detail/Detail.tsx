@@ -56,7 +56,7 @@ class Detail extends React.Component<Props, State> {
 
     filterData() {
         let result = this.props.home.data.filter((row) => {
-            return row.id === this.props.route.params.ordernumber
+            return row._id === this.props.route.params.ordernumber
         })
         if (result.length) return result[0]
         return {}
@@ -173,7 +173,7 @@ class Detail extends React.Component<Props, State> {
     }
 
     onBarCodeRead = (e: any) => {
-        
+
         this.setState({ bagNumber: e.data, torchOn: false })
         // Alert.alert("Barcode value is" + e.data, "Barcode type is" + e.type);
     }
@@ -201,7 +201,7 @@ class Detail extends React.Component<Props, State> {
                             !this.state.resume ?
                                 <>
                                     <View style={styles.headerContainerTitle}>
-                                        <Text style={styles.headerContainerTitleText}>Pedido Nº {order.id} </Text>
+                                        <Text style={styles.headerContainerTitleText}>Pedido Nº {order.orderNumber} </Text>
                                     </View>
                                     <View style={styles.headerContainerCount}>
                                         <View style={styles.headerContainerCountContainer} >
@@ -222,13 +222,13 @@ class Detail extends React.Component<Props, State> {
                                         <View style={styles.bodyContainerScrollViewContainerInfo}>
                                             <View style={styles.bodyContainerScrollViewContainerInfoSection}>
                                                 <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                    Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].name} </Text>
+                                                    Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].product} </Text>
                                                 </Text>
                                                 <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
                                                     Descripción: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
                                                 </Text>
                                                 <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                    SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].sku} </Text>
+                                                    SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].id} </Text>
                                                 </Text>
                                                 <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
                                                     Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
@@ -351,7 +351,7 @@ class Detail extends React.Component<Props, State> {
                             </View>
                         </Animated.View>
                         {
-                            (this.state.torchOn && !this.state.bagNumber) && 
+                            (this.state.torchOn && !this.state.bagNumber) &&
                             <View style={{
                                 width: wp(100),
                                 height: hp(100),
@@ -386,14 +386,8 @@ class Detail extends React.Component<Props, State> {
                                 </View>
                             </View>
                         }
-
                     </Animated.View>
-
-
-
-
                 </Center >
-
             );
         }
         return (
@@ -401,8 +395,6 @@ class Detail extends React.Component<Props, State> {
                 <Text>No hay data para mostrar 😰</Text>
             </Center>
         )
-
-
     }
 }
 
