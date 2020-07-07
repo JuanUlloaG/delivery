@@ -8,8 +8,9 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 
 interface CustomPickerProps {
-    options: [],
+    options: [{ _id: string, address: string, number: string }],
     onValueChange: (itemValue: string, itemIndex: number) => any,
+    value: string
 }
 
 export const CustomPicker: React.FC<CustomPickerProps> = (props) => {
@@ -19,14 +20,18 @@ export const CustomPicker: React.FC<CustomPickerProps> = (props) => {
             <Picker
                 mode='dropdown'
                 itemStyle={{ color: 'red' }}
-                selectedValue={""}
+                selectedValue={props.value}
                 style={styles.pickerStyle}
-
                 onValueChange={(itemValue, itemIndex) => { props.onValueChange(itemValue, itemIndex) }}
             >
-                <Picker.Item label="Seleccione" value="" />
-                <Picker.Item label="Java" value="java" />
-                <Picker.Item label="JavaScript" value="js" />
+                <Picker.Item label="Seleccionar" value="" />
+                {
+                    props.options.map((row, index) => {
+                        return (
+                            <Picker.Item key={index} label={row.address + " - " + row.number} value={row._id} />
+                        )
+                    })
+                }
             </Picker>
         </View>
     );
@@ -49,6 +54,6 @@ const styles = StyleSheet.create({
     pickerStyle: {
         height: Size(117),
         width: wp(100) - Size(220),
-        marginRight:10
+        marginRight: 10
     }
 });
