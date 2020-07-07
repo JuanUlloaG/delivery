@@ -7,6 +7,7 @@ import { HomeParamList, HomeNavProps } from '../types/HomeParamaList';
 import Home from '../scenes/Home/Home';
 import HomeAddres from '../scenes/Home/HomeAddres';
 import HomeDelivery from '../scenes/Home/HomeDelivery';
+import { Shop } from '../scenes/Login/Shop';
 import { DetailStack } from './DetailStack';
 import { Size } from '../services/Service';
 import colors from '../assets/Colors';
@@ -21,10 +22,9 @@ const Stack = createStackNavigator<HomeParamList>()
 const Stack2 = createStackNavigator<HomeParamList>()
 
 function HomeNavigator({ navigation, route }) {
-    const { logout, getProfile } = useContext(AuthContext)
+    const { logout, getProfile, getShop } = useContext(AuthContext)
 
     const getComponent = () => {
-        console.log("aqui", getProfile());
         switch (getProfile()) {
             case 2:
                 return Home
@@ -63,6 +63,7 @@ function HomeNavigator({ navigation, route }) {
     const component = getComponent()
     const title = getTitle()
     const name = getName()
+    
 
     return (
         <Stack2.Navigator initialRouteName={name}>
@@ -80,21 +81,6 @@ function HomeNavigator({ navigation, route }) {
                     fontSize: Size(77),
                 },
                 headerStatusBarHeight: Size(35)
-                // headerRight: () => (
-                //     <TouchableOpacity onPress={() => { null }}>
-                //         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
-                //             <Icon name='location-on' size={24} color="tomato" />
-                //         </View>
-                //     </TouchableOpacity>
-                // ),
-                // headerLeft: () => (
-
-                //     <TouchableOpacity onPress={() => { logout() }}>
-                //         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: 15 }}>
-                //             <Icon name='camera' size={24} color="tomato" />
-                //         </View>
-                //     </TouchableOpacity>
-                // )
             })
             } />
         </Stack2.Navigator>
