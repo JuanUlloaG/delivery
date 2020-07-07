@@ -14,7 +14,7 @@ interface RoutesProps {
 
 
 export const Routes: React.FC<RoutesProps> = ({ }) => {
-    const { user, login, getToken } = useContext(AuthContext)
+    const { user, login, getToken, getShop } = useContext(AuthContext)
     const [loading, setloading] = useState(true);
     const isLoading = store.getState().auth.isFetching
     useEffect(() => {
@@ -39,7 +39,7 @@ export const Routes: React.FC<RoutesProps> = ({ }) => {
 
     return (
         <NavigationContainer>
-            {getToken() ? <AppTab /> : <AuthStack />}
+            {getToken() && getShop() ? <AppTab /> : <AuthStack />}
         </NavigationContainer>
     );
 }
