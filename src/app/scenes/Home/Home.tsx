@@ -67,16 +67,19 @@ class Home extends React.Component<HomeProps, State> {
                             style={styles.bodyList}
                             data={this.getData()}
                             extraData={this.props}
-                            keyExtractor={(item, index) => item.id.toString()}
+                            keyExtractor={(item, index) => item._id.toString()}
                             renderItem={({ item }) => {
                                 return (
-                                    <View key={item.id} style={styles.bodyListContainer}>
+                                    <View key={item._id} style={styles.bodyListContainer}>
                                         <View style={styles.bodyListContainerSectionInfo}>
                                             <View style={styles.bodyListContainerSectionInfoContainer}>
-                                                <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº " + item.id}</Text>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                                                    <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº "}</Text>
+                                                    <Text style={[styles.bodyListContainerSectionInfoContainerTitle, { fontSize: item.orderNumber.length > 7 ? RFValue(19) : RFValue(25) }]}>{item.orderNumber}</Text>
+                                                </View>
                                                 <View style={styles.bodyListContainerSectionInfoContainerDetail}>
                                                     <View style={styles.bodyListContainerSectionInfoContainerPoint} />
-                                                    <CountDown date={item.date} />
+                                                    <CountDown date={item.startPickingDate} />
                                                 </View>
                                             </View>
                                         </View>
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
         marginHorizontal: Size(94)
     },
     bodyListContainerSectionInfoContainerTitle: {
-        fontSize: RFValue(25),
+        fontSize: RFValue(23),
         fontFamily: fonts.primaryFontTitle
     },
     bodyListContainerSectionInfoContainerDetail: {
