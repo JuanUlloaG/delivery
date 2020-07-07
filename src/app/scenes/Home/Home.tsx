@@ -84,7 +84,7 @@ class Home extends React.Component<HomeProps, State> {
                                             </View>
                                         </View>
                                         <View style={styles.bodyListContainerButton}>
-                                            <CustomButtonList onPress={() => { this.navigate(item.id) }} title="Seleccionar" disable={false} size={"M"} />
+                                            <CustomButtonList onPress={() => { this.navigate(item._id) }} title="Seleccionar" disable={false} size={"M"} />
                                         </View>
                                     </View>
                                 )
