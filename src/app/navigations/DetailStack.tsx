@@ -78,7 +78,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
 
     return (
         <Stack.Navigator mode={mode} screenOptions={scOptions}>
-            {/* <Stack.Screen name={name} component={component} options={(navigation) => ({
+            <Stack.Screen name={name} component={component} options={(navigation) => ({
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
@@ -105,8 +105,8 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     </TouchableOpacity>
                 )
             })
-            } /> */}
-            <Stack.Screen name={"HomeAddres"} component={HomeAddres} options={(navigation) => ({
+            } />
+            {/* <Stack.Screen name={"HomeAddres"} component={HomeAddres} options={(navigation) => ({
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
@@ -217,7 +217,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     </TouchableOpacity>
                 )
             })
-            } />
+            } /> */}
             <Stack.Screen name="Edit" component={Edit} />
             {/* <Stack.Screen name="Delivery" component={Delivery} /> */}
         </Stack.Navigator>
