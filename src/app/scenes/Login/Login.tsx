@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { AuthNavProps } from '../../types/AuthParamLIst'
 import { AuthContext } from '../../providers/AuthProvider'
 import { Center } from '../../components/Center'
@@ -12,6 +12,7 @@ import fonts from '../../assets/Fonts'
 import store from '../../store/Store';
 import { RFValue } from "react-native-responsive-fontsize";
 import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler'
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
 
 
 interface LoginProps {
@@ -22,17 +23,21 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     const { login } = useContext(AuthContext)
     const [rut, setrut] = useState("");
     const [password, setPassword] = useState("");
-    const [local, setlocal] = useState("");
+    const { error, message, isFetching } = store.getState().auth
+
 
     const onChangeRut = (text: string) => {
         //aqui añadir reglas de negocio en cuanto a la validacion del rut
         setrut(text)
     }
+
     const onChangePassword = (text: string) => {
         setPassword(text)
     }
-    const onChangePicker = (itemValue: string, itemIndex: number) => {
 
+    const clear = () => {
+        setPassword("")
+        setrut("")
     }
 
     const focusLose = () => {
@@ -53,6 +58,7 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
             </Center>
         )
     }
+
     return (
         <Center>
             <ScrollView contentContainerStyle={styles.scrollView} >
@@ -60,7 +66,6 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
                     <Text style={styles.title}>Te damos la bienvenida</Text>
                     <CustomInput value={rut} onBlur={focusLose} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} editable={true} />
                     <CustomInput value={password} onBlur={() => { }} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} editable={true} />
-                    <CustomPicker options={[]} onValueChange={onChangePicker} />
                     <CustomButton onPress={loginAction} size={"l"}>
                         <Text style={{
                             fontFamily: "AvenirNextBold",
@@ -68,7 +73,13 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
                             color: "rgba(0, 0, 0, 255)"
                         }}>Iniciar Sesión</Text>
                     </CustomButton>
-                    <TouchableOpacity style={{ marginTop: 11 }}>
+                    {
+                        error &&
+                        <View style={{ width: wp(90), backgroundColor: colors.mediumRed, marginTop: 40, justifyContent: 'center', alignItems: 'center', height: hp(4), borderRadius: 4 }}>
+                            <Text style={styles.passwordForget}>{message}</Text>
+                        </View>
+                    }
+                    <TouchableOpacity style={{ paddingTop: 50 }}>
                         <Text style={styles.passwordForget}>¿Olvidaste tu contraseña?</Text>
                     </TouchableOpacity>
                 </TouchableWithoutFeedback>
@@ -86,7 +97,7 @@ const styles = StyleSheet.create({
     },
     passwordForget: {
         fontFamily: 'AvenirNextRegular',
-        fontSize: RFValue(22)
+        // fontSize: RFValue(22)
     },
     scrollView: {
         flexGrow: 1,
