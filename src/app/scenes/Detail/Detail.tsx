@@ -392,7 +392,7 @@ class Detail extends React.Component<Props, State> {
         }
         return (
             <Center>
-                <Text>No hay data para mostrar 😰</Text>
+                <Text>No hay data para mostrar 👨🏾‍💻</Text>
             </Center>
         )
     }
