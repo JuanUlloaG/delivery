@@ -25,13 +25,15 @@ export const AuthContext = React.createContext<{
     login: (user: string, password: string) => void,
     logout: () => void,
     getToken: () => Boolean,
-    getProfile: () => String
+    getProfile: () => String,
+    getShop: () => String
 }>({
     user: { name: "", email: "", token: "" },
     login: (user: string, password: string) => { },
     logout: () => { },
     getToken: Boolean,
-    getProfile: String
+    getProfile: String,
+    getShop: String
 });
 
 interface AuthProviderProps {
@@ -70,11 +72,17 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return ""
     }
 
+    function getShop(): String {
+        if (store.getState().auth.shop) return store.getState().auth.shop
+        return ""
+    }
+
     return (
         <AuthContext.Provider value={{
             user,
             login: login,
             logout: logout,
+            getShop: getShop,
             getToken: getToken,
             getProfile: getProfile
         }}>

@@ -4,16 +4,17 @@ import { RouteProp } from "@react-navigation/native"
 export type AuthParamList = {
     Login: undefined
     Register: undefined,
-    Started: undefined
+    Started: undefined,
+    Shop: undefined,
 }
 
 export interface AuthUnverifiedUserAction {
     type: 'UNVERIFIED_USER';
     email: string;
 }
-export interface AuthUnapprovedUserAction {
-    type: 'UNAPPROVED_USER';
-    name: string;
+export interface UpdateShop {
+    type: 'UPDATE_SHOP';
+    shop: string;
 }
 
 export interface AuthPass {
@@ -27,11 +28,11 @@ export interface AuthVerifyUserAction {
 
 export interface AuthLoginUserAction {
     type: 'LOGIN_USER';
-    data: { name: string, email: string, token: string, profile: string };
+    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
 }
 export interface AuthLogOutUserAction {
     type: 'LOGOUT_USER';
-    data: { name: string, email: string, token: string, profile: string };
+    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
 }
 
 
@@ -41,12 +42,12 @@ export interface AuthLoginAction {
 
 export interface AuthLoginActionSuccess {
     type: 'FETCHING_LOGIN_SUCCESS';
-    data: { name: string, email: string, token: string, profile: string };
+    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
 }
 
 export interface AuthLoginActionFail {
     type: 'FETCHING_LOGIN_FAIL';
-    data: { name: string, email: string, token: string, profile: string };
+    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string, error: boolean };
 }
 
 export type AuthNavProps<T extends keyof AuthParamList> = {
