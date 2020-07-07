@@ -1,9 +1,9 @@
-import { AuthUnverifiedUserAction, AuthUnapprovedUserAction, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail } from "../types/AuthParamLIst";
+import { AuthUnverifiedUserAction, UpdateShop, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail } from "../types/AuthParamLIst";
 
 type AuthAction =
     | AuthUnverifiedUserAction
     | AuthVerifyUserAction
-    | AuthUnapprovedUserAction
+    | UpdateShop
     | AuthLogOutUserAction
     | AuthLoginAction
     | AuthLoginActionSuccess
@@ -17,7 +17,10 @@ interface State {
     token: string;
     profile: string;
     isFetching: boolean;
-    error: boolean
+    error: boolean,
+    shop: string,
+    company: string,
+    message: string
 }
 
 
@@ -26,8 +29,11 @@ const defaultState: State = {
     email: '',
     token: '',
     profile: '',
+    shop: '',
+    company: '',
     isFetching: false,
-    error: false
+    error: false,
+    message: ''
 };
 
 const authReducer = (state: State = defaultState, action: AuthAction): State => {
@@ -41,6 +47,9 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 email: action.data.email,
                 token: action.data.token,
                 profile: action.data.profile,
+                company: action.data.company,
+                shop: "",
+                message: "",
                 isFetching: true,
                 error: false
             }
@@ -51,11 +60,17 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 email: action.data.email,
                 token: action.data.token,
                 profile: action.data.profile,
+                company: action.data.company,
+                shop: action.data.shop,
+                message: action.data.message,
                 isFetching: false,
                 error: false
             }
-        case 'UNAPPROVED_USER':
-            return state;
+        case 'UPDATE_SHOP':
+            return {
+                ...state,
+                shop: action.shop
+            }
         case 'UNVERIFIED_USER':
             return state;
         case 'FETCHING_LOGIN':
@@ -65,6 +80,9 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 email: "",
                 token: "",
                 profile: "",
+                company: "",
+                shop: "",
+                message: "",
                 isFetching: true,
                 error: false
             }
@@ -76,6 +94,9 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 email: action.data.email,
                 token: action.data.token,
                 profile: action.data.profile,
+                company: action.data.company,
+                shop: "",
+                message: action.data.message,
                 error: false
             }
         case 'FETCHING_LOGIN_FAIL':
@@ -86,7 +107,10 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 email: action.data.email,
                 token: action.data.token,
                 profile: action.data.profile,
-                error: true
+                company: action.data.company,
+                shop: action.data.shop,
+                message: action.data.message,
+                error: action.data.error
             }
         default:
             return state;
