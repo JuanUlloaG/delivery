@@ -71,13 +71,13 @@ class Home extends React.Component<HomeAddresProps, State> {
                             style={styles.bodyList}
                             data={this.getData()}
                             extraData={this.props}
-                            keyExtractor={(item, index) => item.id.toString()}
+                            keyExtractor={(item, index) => item._id.toString()}
                             renderItem={({ item }) => {
                                 return (
-                                    <TouchableOpacity onPress={() => { this.navigate(item.id) }} key={item.id} style={styles.bodyListContainer}>
+                                    <TouchableOpacity onPress={() => { this.navigate(item._id) }} key={item._id} style={styles.bodyListContainer}>
                                         <View style={styles.bodyListContainerSectionInfo}>
                                             <View style={styles.bodyListContainerSectionInfoContainer}>
-                                                <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº " + item.id}</Text>
+                                                <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº " + item._id}</Text>
                                                 <View style={styles.bodyListContainerSectionInfoContainerDetail}>
                                                     <Icon name="location-on" color={colors.darkYellow} size={Size(55)} />
                                                     {/* <View style={styles.bodyListContainerSectionInfoContainerPoint} /> */}
