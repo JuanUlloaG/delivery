@@ -7,7 +7,6 @@ import { HomeParamList, HomeNavProps } from '../types/HomeParamaList';
 import Home from '../scenes/Home/Home';
 import HomeAddres from '../scenes/Home/HomeAddres';
 import HomeDelivery from '../scenes/Home/HomeDelivery';
-import { Shop } from '../scenes/Login/Shop';
 import { DetailStack } from './DetailStack';
 import { Size } from '../services/Service';
 import colors from '../assets/Colors';
@@ -26,11 +25,11 @@ function HomeNavigator({ navigation, route }) {
 
     const getComponent = () => {
         switch (getProfile()) {
-            case 2:
+            case (2).toString():
                 return Home
-            // case 3:
-            //     return Home
-            case 4:
+            case (3).toString():
+                return HomeDelivery
+            case (4).toString():
                 return HomeDelivery
             default:
                 return Home
@@ -38,11 +37,11 @@ function HomeNavigator({ navigation, route }) {
     }
     const getTitle = () => {
         switch (getProfile()) {
-            case 2:
+            case (2).toString():
                 return "Lista de pedidos"
-            // case 3:
-            //     return "Recepcion de pedidos"
-            case 4:
+            case (3).toString():
+                return "Recepcion de pedidos"
+            case (4).toString():
                 return "Delivery"
             default:
                 return "Lista de pedidos"
@@ -50,12 +49,12 @@ function HomeNavigator({ navigation, route }) {
     }
     const getName = () => {
         switch (getProfile()) {
-            case 2:
+            case (2).toString():
                 return "Home"
-            case 3:
+            case (3).toString():
                 return "HomeAddres"
-            case 4:
-                return "Home"
+            case (4).toString():
+                return "HomeDelivery"
             default:
                 return "Home"
         }
@@ -63,7 +62,6 @@ function HomeNavigator({ navigation, route }) {
     const component = getComponent()
     const title = getTitle()
     const name = getName()
-    
 
     return (
         <Stack2.Navigator initialRouteName={name}>

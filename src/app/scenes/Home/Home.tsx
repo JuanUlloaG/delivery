@@ -13,13 +13,13 @@ import CountDown from '../../components/CountDown';
 import { CustomButtonList } from "../../components/CustomButtonList";
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { NavigationProp } from "@react-navigation/native";
 
 
 
 
 interface HomeProps {
-    navigation: any,
+    navigation: NavigationProp<any, any>,
     auth: object,
     home: { isFetching: boolean, data: [any] },
     fetchData: () => {}
@@ -32,7 +32,14 @@ interface State {
 class Home extends React.Component<HomeProps, State> {
 
     componentDidMount() {
-        this.props.fetchData()
+        const unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.props.fetchData()
+          });
+        
+    }
+
+    componentWillUnmount(){
+        this.props.navigation.removeListener('focus',()=>{})
     }
 
     getData = () => {
@@ -47,7 +54,9 @@ class Home extends React.Component<HomeProps, State> {
         });
     }
 
+
     render() {
+        console.log(this.props.auth);
         return (
             <Center>
                 <View style={styles.header}>

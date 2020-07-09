@@ -5,6 +5,7 @@ import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
 import { FlatList, View, Text, StyleSheet } from 'react-native'
 import { getHomeItems } from '../../actions/HomeListAction'
+import { getHomeBagItems } from '../../actions/HomeListBagAction'
 import Loading from '../Loading/Loading'
 import { Size } from '../../services/Service'
 import colors from '../../assets/Colors'
@@ -169,7 +170,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 
-    fetchData: () => dispatch(getHomeItems())
+    fetchData: () => dispatch(getHomeBagItems())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeDelivery)

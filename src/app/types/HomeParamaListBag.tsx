@@ -1,7 +1,7 @@
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RouteProp } from "@react-navigation/native"
 
-export type HomeParamList = {
+export type HomeParamListBag = {
     Home: undefined;
     HomeAddres: undefined;
     HomeDelivery: undefined;
@@ -18,6 +18,20 @@ export type FetchListSuccess = {
     type: 'FETCH_LIST_SUCCESS';
     data: [];
 }
+export type UpdateBagClear = {
+    type: 'FETCH_BAG_CLEAR';
+}
+export type UpdateBag = {
+    type: 'FETCH_BAG_UPDATE';
+}
+
+export type UpdateBagSuccess = {
+    type: 'FETCH_UPDATE_SUCCESS';
+}
+
+export type UpdateBagFail = {
+    type: 'FETCH_UPDATE_FAIL';
+}
 
 export type FetchListFail = {
     type: 'FETCHING_LIST_FAIL';
@@ -33,7 +47,7 @@ export type FetchList = {
 
 
 
-export type HomeNavProps<T extends keyof HomeParamList> = {
-    navigation: StackNavigationProp<HomeParamList, T>;
-    route: RouteProp<HomeParamList, T>;
+export type HomeNavProps<T extends keyof HomeParamListBag> = {
+    navigation: StackNavigationProp<HomeParamListBag, T>;
+    route: RouteProp<HomeParamListBag, T>;
 }
