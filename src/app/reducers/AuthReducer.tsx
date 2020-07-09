@@ -11,8 +11,9 @@ type AuthAction =
     | AuthLoginUserAction;
 
 
-interface State {
+export interface State {
     name: string;
+    id:string
     email: string;
     token: string;
     profile: string;
@@ -26,6 +27,7 @@ interface State {
 
 const defaultState: State = {
     name: '',
+    id:'',
     email: '',
     token: '',
     profile: '',
@@ -44,6 +46,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
             return {
                 ...state,
                 name: action.data.name,
+                id: action.data.id,
                 email: action.data.email,
                 token: action.data.token,
                 profile: action.data.profile,
@@ -57,6 +60,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
             return {
                 ...state,
                 name: action.data.name,
+                id: action.data.id,
                 email: action.data.email,
                 token: action.data.token,
                 profile: action.data.profile,
@@ -77,6 +81,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
             return {
                 ...state,
                 name: "",
+                id: "",
                 email: "",
                 token: "",
                 profile: "",
@@ -90,6 +95,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
             return {
                 ...state,
                 name: action.data.name,
+                id: action.data.id,
                 isFetching: false,
                 email: action.data.email,
                 token: action.data.token,
@@ -103,6 +109,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
             return {
                 ...state,
                 name: action.data.name,
+                id: action.data.id,
                 isFetching: false,
                 email: action.data.email,
                 token: action.data.token,

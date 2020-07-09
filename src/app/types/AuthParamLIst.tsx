@@ -28,11 +28,11 @@ export interface AuthVerifyUserAction {
 
 export interface AuthLoginUserAction {
     type: 'LOGIN_USER';
-    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
+    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
 }
 export interface AuthLogOutUserAction {
     type: 'LOGOUT_USER';
-    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
+    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
 }
 
 
@@ -42,12 +42,12 @@ export interface AuthLoginAction {
 
 export interface AuthLoginActionSuccess {
     type: 'FETCHING_LOGIN_SUCCESS';
-    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
+    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
 }
 
 export interface AuthLoginActionFail {
     type: 'FETCHING_LOGIN_FAIL';
-    data: { name: string, email: string, token: string, profile: string, company: string, shop: string, message: string, error: boolean };
+    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string, error: boolean };
 }
 
 export type AuthNavProps<T extends keyof AuthParamList> = {

@@ -11,9 +11,9 @@ export const loginAction = (user: { user: string, password: string }) => {
         // dispatch(loginUserSuccess(fakeUser.name, fakeUser.email, fakeUser.token));
         login(user.user, user.password).then((response: any) => {
             if (response.success)
-                dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.email, response.fakeuser.token, response.fakeuser.profile, response.fakeuser.company, "", response.fakeuser.message));
+                dispatch(loginUserSuccess(response.fakeuser.name, response.fakeuser.id, response.fakeuser.email, response.fakeuser.token, response.fakeuser.profile, response.fakeuser.company, "", response.fakeuser.message));
             else {
-                console.log("aqui", response);
+                // console.log("aqui", response);
                 dispatch(loginUserFail(response.fakeuser.message));
             }
         });
@@ -36,26 +36,26 @@ export const verifyUser = (name: string): AuthVerifyUserAction => ({
     name: name
 });
 
-export const loginUser = (name: string, email: string, token: string, profile: string, company: string, shop: string, message: string): AuthLoginUserAction => ({
+export const loginUser = (name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string): AuthLoginUserAction => ({
     type: 'LOGIN_USER',
-    data: { name: name, email: email, token: token, profile: profile, company: company, shop: shop, message: message }
+    data: { name: name, id: id, email: email, token: token, profile: profile, company: company, shop: shop, message: message }
 });
 
 export const logOutUser = (): AuthLogOutUserAction => ({
     type: 'LOGOUT_USER',
-    data: { name: "", email: "", token: "", profile: "", company: "", shop: "", message: "" }
+    data: { name: "", id: "", email: "", token: "", profile: "", company: "", shop: "", message: "" }
 });
 
 export const loginFetch = (): AuthLoginAction => ({
     type: 'FETCHING_LOGIN',
 });
 
-export const loginUserSuccess = (name: string, email: string, token: string, profile: string, company: string, shop: string, message: string): AuthLoginActionSuccess => ({
+export const loginUserSuccess = (name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string): AuthLoginActionSuccess => ({
     type: 'FETCHING_LOGIN_SUCCESS',
-    data: { name: name, email: email, token: token, profile: profile, company: company, shop: shop, message: message }
+    data: { name: name, id: id, email: email, token: token, profile: profile, company: company, shop: shop, message: message }
 });
 
 export const loginUserFail = (error: string): AuthLoginActionFail => ({
     type: 'FETCHING_LOGIN_FAIL',
-    data: { name: "", email: "", token: "", profile: "", company: "", shop: "", error: true, message: error }
+    data: { name: "", id: "", email: "", token: "", profile: "", company: "", shop: "", error: true, message: error }
 });
