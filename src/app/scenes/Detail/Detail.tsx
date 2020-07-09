@@ -9,6 +9,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import IconChange from "react-native-vector-icons/AntDesign";
 import IconBar from "react-native-vector-icons/MaterialCommunityIcons";
 import Iconprinter from "react-native-vector-icons/Feather";
+import { postBagsAction, RestartAction } from '../../actions/DetailActions';
 import { CustomButtonList } from '../../components/CustomButtonList';
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -18,11 +19,19 @@ import { RNCamera } from "react-native-camera";
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
 
+
+postBagsAction
+
+import { State as AuthState } from "../../reducers/AuthReducer";
+
 interface Props {
     navigation: any,
-    auth: object,
+    auth: AuthState,
     route: any,
+    detail: any,
     home: { isFetching: boolean, data: [any] },
+    postData: (bag: any) => {},
+    restart: () => {}
 }
 
 interface State {
@@ -34,7 +43,8 @@ interface State {
     bagContainer: Array<any>,
     pickedProductArray: Array<any>,
     resume: boolean,
-    torchOn: boolean
+    torchOn: boolean,
+    toggleModal: boolean
 }
 
 class Detail extends React.Component<Props, State> {
@@ -50,7 +60,8 @@ class Detail extends React.Component<Props, State> {
             bagContainer: [],
             pickedProductArray: [],
             resume: false,
-            torchOn: false
+            torchOn: false,
+            toggleModal: false
         }
     }
 
@@ -83,7 +94,7 @@ class Detail extends React.Component<Props, State> {
     nextItem = () => {
         let order = this.filterData()
         let bagContainer = [...this.state.bagContainer]
-        let bag = { bag: this.state.bagNumber, bagItems: [...this.state.pickedProductArray], order: order.sku }
+        let bag = { bagNumber: this.state.bagNumber, products: [...this.state.pickedProductArray] }
         bagContainer.push(bag)
         if (this.state.index < order.products.length - 1) {
             this.loadItems(this.state.index + 1)
@@ -118,22 +129,7 @@ class Detail extends React.Component<Props, State> {
     }
 
     toggleModal() {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                toValue: 1,
-                useNativeDriver: false,
-                duration: 300
-            }),
-            Animated.spring(this.state.animationValue, {
-                toValue: HEIGHT_MODAL,
-                velocity: 7,
-                tension: 2,
-                friction: 8,
-                useNativeDriver: false
-            })
-        ]).start(() => {
-            // console.log("object");
-        });
+        this.setState({ toggleModal: true });
     }
 
     validatePickedItems() {
@@ -146,22 +142,11 @@ class Detail extends React.Component<Props, State> {
     }
 
     dissmissModal() {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                toValue: 0,
-                useNativeDriver: false,
-                duration: 100
-            }),
-            Animated.spring(this.state.animationValue, {
-                toValue: 0,
-                velocity: 7,
-                tension: 2,
-                friction: 8,
-                useNativeDriver: false
-            })
-        ]).start(() => {
-            // console.log("dismiss");
-        });
+        this.setState({ toggleModal: false });
+    }
+
+    onChangeBagNumber = (text: string) => {
+        this.setState({ bagNumber: text })
     }
 
     handleTourch(value: boolean) {
@@ -173,9 +158,29 @@ class Detail extends React.Component<Props, State> {
     }
 
     onBarCodeRead = (e: any) => {
-
         this.setState({ bagNumber: e.data, torchOn: false })
-        // Alert.alert("Barcode value is" + e.data, "Barcode type is" + e.type);
+    }
+
+
+    /*
+      orderNumber: database id order
+      shopId: database id order
+      pickerId: database id picker user
+    */
+    finishPacking = () => {
+        const order = this.filterData()
+        let bag = {
+            orderNumber: order._id,
+            shopId: this.props.auth.shop,
+            pickerId: this.props.auth.id,
+            bags: [...this.state.bagContainer]
+        }
+        this.props.postData(bag)
+    }
+
+    finishProcess() {
+        this.props.restart()
+        this.props.navigation.goBack()
     }
 
 
@@ -193,163 +198,190 @@ class Detail extends React.Component<Props, State> {
         if (Object.keys(order).length) {
 
             return (
-                <Center>
-
-
-                    <View style={styles.headerContainer}>
-                        {
-                            !this.state.resume ?
-                                <>
-                                    <View style={styles.headerContainerTitle}>
-                                        <Text style={styles.headerContainerTitleText}>Pedido Nº {order.orderNumber} </Text>
-                                    </View>
-                                    <View style={styles.headerContainerCount}>
-                                        <View style={styles.headerContainerCountContainer} >
-                                            <Text style={styles.headerContainerCountContainerText}> Producto {this.state.index + 1} de {order.products.length} </Text>
-                                        </View>
-                                    </View>
-                                </> :
-                                <View style={styles.resumeHeaderInfo}>
-                                    <Text style={styles.headerContainerTitleText}>El Pedido Nº {order.id} tiene {this.state.bagContainer.length} bolsa(s): </Text>
-                                </View>
-                        }
-                    </View>
-                    <View style={styles.bodyContainer}>
-                        <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
+                !this.state.toggleModal ?
+                    <Center>
+                        <View style={styles.headerContainer}>
                             {
                                 !this.state.resume ?
-                                    <View style={styles.bodyContainerScrollViewContainer}>
-                                        <View style={styles.bodyContainerScrollViewContainerInfo}>
-                                            <View style={styles.bodyContainerScrollViewContainerInfoSection}>
-                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                    Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].product} </Text>
-                                                </Text>
-                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                    Descripción: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
-                                                </Text>
-                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                    SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].id} </Text>
-                                                </Text>
-                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                    Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
-                                                </Text>
-                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>Cantidad Pickeada: {this.state.pickeditems.length}</Text>
+                                    <>
+                                        <View style={styles.headerContainerTitle}>
+                                            <Text style={styles.headerContainerTitleText}>Pedido Nº {order.orderNumber} </Text>
+                                        </View>
+                                        <View style={styles.headerContainerCount}>
+                                            <View style={styles.headerContainerCountContainer} >
+                                                <Text style={styles.headerContainerCountContainerText}> Producto {this.state.index + 1} de {order.products.length} </Text>
                                             </View>
                                         </View>
+                                    </> :
+                                    <View style={styles.resumeHeaderInfo}>
+                                        <Text style={styles.headerContainerTitleText}>El Pedido Nº {order.orderNumber} tiene {this.state.bagContainer.length} bolsa(s): </Text>
+                                    </View>
+                            }
+                        </View>
+                        <View style={styles.bodyContainer}>
+                            <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
+                                {
+                                    !this.state.resume ?
+                                        <View style={styles.bodyContainerScrollViewContainer}>
+                                            <View style={styles.bodyContainerScrollViewContainerInfo}>
+                                                <View style={styles.bodyContainerScrollViewContainerInfoSection}>
+                                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                        Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].product} </Text>
+                                                    </Text>
+                                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                        Descripción: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
+                                                    </Text>
+                                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                        SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].id} </Text>
+                                                    </Text>
+                                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                        Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
+                                                    </Text>
+                                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>Cantidad Pickeada: {this.state.pickeditems.length}</Text>
+                                                </View>
+                                            </View>
 
-                                        <View style={styles.bodyContainerScrollViewContainerPicked}>
-                                            {
-                                                this.state.pickedProductArray.map((product: any, index: number) => {
-                                                    return (
-                                                        <View style={styles.bodyContainerScrollViewContainerPickedSection} key={index}>
-                                                            <View style={styles.bodyContainerScrollViewContainerPickedSectionTitle}>
-                                                                <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Unidad {index + 1}</Text>
-                                                            </View>
-                                                            <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
-                                                                <TouchableOpacity onPress={() => { this.removeProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                                    <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.picked && { backgroundColor: colors.mediumRed }]}>
-                                                                        <Icon name="clear" color={colors.black} size={Size(68)} />
-                                                                    </View>
-                                                                </TouchableOpacity>
-                                                                <TouchableOpacity onPress={() => { this.addProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                                    <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.lightgrayDisabled }]}>
-                                                                        <Icon name="check" color={colors.white} size={Size(68)} />
-                                                                    </View>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                        </View>
-                                                    )
-                                                })
-                                            }
-                                        </View>
-
-                                        <View style={styles.bodyContainerScrollViewContainerPosition}>
-                                            <View style={styles.bodyContainerScrollViewContainerPositionSection}>
-                                                <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Posicion</Text>
+                                            <View style={styles.bodyContainerScrollViewContainerPicked}>
                                                 {
-                                                    order.products[this.state.index].location ?
-                                                        <IconChange name="isv" color={colors.darkBlue} size={Size(68)} /> :
-                                                        <IconBar name="library-shelves" color={colors.darkBlue} size={Size(68)} />
+                                                    this.state.pickedProductArray.map((product: any, index: number) => {
+                                                        return (
+                                                            <View style={styles.bodyContainerScrollViewContainerPickedSection} key={index}>
+                                                                <View style={styles.bodyContainerScrollViewContainerPickedSectionTitle}>
+                                                                    <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Unidad {index + 1}</Text>
+                                                                </View>
+                                                                <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
+                                                                    <TouchableOpacity onPress={() => { this.removeProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                        <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.picked && { backgroundColor: colors.mediumRed }]}>
+                                                                            <Icon name="clear" color={colors.black} size={Size(68)} />
+                                                                        </View>
+                                                                    </TouchableOpacity>
+                                                                    <TouchableOpacity onPress={() => { this.addProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                        <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.lightgrayDisabled }]}>
+                                                                            <Icon name="check" color={colors.white} size={Size(68)} />
+                                                                        </View>
+                                                                    </TouchableOpacity>
+                                                                </View>
+                                                            </View>
+                                                        )
+                                                    })
+                                                }
+                                            </View>
+
+                                            <View style={styles.bodyContainerScrollViewContainerPosition}>
+                                                <View style={styles.bodyContainerScrollViewContainerPositionSection}>
+                                                    <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Posicion</Text>
+                                                    {
+                                                        order.products[this.state.index].location ?
+                                                            <IconChange name="isv" color={colors.darkBlue} size={Size(68)} /> :
+                                                            <IconBar name="library-shelves" color={colors.darkBlue} size={Size(68)} />
+                                                    }
+                                                </View>
+                                            </View>
+
+                                            <View style={styles.bodyContainerScrollViewContainerImage}>
+                                                <View style={styles.baseFlex}>
+                                                    <View style={styles.baseFlex}>
+                                                        <Text style={styles.bodyContainerScrollViewContainerImageText}>Imagen del producto</Text>
+                                                    </View>
+                                                    <View style={styles.bodyContainerScrollViewContainerImageContainer}>
+                                                        <Image
+                                                            style={styles.bodyContainerScrollViewContainerImageContainerImage}
+                                                            source={{ uri: order.products[this.state.index].image }}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            <View style={styles.bodyContainerScrollViewContainerButtons}>
+                                                <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
+                                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                        <IconChange name="retweet" color={colors.white} size={Size(68)} />
+                                                    </View>
+                                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                        <Icon name="add" color={colors.white} size={Size(68)} />
+                                                    </View>
+                                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                        <Icon name="phone" color={colors.white} size={Size(68)} />
+                                                    </View>
+                                                </View>
+                                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                                    <CustomButtonList onPress={() => this.validatePickedItems() && this.toggleModal()} title="Siguiente" disable={!this.validatePickedItems()} size={"L"} />
+                                                </View>
+                                            </View>
+                                        </View> :
+                                        <View style={styles.resumeBody}>
+                                            <View style={styles.resumeBodyInfo}>
+                                                {
+                                                    this.state.bagContainer.map((bag, index) => {
+                                                        return (
+                                                            <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bagNumber}</Text>
+                                                        )
+                                                    })
+                                                }
+                                            </View>
+                                            {/* <View style={styles.resumeBodyInfoIcon}>
+                                                <IconBar name="checkbox-marked-circle-outline" color={colors.darkGreen} size={RFValue(190)} />
+                                            </View> */}
+
+                                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                                {
+                                                    this.props.detail.error &&
+                                                    <View style={{ width: wp(95), backgroundColor: colors.mediumRed, marginTop: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 4 }}>
+                                                        <Text style={styles.resumeBodyInfoText}>Ha ocurrido un error al finalizar el proceso</Text>
+                                                        <Text style={styles.resumeBodyInfoText}>{this.props.detail.message}</Text>
+                                                    </View>
+                                                }
+                                                {
+                                                    this.props.detail.success &&
+                                                    <View style={{ width: wp(95), backgroundColor: colors.darkGreen, marginTop: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 4 }}>
+                                                        <Text style={styles.resumeBodyInfoText}>{this.props.detail.message}</Text>
+                                                    </View>
+                                                }
+                                            </View>
+                                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                                {
+                                                    this.props.detail.success ?
+                                                        <CustomButtonList onPress={() => this.finishProcess()} title="Continuar" disable={false} size={"XL"} />:
+                                                        <CustomButtonList onPress={() => this.finishPacking()} title="Finalizar" disable={false} size={"XL"} />
                                                 }
                                             </View>
                                         </View>
+                                }
 
-                                        <View style={styles.bodyContainerScrollViewContainerImage}>
-                                            <View style={styles.baseFlex}>
-                                                <View style={styles.baseFlex}>
-                                                    <Text style={styles.bodyContainerScrollViewContainerImageText}>Imagen del producto</Text>
-                                                </View>
-                                                <View style={styles.bodyContainerScrollViewContainerImageContainer}>
-                                                    <Image
-                                                        style={styles.bodyContainerScrollViewContainerImageContainerImage}
-                                                        source={{ uri: order.products[this.state.index].image }}
-                                                    />
-                                                </View>
-                                            </View>
-                                        </View>
-                                        <View style={styles.bodyContainerScrollViewContainerButtons}>
-                                            <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
-                                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                    <IconChange name="retweet" color={colors.white} size={Size(68)} />
-                                                </View>
-                                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                    <Icon name="add" color={colors.white} size={Size(68)} />
-                                                </View>
-                                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                    <Icon name="phone" color={colors.white} size={Size(68)} />
-                                                </View>
-                                            </View>
-                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                                <CustomButtonList onPress={() => this.validatePickedItems() && this.toggleModal()} title="Siguiente" disable={!this.validatePickedItems()} size={"L"} />
-                                            </View>
-                                        </View>
-                                    </View> :
-                                    <View style={styles.resumeBody}>
-                                        <View style={styles.resumeBodyInfo}>
-                                            {
-                                                this.state.bagContainer.map((bag, index) => {
-                                                    return (
-                                                        <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bag}</Text>
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                        <View style={styles.resumeBodyInfoIcon}>
-                                            <IconBar name="checkbox-marked-circle-outline" color={colors.darkGreen} size={RFValue(190)} />
-                                        </View>
+                            </ScrollView>
+                        </View>
+                    </Center >
+                    :
+                    <Center>
+                        <View style={{ flex: 1 }}>
+                            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                                <View style={styles.modalSectionInfo}>
+                                    <TouchableOpacity onPress={() => { this.dissmissModal() }} style={styles.modalSectionInfoCancelButton}>
+                                        <Text style={styles.modalSectionInfoCancelButtonText}>Cancelar</Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.modalSectionInfoTitle}>
+                                        <Text style={styles.modalSectionInfoTitleText}>Numero de Bolsa</Text>
                                     </View>
-                            }
+                                    <TouchableOpacity onPress={() => { this.nextItem() }} style={styles.modalSectionInfoButtonNext}>
+                                        <Text style={styles.modalSectionInfoButtonNextText}>Siguiente</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.modalSectionBody}>
+                                    <View style={styles.modalSectionBodyTitle}>
+                                        <Text style={styles.modalSectionBodyTitleText}>Ingrese Numero de Bolsa</Text>
+                                    </View>
+                                    <View style={styles.modalSectionBodyInput}>
+                                        <CustomInput value={this.state.bagNumber} onChangeText={this.onChangeBagNumber.bind(this)} placeholder="Numero de bolsa" type={false} editable={true} />
+                                    </View>
+                                    <TouchableOpacity onPress={() => { this.captureBagNumber() }} style={styles.modalSectionBodyScanBar}>
+                                        <IconBar name={"barcode-scan"} size={RFValue(150)} color={colors.black} />
+                                    </TouchableOpacity>
+                                    <View style={styles.modalSectionBodyPrinter}>
+                                        <Iconprinter name={"printer"} size={RFValue(45)} color={colors.darkYellow} />
+                                    </View>
+                                </View>
+                            </ScrollView>
+                        </View>
 
-                        </ScrollView>
-                    </View>
-                    <Animated.View style={[styles.modalAnimated, { zIndex: 0, }, animatedStyle]}>
-                        <Animated.View style={{ flex: 1, opacity: this.state.opacity }}>
-                            <View style={styles.modalSectionInfo}>
-                                <TouchableOpacity onPress={() => { this.dissmissModal() }} style={styles.modalSectionInfoCancelButton}>
-                                    <Text style={styles.modalSectionInfoCancelButtonText}>Cancelar</Text>
-                                </TouchableOpacity>
-                                <View style={styles.modalSectionInfoTitle}>
-                                    <Text style={styles.modalSectionInfoTitleText}>Numero de Bolsa</Text>
-                                </View>
-                                <TouchableOpacity onPress={() => { this.nextItem() }} style={styles.modalSectionInfoButtonNext}>
-                                    <Text style={styles.modalSectionInfoButtonNextText}>Siguiente</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.modalSectionBody}>
-                                <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Ingrese Numero de Bolsa</Text>
-                                </View>
-                                <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} onChangeText={() => { }} placeholder="Numero de bolsa" type={false} editable={false} />
-                                </View>
-                                <TouchableOpacity onPress={() => { this.captureBagNumber() }} style={styles.modalSectionBodyScanBar}>
-                                    <IconBar name={"barcode-scan"} size={RFValue(150)} color={colors.black} />
-                                </TouchableOpacity>
-                                <View style={styles.modalSectionBodyPrinter}>
-                                    <Iconprinter name={"printer"} size={RFValue(45)} color={colors.darkYellow} />
-                                </View>
-                            </View>
-                        </Animated.View>
                         {
                             (this.state.torchOn && !this.state.bagNumber) &&
                             <View style={{
@@ -361,15 +393,11 @@ class Detail extends React.Component<Props, State> {
                                 backgroundColor: 'black'
                             }}>
                                 <RNCamera
-
                                     style={{ width: wp(100), height: hp(55), justifyContent: 'center', alignItems: 'center' }}
                                     onBarCodeRead={this.onBarCodeRead}
                                     ref={cam => this.camera = cam}
-                                    // aspect={RNCamera.Constants}
                                     captureAudio={false}
-                                    onGoogleVisionBarcodesDetected={({ barcodes }) => {
-                                        console.log(barcodes);
-                                    }}
+                                    onGoogleVisionBarcodesDetected={({ barcodes }) => { }}
                                 />
                                 <View style={{ position: 'absolute', bottom: 0, marginBottom: 120, marginLeft: 100 }}>
                                     <TouchableOpacity onPress={() => this.disableCamera()} style={{
@@ -386,8 +414,7 @@ class Detail extends React.Component<Props, State> {
                                 </View>
                             </View>
                         }
-                    </Animated.View>
-                </Center >
+                    </Center>
             );
         }
         return (
@@ -705,20 +732,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
-    home: state.home
+    home: state.home,
+    detail: state.detail
 })
 
-// const mapDispatchToProps = {
+const mapDispatchToProps = (dispatch: any) => ({
 
-// }
+    postData: (bag: any) => dispatch(postBagsAction(bag)),
+    restart: () => dispatch(RestartAction())
+})
 
-export default connect(mapStateToProps)(Detail)
-
-
-// <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            //     <Text>Detail Screen</Text>
-
-            //     <Button title="Press me" onPress={() => {
-            //         this.props.navigation.navigate("Edit")
-            //     }} />
-            // </View>
+export default connect(mapStateToProps, mapDispatchToProps)(Detail)
