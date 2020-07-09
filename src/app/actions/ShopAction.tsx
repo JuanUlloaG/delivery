@@ -10,7 +10,7 @@ export const getShopItems = () => {
         dispatch(getShopList());
         // dispatch(fetchItemsSuccess([]));
         ShopList().then((response: any) => {
-            console.log(response);
+            // console.log(response);
             if (response.length) dispatch(fetchItemsSuccess(response));
             else { dispatch(fetchItemsFail()); }
         })

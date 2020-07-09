@@ -20,8 +20,8 @@ interface CustomInputProps {
 }
 
 const defaultProps: CustomInputProps = {
-    onChangeText: (text: string) => { console.log(text) },
-    onBlur: () => { console.log("dissmiss") },
+    onChangeText: (text: string) => { },
+    onBlur: () => { },
     value: "",
     placeholder: "",
     type: false,
