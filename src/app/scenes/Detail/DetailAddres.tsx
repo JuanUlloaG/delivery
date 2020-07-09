@@ -17,6 +17,7 @@ interface Props {
     navigation: any,
     auth: object,
     route: any,
+    bags: { isFetching: boolean, data: [any], success: boolean, error: boolean, message: string },
     home: { isFetching: boolean, data: [any] },
 }
 
@@ -40,7 +41,7 @@ class DetailAddres extends React.Component<Props, State> {
             index: 0,
             animationValue: new Animated.Value(0),
             opacity: new Animated.Value(0),
-            bagNumber: "123265467646546",
+            bagNumber: "",
             bagContainer: [],
             pickedProductArray: [],
             resume: false
@@ -48,8 +49,9 @@ class DetailAddres extends React.Component<Props, State> {
     }
 
     filterData() {
-        let result = this.props.home.data.filter((row) => {
-            return row.id === this.props.route.params.ordernumber
+        console.log("aers", this.props);
+        let result = this.props.bags.data.filter((row) => {
+            return row._id === this.props.route.params.ordernumber
         })
         if (result.length) return result[0]
         return {}
@@ -72,20 +74,31 @@ class DetailAddres extends React.Component<Props, State> {
 
     }
 
+    productQuantity() {
+        const order = this.filterData();
+        let count = 0;
+        order.bags.map((bag: any) => {
+            count = count + bag.products.length
+        })
+
+        return count
+    }
+
 
     render() {
 
         const order = this.filterData()
-        this.props.navigation.setOptions({
-            headerTitle: "Detalle pedido Nº " + order.id
-        });
+        // this.props.navigation.setOptions({
+        //     headerTitle: "Detalle pedido Nº " + order.id
+        // });
 
         const animatedStyle = {
             height: this.state.animationValue
         }
 
-        if (Object.keys(order).length) {
 
+
+        if (Object.keys(order).length) {
             return (
                 <Center>
                     <View style={{ flex: 1 }}>
@@ -102,19 +115,20 @@ class DetailAddres extends React.Component<Props, State> {
                             <View style={{ width: wp(100), height: hp(20) }}>
                                 <View style={{ flex: 1, marginLeft: 20, justifyContent: 'center' }}>
                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Cliente: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].name} </Text>
+                                        Cliente: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>{order.orderNumber.client.name} </Text>
                                     </Text>
                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Nº de Bolsas: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
+                                        Nº de Bolsas: <Text style={{ fontSize: RFValue(18), fontFamily: fonts.primaryFont }}> {order.bags.length} </Text>
                                     </Text>
                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Cantidad de productos: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].sku} </Text>
+                                        Cantidad de productos: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {this.productQuantity()} </Text>
                                     </Text>
                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Recibe un Tercero: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
+                                        Recibe un Tercero: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}></Text>
                                     </Text>
                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Comentarios: {"this.state.pickeditems.length"}</Text>
+                                        Comentarios: {"Comentario del cliente"}
+                                    </Text>
                                 </View>
                             </View>
                             <View style={{ width: wp(100), flex: 1 }}>
@@ -124,7 +138,7 @@ class DetailAddres extends React.Component<Props, State> {
                                         order.bags.map((bag: any, index: number) => {
                                             return (
                                                 <View key={index} style={{ height: hp(4), flexDirection: 'row', marginTop: 2 }}>
-                                                    <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bag} </Text>
+                                                    <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bagNumber} </Text>
                                                 </View>
                                             )
                                         })
@@ -139,7 +153,7 @@ class DetailAddres extends React.Component<Props, State> {
                                                 fontFamily: fonts.primaryFont,
                                                 fontSize: RFValue(Size(56)),
                                                 color: "rgba(0, 0, 0, 255)"
-                                            }}>Pedido Entregado</Text>
+                                            }}>Entregar Bolsas</Text>
                                         </CustomButton>
                                         <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext} />
                                     </View>
@@ -183,7 +197,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
-    home: state.home
+    home: state.home,
+    bags: state.bags
 })
 
 // const mapDispatchToProps = {

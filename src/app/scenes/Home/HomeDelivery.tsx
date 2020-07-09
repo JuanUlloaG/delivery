@@ -4,7 +4,6 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
 import { FlatList, View, Text, StyleSheet } from 'react-native'
-import { getHomeItems } from '../../actions/HomeListAction'
 import { getHomeBagItems } from '../../actions/HomeListBagAction'
 import Loading from '../Loading/Loading'
 import { Size } from '../../services/Service'
@@ -24,8 +23,9 @@ import { CustomButton } from '../../components/CustomButton';
 interface HomeAddresProps {
     navigation: any,
     auth: object,
+    bags: { isFetching: boolean, data: [any], success: boolean, error: boolean, message: string },
     home: { isFetching: boolean, data: [any] },
-    fetchData: () => {}
+    fetchDataBags: () => {}
 }
 
 interface State {
@@ -35,7 +35,7 @@ interface State {
 class HomeDelivery extends React.Component<HomeAddresProps, State> {
 
     componentDidMount() {
-        this.props.fetchData()
+        this.props.fetchDataBags()
     }
 
 
@@ -54,6 +54,7 @@ class HomeDelivery extends React.Component<HomeAddresProps, State> {
     }
 
     render() {
+
         return (
             <Center>
                 <View style={{ marginBottom: 25 }}>
@@ -165,12 +166,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
-    home: state.home
+    home: state.home,
+    bags: state.bags
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
 
-    fetchData: () => dispatch(getHomeBagItems())
+    fetchDataBags: () => dispatch(getHomeBagItems())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeDelivery)

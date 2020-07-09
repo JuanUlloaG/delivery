@@ -22,6 +22,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 interface HomeAddresProps {
     navigation: any,
     auth: object,
+    bags: { isFetching: boolean, data: [any], success: boolean, error: boolean, message: string },
     home: { isFetching: boolean, data: [any] },
     fetchData: () => {}
 }
@@ -33,73 +34,83 @@ interface State {
 class Home extends React.Component<HomeAddresProps, State> {
 
     componentDidMount() {
-        this.props.fetchData()
+        // this.props.fetchData()
     }
 
     getData = () => {
-        let data = this.props.home.data ? this.props.home.data : []
+        let data = this.props.bags.data ? this.props.bags.data : []
         return data
     }
 
     navigate(id: string) {
-        this.props.navigation.navigate('Detail', {
-            screen: 'DetailAddres',
-            params: { ordernumber: id },
-        });
+        this.props.navigation.navigate('DetailAddres', { ordernumber: id });
     }
 
     render() {
-        return (
-            <Center>
-                <View style={styles.header}>
-                    <View style={styles.headerSectionTitle}>
+        console.log("dsadas", this.props.bags);
+        if (this.props.bags.data.length) {
+            return (
+                <Center>
+                    <View style={styles.header}>
+                        <View style={styles.headerSectionTitle}>
 
-                    </View>
-                    <View style={styles.headerSectionButton}>
-                        <View style={{ width: wp(26), marginTop: 15 }}>
-                            <Text style={styles.headerSectionTitleText}>Ordernar</Text>
                         </View>
-                        <View style={styles.headerSectionButtonContainer}>
-                            <Icon name='swap-vert' size={RFValue(21)} color={colors.darkBlue} />
+                        <View style={styles.headerSectionButton}>
+                            <View style={{ width: wp(26), marginTop: 15 }}>
+                                <Text style={styles.headerSectionTitleText}>Ordernar</Text>
+                            </View>
+                            <View style={styles.headerSectionButtonContainer}>
+                                <Icon name='swap-vert' size={RFValue(21)} color={colors.darkBlue} />
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View style={styles.body}>
-                    {
-                        !this.props.home.isFetching &&
-                        <FlatList
-                            style={styles.bodyList}
-                            data={this.getData()}
-                            extraData={this.props}
-                            keyExtractor={(item, index) => item._id.toString()}
-                            renderItem={({ item }) => {
-                                return (
-                                    <TouchableOpacity onPress={() => { this.navigate(item._id) }} key={item._id} style={styles.bodyListContainer}>
-                                        <View style={styles.bodyListContainerSectionInfo}>
-                                            <View style={styles.bodyListContainerSectionInfoContainer}>
-                                                <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº " + item._id}</Text>
-                                                <View style={styles.bodyListContainerSectionInfoContainerDetail}>
-                                                    <Icon name="location-on" color={colors.darkYellow} size={Size(55)} />
-                                                    {/* <View style={styles.bodyListContainerSectionInfoContainerPoint} /> */}
-                                                    <Text style={styles.bodyDirectionText}>{item.addres}</Text>
+                    <View style={styles.body}>
+                        {
+                            !this.props.home.isFetching &&
+                            <FlatList
+                                style={styles.bodyList}
+                                data={this.getData()}
+                                extraData={this.props}
+                                keyExtractor={(item, index) => item._id.toString()}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <TouchableOpacity onPress={() => { this.navigate(item._id) }} key={item._id} style={styles.bodyListContainer}>
+                                            {console.log(item)}
+                                            <View style={styles.bodyListContainerSectionInfo}>
+                                                <View style={styles.bodyListContainerSectionInfoContainer}>
+                                                    <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº " + item.orderNumber.orderNumber}</Text>
+                                                    <View style={styles.bodyListContainerSectionInfoContainerDetail}>
+                                                        <Icon name="location-on" color={colors.darkYellow} size={Size(55)} />
+                                                        {
+                                                            item.orderNumber.client &&
+                                                            <Text style={[styles.bodyDirectionText, { marginLeft: 5 }]}>{item.orderNumber.client.address}</Text>
+                                                        }
+
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
-                                        {/* <View style={styles.bodyListContainerButton}>
-                                            <CustomButtonList onPress={() => { this.navigate(item.id) }} title="Seleccionar" disable={false} size={"M"} />
-                                        </View> */}
-                                    </TouchableOpacity>
-                                )
-                            }}
-                        />
-                    }
-                </View>
+                                            <View style={styles.bodyListContainerButton}>
+                                                <CustomButtonList onPress={() => { this.navigate(item._id) }} title="Seleccionar" disable={false} size={"M"} />
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                }}
+                            />
+                        }
+                    </View>
+
+                </Center>
+            );
+        }
+        return (
+            <Center>
                 {
-                    this.props.home.isFetching &&
+                    this.props.bags.isFetching &&
                     <Loading />
                 }
             </Center>
-        );
+        )
+
     }
 }
 
@@ -185,7 +196,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
-    home: state.home
+    home: state.home,
+    bags: state.bags
 })
 
 const mapDispatchToProps = (dispatch: any) => ({

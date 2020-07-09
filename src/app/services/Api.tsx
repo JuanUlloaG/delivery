@@ -44,7 +44,8 @@ export const HomeListBag = async () => {
     route = getRoute(store.getState().auth.profile)
     let request = { shopId: store.getState().auth.shop }
     return axios.post('http://192.168.1.100:3000/orderBags/list', request, config).then((response: AxiosResponse) => {
-        if (response.status == 200) {
+    console.log("object");    
+    if (response.status == 200) {
             return response.data.data;
         }
         else {

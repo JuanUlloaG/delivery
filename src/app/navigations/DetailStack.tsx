@@ -158,6 +158,34 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                 )
             })
             } />
+            <Stack.Screen name={"DetailAddres"} component={DetailAddres} options={(navigation) => ({
+                headerStyle: {
+                    backgroundColor: colors.darkBlue,
+                },
+                headerTitleStyle: {
+                    textAlign: 'center',
+                    flexGrow: 1,
+                    marginRight: 50,
+                    alignSelf: 'center',
+                    color: colors.white,
+                    fontFamily: fonts.primaryFontTitle,
+                    fontSize: Size(77),
+                },
+                headerStatusBarHeight: Size(35),
+                headerTitle: "Delivery",
+                // headerRight: () => (
+
+                // ),
+                headerLeft: () => (
+                    // platform == "ios" &&
+                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Antdesing name='left' size={24} color={colors.white} />
+                        </View>
+                    </TouchableOpacity>
+                )
+            })
+            } />
             <Stack.Screen name={"Delivery"} component={Delivery} options={(navigation) => ({
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
