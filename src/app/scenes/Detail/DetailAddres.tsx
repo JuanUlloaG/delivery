@@ -12,6 +12,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 var { width, height } = Dimensions.get('window');
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
+import MapView from 'react-native-maps';
+import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 interface Props {
     navigation: any,
@@ -29,7 +31,8 @@ interface State {
     bagNumber: string,
     bagContainer: Array<any>,
     pickedProductArray: Array<any>,
-    resume: boolean
+    resume: boolean,
+    region: {}
 }
 
 class DetailAddres extends React.Component<Props, State> {
@@ -44,7 +47,14 @@ class DetailAddres extends React.Component<Props, State> {
             bagNumber: "",
             bagContainer: [],
             pickedProductArray: [],
-            resume: false
+            resume: false,
+            region: {
+                latitude: 37.78825,
+                longitude: -122.4324,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            },
+
         }
     }
 
@@ -84,6 +94,10 @@ class DetailAddres extends React.Component<Props, State> {
         return count
     }
 
+    onRegionChange(region) {
+        this.setState({ region });
+    }
+
 
     render() {
 
@@ -105,7 +119,17 @@ class DetailAddres extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ width: wp(100), height: hp(35) }}>
                                 <View style={{ flex: 1, margin: 15 }}>
-                                    <Image style={{ width: wp(92), height: hp(30) }} source={{ uri: "https://storage.googleapis.com/support-forums-api/attachment/thread-9014924-11470506657998028469.JPG" }} />
+                                    <MapView provider={PROVIDER_GOOGLE} pinColor="red" showsUserLocation={true} style={[StyleSheet.absoluteFillObject, { height: hp(30) }]}
+                                    >
+                                        {/* {this.state.markers.map(marker => ( */}
+                                        {/* <Marker
+                                            coordinate={marker.latlng}
+                                            title={marker.title}
+                                            description={marker.description}
+                                        /> */}
+                                        {/* ))} */}
+                                    </MapView>
+                                    {/* <Image style={{ width: wp(92), height: hp(30) }} source={{ uri: "https://storage.googleapis.com/support-forums-api/attachment/thread-9014924-11470506657998028469.JPG" }} /> */}
                                 </View>
                                 <View style={{ flex: 1, marginVertical: -5, justifyContent: 'flex-end', width: wp(96), alignItems: 'flex-end', flexDirection: 'row' }}>
                                     <Text>Ver mapa</Text>
