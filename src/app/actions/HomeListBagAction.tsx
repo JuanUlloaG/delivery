@@ -1,5 +1,5 @@
 import { FetchListFail, FetchListSuccess, FetchList, UpdateBag, UpdateBagFail, UpdateBagSuccess, UpdateBagClear } from "../types/HomeParamaListBag";
-import { HomeListBag, UpdateBag as updateBagCall } from "../services/Api";
+import { HomeListBag, UpdateBag as updateBagCall, UpdateBagReceived } from "../services/Api";
 import { Dispatch, Action } from "redux";
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -8,7 +8,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 export const getHomeBagItems = () => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(getHomeListBag());
-        console.log("aqui");
         HomeListBag().then((response: any) => {
             if (response.length) dispatch(fetchItemsBagSuccess(response));
             else { dispatch(fetchItemsBagFail()); }
@@ -20,6 +19,16 @@ export const updateBagAction = (id: string) => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(updateBag());
         updateBagCall(id).then((response: any) => {
+            if (response) dispatch(updateBagSuccess());
+            else { dispatch(updateBagFail()); }
+        })
+    }
+}
+
+export const updateBagReceivedAction = (id: string, comment: string, received: string) => {
+    return (dispatch: Dispatch<Action>) => {
+        dispatch(updateBag());
+        UpdateBagReceived(id, comment, received).then((response: any) => {
             if (response) dispatch(updateBagSuccess());
             else { dispatch(updateBagFail()); }
         })

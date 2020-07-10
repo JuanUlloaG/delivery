@@ -36,6 +36,7 @@ class HomeDelivery extends React.Component<HomeAddresProps, State> {
 
     componentDidMount() {
         this.props.fetchDataBags()
+        // console.log(object);
     }
 
 
