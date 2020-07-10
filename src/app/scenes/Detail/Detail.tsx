@@ -49,6 +49,7 @@ interface State {
 
 class Detail extends React.Component<Props, State> {
 
+    private camera: RNCamera;
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -79,11 +80,14 @@ class Detail extends React.Component<Props, State> {
 
     loadItems(index: number) {
         let order = this.filterData()
-        let pickedProductArray = Array.from(Array(order.products[index].quantity).keys())
+        let pickedProductArray = Array.from(Array(order.products[index].units).keys())
 
         let pick = pickedProductArray.map((row) => {
             let item = JSON.parse(JSON.stringify(order.products[index]))
             item["picked"] = false
+            item["broken"] = false
+            item["replace"] = false
+            item["substituted"] = false
             return item
         })
         this.setState({ pickedProductArray: pick })
@@ -116,20 +120,42 @@ class Detail extends React.Component<Props, State> {
         this.setState({ torchOn: false })
     }
 
-    addProductPicked(index: number) {
+    ProductPicked(index: number) {
         let pickedProductArray = [...this.state.pickedProductArray]
-        pickedProductArray[index].picked = true
+
+        if (pickedProductArray[index].picked) {
+            pickedProductArray[index].picked = false
+        } else {
+            pickedProductArray[index].picked = true
+            if (pickedProductArray[index].broken) pickedProductArray[index].broken = false
+        }
+
         this.setState({ pickedProductArray })
     }
 
-    removeProductPicked(index: number) {
+    ProductBroken(index: number) {
         let pickedProductArray = [...this.state.pickedProductArray]
-        pickedProductArray[index].picked = false
+
+        if (pickedProductArray[index].broken) {
+            pickedProductArray[index].broken = false
+        } else {
+            pickedProductArray[index].broken = true
+            if (pickedProductArray[index].picked) pickedProductArray[index].picked = false
+        }
         this.setState({ pickedProductArray })
+    }
+
+    addBag(bag: string) {
+        this.setState({ bagNumber: bag }, () => {
+            this.nextItem()
+        })
     }
 
     toggleModal() {
-        this.setState({ toggleModal: true });
+        this.props.navigation.navigate('DetailAddToBag', {
+            onGoBack: (bag: string) => this.addBag(bag),
+        });
+        // this.setState({ toggleModal: true });
     }
 
     validatePickedItems() {
@@ -140,8 +166,18 @@ class Detail extends React.Component<Props, State> {
         })
         return picked
     }
+    countPicked() {
+        let count = 0
+        let pickedProductArray = [...this.state.pickedProductArray]
+        pickedProductArray.map((row) => {
+            if (row.picked) count = count + 1
+        })
+
+        return count
+    }
 
     dissmissModal() {
+
         this.setState({ toggleModal: false });
     }
 
@@ -190,13 +226,8 @@ class Detail extends React.Component<Props, State> {
             headerTitle: title
         });
         const order = this.filterData()
-
-        const animatedStyle = {
-            height: this.state.animationValue
-        }
-
+        console.log(this.state);
         if (Object.keys(order).length) {
-
             return (
                 !this.state.toggleModal ?
                     <Center>
@@ -237,11 +268,12 @@ class Detail extends React.Component<Props, State> {
                                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
                                                         Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
                                                     </Text>
-                                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>Cantidad Pickeada: {this.state.pickeditems.length}</Text>
+
                                                 </View>
                                             </View>
 
                                             <View style={styles.bodyContainerScrollViewContainerPicked}>
+                                                <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { alignSelf: 'flex-end', marginRight: 20 }]}>Cantidad Pickeada: {this.countPicked()}</Text>
                                                 {
                                                     this.state.pickedProductArray.map((product: any, index: number) => {
                                                         return (
@@ -250,14 +282,14 @@ class Detail extends React.Component<Props, State> {
                                                                     <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Unidad {index + 1}</Text>
                                                                 </View>
                                                                 <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
-                                                                    <TouchableOpacity onPress={() => { this.removeProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                                        <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.picked && { backgroundColor: colors.mediumRed }]}>
+                                                                    <TouchableOpacity onPress={() => { this.ProductBroken(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                        <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.broken && { backgroundColor: colors.mediumRed }]}>
                                                                             <Icon name="clear" color={colors.black} size={Size(68)} />
                                                                         </View>
                                                                     </TouchableOpacity>
-                                                                    <TouchableOpacity onPress={() => { this.addProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                                        <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.lightgrayDisabled }]}>
-                                                                            <Icon name="check" color={colors.white} size={Size(68)} />
+                                                                    <TouchableOpacity onPress={() => { this.ProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                        <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.darkBlue }]}>
+                                                                            <Icon name="check" color={product.picked ? colors.white : colors.black} size={Size(68)} />
                                                                         </View>
                                                                     </TouchableOpacity>
                                                                 </View>
@@ -269,7 +301,7 @@ class Detail extends React.Component<Props, State> {
 
                                             <View style={styles.bodyContainerScrollViewContainerPosition}>
                                                 <View style={styles.bodyContainerScrollViewContainerPositionSection}>
-                                                    <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Posicion</Text>
+                                                    <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Categoria</Text>
                                                     {
                                                         order.products[this.state.index].location ?
                                                             <IconChange name="isv" color={colors.darkBlue} size={Size(68)} /> :
@@ -340,7 +372,7 @@ class Detail extends React.Component<Props, State> {
                                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                                 {
                                                     this.props.detail.success ?
-                                                        <CustomButtonList onPress={() => this.finishProcess()} title="Continuar" disable={false} size={"XL"} />:
+                                                        <CustomButtonList onPress={() => this.finishProcess()} title="Continuar" disable={false} size={"XL"} /> :
                                                         <CustomButtonList onPress={() => this.finishPacking()} title="Finalizar" disable={false} size={"XL"} />
                                                 }
                                             </View>
@@ -395,7 +427,7 @@ class Detail extends React.Component<Props, State> {
                                 <RNCamera
                                     style={{ width: wp(100), height: hp(55), justifyContent: 'center', alignItems: 'center' }}
                                     onBarCodeRead={this.onBarCodeRead}
-                                    ref={cam => this.camera = cam}
+                                    ref={(cam: RNCamera) => { this.camera = cam }}
                                     captureAudio={false}
                                     onGoogleVisionBarcodesDetected={({ barcodes }) => { }}
                                 />
@@ -477,7 +509,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderBottomWidth: 1,
         borderBottomColor: colors.higLightgray,
-        borderStyle: 'dashed'
+        borderStyle: 'dashed',
+        paddingVertical: 10
     },
     bodyContainerScrollViewContainerInfoSection: {
         marginLeft: Size(98),
@@ -532,7 +565,7 @@ const styles = StyleSheet.create({
         width: wp(14),
         height: hp(6),
         borderRadius: Size(15),
-        backgroundColor: colors.darkBlue
+        backgroundColor: colors.lightgrayDisabled
     },
     bodyContainerScrollViewContainerPosition: {
         flex: 1,

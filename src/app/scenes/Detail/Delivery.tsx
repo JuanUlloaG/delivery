@@ -5,13 +5,11 @@ import { Center } from '../../components/Center';
 import colors from '../../assets/Colors';
 import { Size } from '../../services/Service';
 import fonts from '../../assets/Fonts';
-import Icon from "react-native-vector-icons/MaterialIcons";
-import IconChange from "react-native-vector-icons/AntDesign";
 import IconBar from "react-native-vector-icons/MaterialCommunityIcons";
-import Iconprinter from "react-native-vector-icons/Feather";
 import { CustomButtonList } from '../../components/CustomButtonList';
 import { CustomButton } from '../../components/CustomButton';
 import { RFValue } from "react-native-responsive-fontsize";
+import { updateBagReceivedAction, updateBagActionFinish } from '../../actions/HomeListBagAction'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { CustomInput } from '../../components/TextInput';
 import { RNCamera } from "react-native-camera";
@@ -28,8 +26,11 @@ interface Props {
     navigation: any,
     auth: object,
     route: any,
+    bags: { isFetching: boolean, data: [any], success: boolean, error: boolean, message: string },
     home: { isFetching: boolean, data: [any] },
-    camera: RNCamera
+    camera: RNCamera,
+    updateBagReceived: (id: string, comment: string, received: string) => {},
+    updateBagFinish: () => {}
 }
 
 interface State {
@@ -46,7 +47,7 @@ interface State {
     showModal: boolean,
     person: string,
     comment: string,
-    order: any
+    order: any,
 }
 
 class Delivery extends React.Component<Props, State> {
@@ -67,7 +68,7 @@ class Delivery extends React.Component<Props, State> {
             showModal: false,
             person: "",
             comment: "",
-            order: {}
+            order: {},
         }
 
     }
@@ -86,21 +87,15 @@ class Delivery extends React.Component<Props, State> {
     }
 
     loadItems(index: number) {
-        // let order = this.filterData()
-        // let pickedProductArray = Array.from(Array(order.products[index].quantity).keys())
 
-        // let pick = pickedProductArray.map((row) => {
-        //     let item = JSON.parse(JSON.stringify(order.products[index]))
-        //     item["picked"] = false
-        //     return item
-        // })
-        // this.setState({ pickedProductArray: pick })
     }
 
 
     // add intems to bag 
     finishAction = () => {
         this.dissmissModal()
+        const order = this.state.order
+        this.props.updateBagReceived(order._id, this.state.comment, this.state.person)
     }
 
     addProductPicked(index: number) {
@@ -112,22 +107,7 @@ class Delivery extends React.Component<Props, State> {
     }
 
     toggleModal() {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                toValue: 1,
-                useNativeDriver: false,
-                duration: 300
-            }),
-            Animated.spring(this.state.animationValue, {
-                toValue: HEIGHT_MODAL,
-                velocity: 7,
-                tension: 2,
-                friction: 8,
-                useNativeDriver: false
-            })
-        ]).start(() => {
-            // console.log("object");
-        });
+        this.setState({ showModal: true });
     }
 
     validatePickedItems() {
@@ -135,23 +115,7 @@ class Delivery extends React.Component<Props, State> {
     }
 
     dissmissModal() {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                toValue: 0,
-                delay: 10,
-                useNativeDriver: false,
-                duration: 50
-            }),
-            Animated.spring(this.state.animationValue, {
-                toValue: 0,
-                velocity: 6,
-                tension: 2,
-                friction: 8,
-                useNativeDriver: false
-            })
-        ]).start(() => {
-            // console.log("dismiss");
-        });
+        this.setState({ showModal: false });
     }
 
     handleTourch(value: boolean) {
@@ -198,162 +162,159 @@ class Delivery extends React.Component<Props, State> {
         this.setState({ bagNumber: e.data, bags, torchOn: false, })
     }
 
+    updateOrder() {
+
+    }
+
+    finish() {
+        this.props.updateBagFinish()
+        this.props.navigation.goBack()
+    }
+
 
     render() {
         const title = !this.state.resume ? "Detalle" : "Resumen"
         this.props.navigation.setOptions({
             headerTitle: title
         });
-        const order = this.state.order
-
-        const animatedStyle = {
-            height: this.state.animationValue
-        }
-
+        const order = this.state.order;
         if (Object.keys(order).length) {
-            return (
-                <Center>
-                    <View style={styles.bodyContainer}>
-
-                        <View style={{ flex: 1 }}>
-                            <View style={styles.modalSectionBodyTitle}>
-                                <Text style={styles.modalSectionBodyTitleText}>Pickea el bulto</Text>
-                            </View>
-                            <View style={styles.modalSectionBodyInput}>
-                                <CustomInput value={this.state.bagNumber} keyType={"numeric"} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Numero de bolsa" type={false} editable={true} />
-                            </View>
-
-                        </View>
-                        <View style={{ flex: 3 }}>
-                            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                                <View style={{ flex: 2 }}>
-                                    <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
-                                        <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
-                                    </TouchableOpacity>
-                                    <View style={styles.modalSectionBodyTitle}>
-                                        <Text style={styles.modalSectionBodyTitleText}>Lista de todos los bultos asociados </Text>
-                                    </View>
-                                    <View style={{ flex: 5 }}>
-                                        <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
-                                            {
-                                                <View style={styles.resumeBody}>
-                                                    <View style={styles.resumeBodyInfo}>
-                                                        {
-                                                            order.bags.map((bag: any, index: number) => {
-                                                                return (
-                                                                    <View key={index} style={{ height: hp(7), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                                                        <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bag) ? colors.darkGreen : colors.black }]}>Nº {bag.bag} </Text>
-                                                                        {
-                                                                            this.state.bags.includes(bag.bag) &&
-                                                                            <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
-                                                                        }
-
-                                                                    </View>
-                                                                )
-                                                            })
-                                                        }
-                                                    </View>
-                                                </View>
-                                            }
-                                        </ScrollView>
-                                    </View>
+            if (!this.state.showModal) {
+                return (
+                    <Center>
+                        <View style={styles.bodyContainer}>
+                            <View style={{ flex: 1 }}>
+                                <View style={styles.modalSectionBodyTitle}>
+                                    <Text style={styles.modalSectionBodyTitleText}>Pickea el bultos</Text>
                                 </View>
-                                <View style={styles.headerContainer}>
-                                    <View style={styles.resumeHeaderInfo}>
-                                        {
-                                            (Object.keys(order).length > 0) &&
-                                                (order.bags.length > 0 && (this.state.bags.length == order.bags.length)) ?
+                                <View style={styles.modalSectionBodyInput}>
+                                    <CustomInput value={this.state.bagNumber} keyType={"numeric"} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Numero de bolsa" type={false} editable={true} />
+                                </View>
+                            </View>
+                            <View style={{ flex: 3 }}>
+                                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                                    <View style={{ flex: 2 }}>
+                                        <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
+                                            <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
+                                        </TouchableOpacity>
+                                        <View style={styles.modalSectionBodyTitle}>
+                                            <Text style={styles.modalSectionBodyTitleText}>Lista de todos los bultos asociados </Text>
+                                        </View>
+                                        <View style={{ flex: 5 }}>
+                                            <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
+                                                {
+                                                    <View style={styles.resumeBody}>
+                                                        <View style={styles.resumeBodyInfo}>
+                                                            {
+                                                                order.bags.map((bag: any, index: number) => {
+                                                                    return (
+                                                                        <View key={index} style={{ height: hp(7), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                                                            <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bag) ? colors.darkGreen : colors.black }]}>Nº {bag.bagNumber} </Text>
+                                                                            {
+                                                                                this.state.bags.includes(bag.bagNumber) &&
+                                                                                <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
+                                                                            }
+
+                                                                        </View>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </View>
+                                                    </View>
+                                                }
+                                            </ScrollView>
+                                        </View>
+                                    </View>
+                                    <View style={styles.headerContainer}>
+                                        <View style={styles.resumeHeaderInfo}>
+                                            {/* {
+                                                !this.props.bags.success ?
+                                                    (Object.keys(order).length > 0) &&
+                                                        (order.bags.length > 0 && (this.state.bags.length == order.bags.length)) ?
                                                 <CustomButton onPress={() => this.toggleModal()} size={"l"}>
                                                     <Text style={styles.buttonText}>Pedido Entregado</Text>
-                                                </CustomButton> :
-                                                <CustomButton onPress={() => this.clearBagNumber()} size={"l"}>
-                                                    <Text style={styles.buttonText}>Siguiente Bolsa</Text>
                                                 </CustomButton>
-                                        }
+                                                <CustomButtonList onPress={() => { this.finish() }} title="Terminar" disable={false} size={"XL"} />
+                                            } */}
+                                        </View>
+                                    </View>
+                                </ScrollView>
+                            </View>
+                        </View>
+                    </Center>
+                );
+            } else {
+                return (
+                    <Center>
+                        <View style={styles.bodyContainer}>
+                            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                                <View style={[styles.modalSectionInfo]}>
+                                    <TouchableOpacity onPress={() => { this.dissmissModal() }} style={styles.modalSectionInfoCancelButton}>
+                                        <Text style={styles.modalSectionInfoCancelButtonText}>Cancelar</Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.modalSectionInfoTitle}>
+                                        <Text style={styles.modalSectionInfoTitleText}>Entrega</Text>
+                                    </View>
+                                    <TouchableOpacity onPress={() => { this.finishAction() }} style={styles.modalSectionInfoButtonNext}>
+                                        <Text style={styles.modalSectionInfoButtonNextText}>Finalizar</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.modalSectionBody}>
+                                    <View style={[styles.modalSectionBodyTitle]}>
+                                        <Text style={styles.modalSectionBodyTitleText}>Quien recibe el pedido </Text>
+                                    </View>
+                                    <View style={{ flex: 3, alignItems: 'center' }}>
+                                        <View style={styles.personContainer}>
+                                            <TextInput onChangeText={(text) => { this.updatePerson(text) }} placeholder="Quien recive?" value={this.state.person} style={styles.textComment} />
+                                        </View>
+                                        <View style={styles.commentContainer} >
+                                            <TextInput placeholder="Comentario" onChangeText={(text) => { this.updateComment(text) }} value={this.state.comment} multiline={true} style={styles.textComment} />
+                                        </View>
                                     </View>
                                 </View>
                             </ScrollView>
+                            {
+                                (this.state.torchOn) &&
+                                <View style={{
+                                    width: wp(100),
+                                    height: hp(76),
+                                    flexDirection: 'column',
+                                    position: 'absolute',
+                                    zIndex: 1000,
+                                    backgroundColor: 'black',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center'
+                                }}>
+                                    <RNCamera
 
-                        </View>
-                        {
-                            // this.state.showModal &&
-                            <Animated.View style={[styles.modalAnimated, { zIndex: 0, }, animatedStyle]}>
-                                <Animated.View style={{ flex: 1, opacity: this.state.opacity }}>
-                                    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                                        <View style={[styles.modalSectionInfo]}>
-                                            <TouchableOpacity onPress={() => { this.dissmissModal() }} style={styles.modalSectionInfoCancelButton}>
-                                                <Text style={styles.modalSectionInfoCancelButtonText}>Cancelar</Text>
-                                            </TouchableOpacity>
-                                            <View style={styles.modalSectionInfoTitle}>
-                                                <Text style={styles.modalSectionInfoTitleText}>Entrega</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => { this.finishAction() }} style={styles.modalSectionInfoButtonNext}>
-                                                <Text style={styles.modalSectionInfoButtonNextText}>Finalizar</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={styles.modalSectionBody}>
-                                            <View style={[styles.modalSectionBodyTitle]}>
-                                                <Text style={styles.modalSectionBodyTitleText}>Quien recibe el pedido </Text>
-
-                                            </View>
-                                            <View style={{ flex: 2, alignItems: 'center' }}>
-
-                                                <View style={styles.personContainer}>
-                                                    <TextInput onChangeText={(text) => { this.updatePerson(text) }} placeholder="Quien recive?" value={this.state.person} style={styles.textComment} />
-                                                </View>
-                                                <View style={styles.commentContainer} >
-                                                    <TextInput placeholder="Comentario" onChangeText={(text) => { this.updateComment(text) }} value={this.state.comment} multiline={true} style={styles.textComment} />
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </ScrollView>
-                                </Animated.View>
-                            </Animated.View>
-                        }
-
-
-                        {
-                            (this.state.torchOn) &&
-                            <View style={{
-                                width: wp(100),
-                                height: hp(76),
-                                flexDirection: 'column',
-                                position: 'absolute',
-                                zIndex: 1000,
-                                backgroundColor: 'black',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center'
-                            }}>
-                                <RNCamera
-
-                                    style={{ width: wp(100), height: hp(50) }}
-                                    onBarCodeRead={this.onBarCodeRead}
-                                    ref={cam => this.camera = cam}
-                                    // aspect={RNCamera.Constants}
-                                    autoFocus={RNCamera.Constants.AutoFocus.on}
-                                    captureAudio={false}
-                                    onGoogleVisionBarcodesDetected={({ barcodes }) => {
-                                    }}
-                                />
-                                <View style={{ position: 'absolute', bottom: 0 }}>
-                                    <TouchableOpacity onPress={() => this.disableCamera()} style={{
-                                        flex: 1,
-                                        backgroundColor: '#fff',
-                                        borderRadius: 5,
-                                        padding: 15,
-                                        paddingHorizontal: 20,
-                                        alignSelf: 'center',
-                                        margin: 20,
-                                    }}>
-                                        <Text style={{ fontSize: 14 }}> Terminar </Text>
-                                    </TouchableOpacity>
+                                        style={{ width: wp(100), height: hp(50) }}
+                                        onBarCodeRead={this.onBarCodeRead}
+                                        ref={cam => this.camera = cam}
+                                        // aspect={RNCamera.Constants}
+                                        autoFocus={RNCamera.Constants.AutoFocus.on}
+                                        captureAudio={false}
+                                        onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                                        }}
+                                    />
+                                    <View style={{ position: 'absolute', bottom: 0 }}>
+                                        <TouchableOpacity onPress={() => this.disableCamera()} style={{
+                                            flex: 1,
+                                            backgroundColor: '#fff',
+                                            borderRadius: 5,
+                                            padding: 15,
+                                            paddingHorizontal: 20,
+                                            alignSelf: 'center',
+                                            margin: 20,
+                                        }}>
+                                            <Text style={{ fontSize: 14 }}> Terminar </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
-                        }
-                    </View>
-
-                </Center>
-            );
+                            }
+                        </View>
+                    </Center>
+                );
+            }
         }
         return (
             <Center>
@@ -567,8 +528,6 @@ const styles = StyleSheet.create({
         flex: 1,
         borderBottomColor: colors.ultraLightgray,
         borderBottomWidth: 1,
-        borderTopLeftRadius: 35,
-        borderTopRightRadius: 35,
         flexDirection: 'row'
     },
     modalSectionInfoCancelButton: {
@@ -710,20 +669,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
-    home: state.home
+    home: state.home,
+    bags: state.bags
 })
 
-// const mapDispatchToProps = {
+const mapDispatchToProps = (dispatch: any) => ({
 
-// }
+    updateBagReceived: (id: string, comment: string, received: string) => dispatch(updateBagReceivedAction(id, comment, received)),
+    updateBagFinish: () => dispatch(updateBagActionFinish()),
+})
 
-export default connect(mapStateToProps)(Delivery)
-
-
-// <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            //     <Text>Detail Screen</Text>
-
-            //     <Button title="Press me" onPress={() => {
-            //         this.props.navigation.navigate("Edit")
-            //     }} />
-            // </View>
+export default connect(mapStateToProps, mapDispatchToProps)(Delivery)
