@@ -8,8 +8,13 @@ interface ProfileProps {
 
 }
 
-export const Profile: React.FC<ProfileProps> = ({ }) => {
+export const Profile: React.FC<ProfileProps> = ({ navigation }) => {
+    console.log();
     const { login, logout } = useContext(AuthContext)
+    // const logouts = () => {
+    //     navigation
+    // }
+
     return (
         <Center>
             <Text>Perfil del Usuario </Text>
