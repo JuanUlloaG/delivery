@@ -44,8 +44,8 @@ export const HomeListBag = async () => {
     route = getRoute(store.getState().auth.profile)
     let request = { shopId: store.getState().auth.shop }
     return axios.post('http://192.168.1.100:3000/orderBags/list', request, config).then((response: AxiosResponse) => {
-    console.log("object");    
-    if (response.status == 200) {
+        console.log("object");
+        if (response.status == 200) {
             return response.data.data;
         }
         else {
@@ -58,6 +58,20 @@ export const UpdateBag = async (id: string) => {
     config.headers["access-token"] = store.getState().auth.token
     let request = { id: id, deliveryId: store.getState().auth.id }
     return axios.post('http://192.168.1.100:3000/orderBags/update', request, config).then((response: AxiosResponse) => {
+        // console.log("Aqui", response);
+        if (response.status == 200) {
+            return response.data.success;
+        }
+        else {
+            return [];
+        }
+    });
+}
+
+export const UpdateBagReceived = async (id: string, comment: string, received: string) => {
+    config.headers["access-token"] = store.getState().auth.token
+    let request = { id: id, comment: comment, received: received }
+    return axios.post('http://192.168.1.100:3000/orderBags/update/received', request, config).then((response: AxiosResponse) => {
         // console.log("Aqui", response);
         if (response.status == 200) {
             return response.data.success;

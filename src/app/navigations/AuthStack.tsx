@@ -5,6 +5,7 @@ import { Login } from '../scenes/Login/Login';
 import Shop from '../scenes/Login/Shop';
 import { Register } from '../scenes/Register/Register';
 import { AuthContext } from '../providers/AuthProvider';
+import { StackActions } from '@react-navigation/native';
 
 interface AuthStackProps {
 
@@ -30,6 +31,7 @@ export const AuthStack: React.FC<AuthStackProps> = ({ }) => {
     const component = getComponent()
     const title = getTitle()
     const name = getName()
+
 
     return (
         <Stack.Navigator initialRouteName={name}>
