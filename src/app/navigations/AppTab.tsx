@@ -20,7 +20,7 @@ const Tabs = createBottomTabNavigator<AppParamList>()
 export const AppTab: React.FC<AppTabProps> = ({ }) => {
 
     return (
-        <Tabs.Navigator
+        <Tabs.Navigator initialRouteName="Pickear"
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
