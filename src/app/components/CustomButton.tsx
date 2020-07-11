@@ -28,7 +28,7 @@ export const CustomButton: React.FC<CustomButtonProps> = (props) => {
     let fontsize
     switch (props.size) {
         case "xs":
-            width = (wp(100) - Size(95)) / 7
+            width = (wp(100) - Size(95)) / 5
             height = hp(8) * 0.75
             fontsize = Size(51)
             break;
@@ -54,13 +54,20 @@ export const CustomButton: React.FC<CustomButtonProps> = (props) => {
     }
 
     let buttonStyle = {
-        marginTop: 36,
         alignItems: 'center',
         justifyContent: 'center',
         width: width,
         height: height,
         borderRadius: Size(32),
-        backgroundColor: propss.color
+        backgroundColor: propss.color,
+        shadowColor: "#676767",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.27,
+        shadowRadius: 2.65,
+        elevation: 3,
     }
 
     return (
