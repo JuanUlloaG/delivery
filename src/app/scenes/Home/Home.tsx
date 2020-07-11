@@ -14,6 +14,7 @@ import { CustomButtonList } from "../../components/CustomButtonList";
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { NavigationProp } from "@react-navigation/native";
+import { CustomButton } from '../../components/CustomButton';
 
 
 
@@ -34,12 +35,12 @@ class Home extends React.Component<HomeProps, State> {
     componentDidMount() {
         const unsubscribe = this.props.navigation.addListener('focus', () => {
             this.props.fetchData()
-          });
-        
+        });
+
     }
 
-    componentWillUnmount(){
-        this.props.navigation.removeListener('focus',()=>{})
+    componentWillUnmount() {
+        this.props.navigation.removeListener('focus', () => { })
     }
 
     getData = () => {
@@ -54,9 +55,13 @@ class Home extends React.Component<HomeProps, State> {
         });
     }
 
+    handleRefresh = () => {
+        this.props.fetchData()
+    };
+
 
     render() {
-        console.log(this.props.auth);
+        const isfetch = this.props.home.isFetching
         return (
             <Center>
                 <View style={styles.header}>
@@ -76,6 +81,8 @@ class Home extends React.Component<HomeProps, State> {
                             style={styles.bodyList}
                             data={this.getData()}
                             extraData={this.props}
+                            refreshing={isfetch}
+                            onRefresh={() => this.handleRefresh()}
                             keyExtractor={(item, index) => item._id.toString()}
                             renderItem={({ item }) => {
                                 return (
@@ -93,7 +100,15 @@ class Home extends React.Component<HomeProps, State> {
                                             </View>
                                         </View>
                                         <View style={styles.bodyListContainerButton}>
-                                            <CustomButtonList onPress={() => { this.navigate(item._id) }} title="Seleccionar" disable={false} size={"M"} />
+                                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                                <CustomButton onPress={() => { this.navigate(item._id) }} size={"s"}>
+                                                    <Text style={{
+                                                        fontFamily: "AvenirNextBold",
+                                                        fontSize: RFValue(Size(46)),
+                                                        color: "rgba(0, 0, 0, 255)"
+                                                    }}>Seleccionar</Text>
+                                                </CustomButton>
+                                            </View>
                                         </View>
                                     </View>
                                 )
@@ -181,7 +196,8 @@ const styles = StyleSheet.create({
     },
     bodyListContainerButton: {
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })
 
@@ -196,9 +212,3 @@ const mapDispatchToProps = (dispatch: any) => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
-
-
- // <Button title={item.name} onPress={() => {
-                                //     this.props.navigation.navigate('Detail', { name: item.name })
-                                // }
-                                // } />
