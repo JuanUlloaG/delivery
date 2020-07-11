@@ -4,4 +4,5 @@ export type AppParamList = {
     Likes: undefined;
     Pickear: undefined;
     Profile: undefined;
+    Entrega: undefined;
 }

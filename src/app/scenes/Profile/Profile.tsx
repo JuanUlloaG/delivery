@@ -3,6 +3,7 @@ import { Center } from '../../components/Center';
 import { Text } from "react-native";
 import { AuthContext } from '../../providers/AuthProvider';
 import { CustomButtonList } from '../../components/CustomButtonList';
+import { StackActions } from '@react-navigation/native';
 
 interface ProfileProps {
 
@@ -11,9 +12,10 @@ interface ProfileProps {
 export const Profile: React.FC<ProfileProps> = ({ navigation }) => {
     console.log();
     const { login, logout } = useContext(AuthContext)
-    // const logouts = () => {
-    //     navigation
-    // }
+    const out = () => {
+        logout()
+        navigation.navigate("Pickear")
+    }
 
     return (
         <Center>
