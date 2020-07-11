@@ -203,24 +203,25 @@ class DetailAddres extends React.Component<Props, State> {
     render() {
 
         const order = this.filterData()
-        this.props.navigation.setOptions({
-            headerTitle: "Pedido Nº " + order.orderNumber.orderNumber,
-            headerTitleStyle: {
-                textAlign: 'center',
-                flexGrow: 1,
-                marginRight: 50,
-                alignSelf: 'center',
-                color: colors.white,
-                fontFamily: fonts.primaryFontTitle,
-                fontSize: Size(65),
-            },
-        });
-
-        const animatedStyle = {
-            height: this.state.animationValue
-        }
-
         if (Object.keys(order).length) {
+            this.props.navigation.setOptions({
+                headerTitle: "Pedido Nº " + order.orderNumber.orderNumber,
+                headerTitleStyle: {
+                    textAlign: 'center',
+                    flexGrow: 1,
+                    marginRight: 50,
+                    alignSelf: 'center',
+                    color: colors.white,
+                    fontFamily: fonts.primaryFontTitle,
+                    fontSize: Size(65),
+                },
+            });
+
+            const animatedStyle = {
+                height: this.state.animationValue
+            }
+
+
             return (
                 <Center>
                     <View style={{ flex: 1 }}>
@@ -281,7 +282,7 @@ class DetailAddres extends React.Component<Props, State> {
                             </View>
                             <View style={{ width: wp(100), flex: 1 }}>
                                 <View style={{ flex: 1, marginLeft: 20 }}>
-                                    <Text>Barra de bolsas</Text>
+                                    <Text>Bultos</Text>
                                     {
                                         order.bags.map((bag: any, index: number) => {
                                             return (
@@ -301,7 +302,7 @@ class DetailAddres extends React.Component<Props, State> {
                                                 fontFamily: fonts.primaryFont,
                                                 fontSize: RFValue(Size(56)),
                                                 color: "rgba(0, 0, 0, 255)"
-                                            }}>Entregar Bolsas</Text>
+                                            }}>Entregar Bultos</Text>
                                         </CustomButton>
                                         <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext} />
                                     </View>
