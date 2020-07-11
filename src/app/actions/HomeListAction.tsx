@@ -1,5 +1,5 @@
-import { FetchListFail, FetchListSuccess, FetchList } from "../types/HomeParamaList";
-import { HomeList } from "../services/Api";
+import { FetchListFail, FetchListSuccess, FetchList, FetchDetail, FetchDetailFail, FetchDetailSuccess } from "../types/HomeParamaList";
+import { HomeList, takeOrder, leaveOrder } from "../services/Api";
 import { Dispatch, Action } from "redux";
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -16,8 +16,41 @@ export const getHomeItems = () => {
     }
 }
 
+export const takeOrderAction = (id: string) => {
+    return (dispatch: Dispatch<Action>) => {
+        dispatch(setOrderDetail());
+        // dispatch(fetchItemsSuccess([]));
+        takeOrder(id).then((response: any) => {
+            if (response.length) dispatch(setOrderDetailSuccess());
+            else { dispatch(setOrderDetailFail()); }
+        })
+    }
+}
+
+export const leaveOrderAction = (id: string) => {
+    return (dispatch: Dispatch<Action>) => {
+        dispatch(setOrderDetail());
+        leaveOrder(id).then((response: any) => {
+            if (response.length) dispatch(setOrderDetailSuccess());
+            else { dispatch(setOrderDetailFail()); }
+        })
+    }
+}
+
 export const getHomeList = (): FetchList => ({
     type: 'FETCHING_LIST',
+});
+
+export const setOrderDetail = (): FetchDetail => ({
+    type: 'FETCHING_ORDER_DETAIL',
+});
+
+export const setOrderDetailFail = (): FetchDetailFail => ({
+    type: 'FETCHING_ORDER_DETAIL_FAIL',
+});
+
+export const setOrderDetailSuccess = (): FetchDetailSuccess => ({
+    type: 'FETCHING_ORDER_DETAIL_SUCCESS',
 });
 
 
