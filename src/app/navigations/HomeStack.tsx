@@ -5,7 +5,7 @@ import { Text, TouchableOpacity, FlatList, Button, View } from 'react-native';
 import { AuthContext } from '../providers/AuthProvider';
 import { HomeParamList, HomeNavProps } from '../types/HomeParamaList';
 import Home from '../scenes/Home/Home';
-import HomeAddres from '../scenes/Home/HomeAddres';
+import HomeAddres from '../scenes/Delivery/HomeAddres';
 import HomeDelivery from '../scenes/Home/HomeDelivery';
 import { DetailStack } from './DetailStack';
 import { Size } from '../services/Service';

@@ -6,6 +6,7 @@ import Shop from '../scenes/Login/Shop';
 import { Register } from '../scenes/Register/Register';
 import { AuthContext } from '../providers/AuthProvider';
 import { StackActions } from '@react-navigation/native';
+import { AppTab } from './AppTab';
 
 interface AuthStackProps {
 
@@ -35,8 +36,25 @@ export const AuthStack: React.FC<AuthStackProps> = ({ }) => {
 
     return (
         <Stack.Navigator initialRouteName={name}>
-            <Stack.Screen options={{ headerTitle: "" }} name={title} component={component} />
+            <Stack.Screen options={{ headerTitle: "Login" }} name={"Login"} component={Login} />
             <Stack.Screen options={{ headerTitle: "Register" }} name="Register" component={Register} />
         </Stack.Navigator>
+    );
+}
+
+interface ShopStackProps {
+
+}
+
+const ShopStackCreator = createStackNavigator<AuthParamList>()
+
+export const ShopStack: React.FC<ShopStackProps> = ({ }) => {
+    const { logout, getProfile, getShop, getToken } = useContext(AuthContext)
+    
+    return (
+        <ShopStackCreator.Navigator initialRouteName={"Shop"} headerMode={"none"}>
+            <ShopStackCreator.Screen options={{ headerTitle: "Tienda" }} name={"Shop"} component={Shop} />
+            <ShopStackCreator.Screen component={AppTab} name={"AppTab"} />
+        </ShopStackCreator.Navigator>
     );
 }
