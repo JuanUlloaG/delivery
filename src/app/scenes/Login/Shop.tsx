@@ -25,7 +25,8 @@ interface ShopProps {
 }
 
 interface State {
-    value: string
+    value: string,
+    error: boolean
 }
 
 class Shop extends React.Component<ShopProps, State> {
@@ -34,6 +35,7 @@ class Shop extends React.Component<ShopProps, State> {
         super(props)
         this.state = {
             value: "",
+            error: false,
         }
     }
 
@@ -42,11 +44,16 @@ class Shop extends React.Component<ShopProps, State> {
     }
 
     setShop() {
-        this.props.setShop(this.state.value)
+        if (this.state.value) {
+            this.props.setShop(this.state.value)
+            this.props.navigation.navigate("AppTab")
+        } else {
+            this.setState({ error: true })
+        }
     }
 
     onChangeValue(value: string) {
-        this.setState({ value })
+        this.setState({ value, error: false })
     }
 
 
@@ -55,16 +62,29 @@ class Shop extends React.Component<ShopProps, State> {
         return (
             <Center>
                 <ScrollView contentContainerStyle={styles.scrollView} >
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ flex: 3, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={styles.title}>Ahora selecciona el local</Text>
                         <CustomPicker value={this.state.value} options={data} onValueChange={this.onChangeValue.bind(this)} />
-                        <CustomButton onPress={this.setShop.bind(this)} size={"l"}>
-                            <Text style={{
-                                fontFamily: "AvenirNextBold",
-                                fontSize: RFValue(Size(56)),
-                                color: "rgba(0, 0, 0, 255)"
-                            }}>Iniciar Sesión</Text>
-                        </CustomButton>
+                        <View style={{ width: wp(100), marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
+                            <CustomButton onPress={this.setShop.bind(this)} size={"l"}>
+                                <Text style={{
+                                    fontFamily: "AvenirNextBold",
+                                    fontSize: RFValue(Size(56)),
+                                    color: "rgba(0, 0, 0, 255)"
+                                }}>Iniciar Sesión</Text>
+                            </CustomButton>
+                        </View>
+                    </View>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        {
+                            this.state.error &&
+                            <View style={{ width: wp(95), backgroundColor: colors.mediumRed, justifyContent: 'center', alignItems: 'center', borderRadius: 4 }}>
+                                <Text style={{
+                                    fontFamily: fonts.primaryFont,
+                                    fontSize: RFValue(21)
+                                }}>Debes seleccionar un local</Text>
+                            </View>
+                        }
                     </View>
 
                 </ScrollView>

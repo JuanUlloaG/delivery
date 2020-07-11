@@ -25,7 +25,6 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     const [password, setPassword] = useState("");
     const { error, message, isFetching } = store.getState().auth
 
-
     const onChangeRut = (text: string) => {
         //aqui añadir reglas de negocio en cuanto a la validacion del rut
         setrut(text)
@@ -66,13 +65,16 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
                     <Text style={styles.title}>Te damos la bienvenida</Text>
                     <CustomInput value={rut} onBlur={focusLose} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} editable={true} />
                     <CustomInput value={password} onBlur={() => { }} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} editable={true} />
-                    <CustomButton onPress={loginAction} size={"l"}>
-                        <Text style={{
-                            fontFamily: "AvenirNextBold",
-                            fontSize: RFValue(Size(56)),
-                            color: "rgba(0, 0, 0, 255)"
-                        }}>Iniciar Sesión</Text>
-                    </CustomButton>
+                    <View style={{ width: wp(100), marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
+                        <CustomButton onPress={loginAction} size={"l"}>
+                            <Text style={{
+                                fontFamily: "AvenirNextBold",
+                                fontSize: RFValue(Size(56)),
+                                color: "rgba(0, 0, 0, 255)"
+                            }}>Iniciar Sesión</Text>
+                        </CustomButton>
+                    </View>
+
                     {
                         error &&
                         <View style={{ width: wp(90), backgroundColor: colors.mediumRed, marginTop: 40, justifyContent: 'center', alignItems: 'center', height: hp(4), borderRadius: 4 }}>
