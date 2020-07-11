@@ -27,6 +27,15 @@ export type FetchListFail = {
 export type FetchList = {
     type: 'FETCHING_LIST';
 }
+export type FetchDetail = {
+    type: 'FETCHING_ORDER_DETAIL';
+}
+export type FetchDetailSuccess = {
+    type: 'FETCHING_ORDER_DETAIL_SUCCESS';
+}
+export type FetchDetailFail = {
+    type: 'FETCHING_ORDER_DETAIL_FAIL';
+}
 
 
 

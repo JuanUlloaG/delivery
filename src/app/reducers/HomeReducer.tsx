@@ -1,15 +1,19 @@
-import { FetchList, FetchListFail, FetchListSuccess } from "../types/HomeParamaList";
+import { FetchList, FetchListFail, FetchListSuccess, FetchDetail, FetchDetailFail, FetchDetailSuccess } from "../types/HomeParamaList";
 
 type HomeAction =
     | FetchList
     | FetchListFail
     | FetchListSuccess
+    | FetchDetail
+    | FetchDetailFail
+    | FetchDetailSuccess
 
 
 interface State {
     data: [];
     isFetching: Boolean;
-    error: Boolean
+    error: Boolean,
+    canTake: Boolean,
 }
 
 
@@ -17,6 +21,7 @@ const defaultState: State = {
     data: [],
     isFetching: false,
     error: false,
+    canTake: true
 };
 
 const homeReducer = (state: State = defaultState, action: HomeAction): State => {
@@ -41,6 +46,21 @@ const homeReducer = (state: State = defaultState, action: HomeAction): State => 
                 data: action.data,
                 isFetching: false,
                 error: true
+            }
+        case 'FETCHING_ORDER_DETAIL':
+            return {
+                ...state,
+                canTake: true
+            }
+        case 'FETCHING_ORDER_DETAIL_FAIL':
+            return {
+                ...state,
+                canTake: false
+            }
+        case 'FETCHING_ORDER_DETAIL_SUCCESS':
+            return {
+                ...state,
+                canTake: true
             }
         default:
             return state
