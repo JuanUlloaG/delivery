@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { Center } from '../components/Center';
 import { AuthContext } from "../providers/AuthProvider";
 import { AppTab } from './AppTab';
-import { AuthStack } from './AuthStack';
+import { AuthStack, ShopStack } from './AuthStack';
 import store from '../store/Store';
 
 interface RoutesProps {
@@ -39,7 +39,7 @@ export const Routes: React.FC<RoutesProps> = ({ }) => {
 
     return (
         <NavigationContainer>
-            {getToken() && getShop() ? <AppTab /> : <AuthStack />}
+            {getToken() ? <ShopStack /> : <AuthStack />}
         </NavigationContainer>
     );
 }
