@@ -5,7 +5,9 @@ import { Center } from '../../components/Center';
 import colors from '../../assets/Colors';
 import { Size } from '../../services/Service';
 import fonts from '../../assets/Fonts';
+import IconBag from "../../assets/Icon";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import IconChange from "react-native-vector-icons/AntDesign";
 import { CustomButton } from '../../components/CustomButton';
 import { RFValue } from "react-native-responsive-fontsize";
 
@@ -224,28 +226,27 @@ class DetailAddres extends React.Component<Props, State> {
 
             return (
                 <Center>
-                    <View style={{ flex: 1 }}>
-                        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                            <View style={{ width: wp(100), height: hp(35) }}>
-                                <View style={{ flex: 1, margin: 15 }}>
-                                    <MapView
-                                        ref={(ref: MapView) => { this.mapView = ref }}
-                                        provider={PROVIDER_GOOGLE}
-                                        followsUserLocation={true}
-                                        zoomEnabled={true}
-                                        showsUserLocation={true}
-                                        initialRegion={this.state.region}
-                                        onMapReady={this.goToInitialLocation.bind(this)}
-                                        style={[StyleSheet.absoluteFillObject, { height: hp(30) }]}>
-                                        {/* {this.state.markers.map(marker => ( */}
-                                        {/* <Marker
+                    <View style={{ flex: 4 }}>
+                        <View style={{ width: wp(100), flex: 1 }}>
+                            <View style={{ flex: 1, margin: 15, shadowColor: "#676767" }}>
+                                <MapView
+                                    ref={(ref: MapView) => { this.mapView = ref }}
+                                    provider={PROVIDER_GOOGLE}
+                                    followsUserLocation={true}
+                                    zoomEnabled={true}
+                                    showsUserLocation={true}
+                                    initialRegion={this.state.region}
+                                    onMapReady={this.goToInitialLocation.bind(this)}
+                                    style={[StyleSheet.absoluteFillObject,]}>
+                                    {/* {this.state.markers.map(marker => ( */}
+                                    {/* <Marker
                                             coordinate={this.state.region}
                                             title={"marker.title"}
                                             description={"marker.description"}
                                         /> */}
-                                        {/* ))} */}
+                                    {/* ))} */}
 
-                                        {/* <Polyline
+                                    {/* <Polyline
                                             coordinates={[
                                                 { latitude: -33.4614786, longitude: -70.6514591 }, // optional
                                                 ...this.state.coords,
@@ -253,62 +254,60 @@ class DetailAddres extends React.Component<Props, State> {
                                             ]}
                                             strokeWidth={4}
                                         /> */}
-                                    </MapView>
-                                    {/* <Image style={{ width: wp(92), height: hp(30) }} source={{ uri: "https://storage.googleapis.com/support-forums-api/attachment/thread-9014924-11470506657998028469.JPG" }} /> */}
-                                </View>
-                                <TouchableOpacity onPress={() => this.showMap()} style={{ flex: 1, marginVertical: -5, justifyContent: 'flex-end', width: wp(96), alignItems: 'flex-end', flexDirection: 'row' }}>
-                                    <Text>Ver mapa</Text>
-                                    <Icon name="location-on" color={colors.darkYellow} size={Size(55)} />
-                                </TouchableOpacity>
+                                </MapView>
                             </View>
-                            <View style={{ width: wp(100), height: hp(20) }}>
-                                <View style={{ flex: 1, marginLeft: 20, justifyContent: 'center' }}>
-                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Cliente: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>{order.orderNumber.client.name} </Text>
-                                    </Text>
-                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Nº de Bultos: <Text style={{ fontSize: RFValue(18), fontFamily: fonts.primaryFont }}> {order.bags.length} </Text>
-                                    </Text>
-                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Dirección: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.orderNumber.client.address} </Text>
-                                    </Text>
-                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Recibe un Tercero: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}></Text>
-                                    </Text>
-                                    <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Comentarios: {"Comentario del cliente"}
-                                    </Text>
-                                </View>
+                        </View>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center', width: wp(100) }}>
+                            <TouchableOpacity onPress={() => this.showMap()} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight: 15 }}>
+                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>Ver mapa</Text>
+                                <Icon name="location-on" color={colors.darkYellow} size={Size(89)} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={{ flex: 2, width: wp(100) }}>
+                        <View style={{ flex: 1, marginLeft: 20, justifyContent: 'flex-start' }}>
+                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                Cliente: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>{order.orderNumber.client.name} </Text>
+                            </Text>
+                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                Dirección: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.orderNumber.client.address} </Text>
+                            </Text>
+                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                Tercero que recibe: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>{order.orderNumber.client.third}</Text>
+                            </Text>
+                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                Comentarios: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>{order.orderNumber.client.comment}</Text>
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={{ flex: 1, width: wp(100) }}>
+                        <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
+                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                <IconChange name="deleteusergroup" color={colors.lightgray} size={Size(68)} />
                             </View>
-                            <View style={{ width: wp(100), flex: 1 }}>
-                                <View style={{ flex: 1, marginLeft: 20 }}>
-                                    <Text>Bultos</Text>
-                                    {
-                                        order.bags.map((bag: any, index: number) => {
-                                            return (
-                                                <View key={index} style={{ height: hp(4), flexDirection: 'row', marginTop: 2 }}>
-                                                    <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bagNumber} </Text>
-                                                </View>
-                                            )
-                                        })
-                                    }
-                                </View>
+                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                <IconBag name="bag" color={colors.lightgray} size={Size(68)} />
                             </View>
-                            <View style={{ width: wp(100), height: hp(15) }}>
-                                {
-                                    <View style={styles.resumeHeaderInfo}>
-                                        <CustomButton onPress={() => this.goToDetail()} size={"m"}>
-                                            <Text style={{
-                                                fontFamily: fonts.primaryFont,
-                                                fontSize: RFValue(Size(56)),
-                                                color: "rgba(0, 0, 0, 255)"
-                                            }}>Entregar Bultos</Text>
-                                        </CustomButton>
-                                        <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext} />
-                                    </View>
-                                }
+                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                <Icon name="phone" color={colors.lightgray} size={Size(68)} />
                             </View>
-                        </ScrollView>
+                        </View>
+                    </View>
+                    <View style={{ flex: 2, justifyContent: 'center', alignItems: 'center' }}>
+                        {
+                            <View style={styles.resumeHeaderInfo}>
+                                <CustomButton onPress={() => this.goToDetail()} size={"m"}>
+                                    <Text style={{
+                                        fontFamily: fonts.primaryFont,
+                                        fontSize: RFValue(Size(56)),
+                                        color: "rgba(0, 0, 0, 255)"
+                                    }}>Entregar Bultos</Text>
+                                </CustomButton>
+                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext} />
+                            </View>
+                        }
                     </View>
                 </Center>
             );
@@ -335,12 +334,39 @@ const styles = StyleSheet.create({
     resumeHeaderInfo: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 35
     },
     bodyContainerScrollViewContainerButtonsSectionButtonNext: {
         flex: 1,
         marginTop: 30,
         marginBottom: 20
+    },
+    bodyContainerScrollViewContainerButtonsSection: {
+        flex: 1,
+        flexDirection: 'row',
+        // width: wp(100),
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginRight: Size(50)
+    },
+    bodyContainerScrollViewContainerButtonsSectionButton: {
+        alignItems: "center",
+        justifyContent: 'center',
+        width: wp(14),
+        height: hp(6),
+        borderRadius: Size(15),
+        marginLeft: 10,
+        marginRight: 6,
+        backgroundColor: colors.lightgrayDisabled,
+        shadowColor: "#676767",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.27,
+        shadowRadius: 2.65,
+        elevation: 3,
     },
 });
 

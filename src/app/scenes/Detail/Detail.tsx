@@ -427,13 +427,13 @@ class Detail extends React.Component<Props, State> {
                                                     <View style={styles.bodyContainerScrollViewContainerButtons}>
                                                         <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
                                                             <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                                <IconChange name="retweet" color={colors.white} size={Size(68)} />
+                                                                <IconChange name="retweet" color={colors.lightgray} size={Size(68)} />
                                                             </View>
                                                             <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                                <Icon name="add" color={colors.white} size={Size(68)} />
+                                                                <Icon name="add" color={colors.lightgray} size={Size(68)} />
                                                             </View>
                                                             <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                                <Icon name="phone" color={colors.white} size={Size(68)} />
+                                                                <Icon name="phone" color={colors.lightgray} size={Size(68)} />
                                                             </View>
                                                         </View>
                                                         {

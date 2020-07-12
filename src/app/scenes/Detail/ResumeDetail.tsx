@@ -61,8 +61,10 @@ class Detail extends React.Component<Props, State> {
 
     finishProcess() {
         this.props.route.params.updateBagSend()
+        let to
+        (this.props.auth.profile == "2") ? to = "Pickear" : "Repeción"
         this.props.navigation.push("AppTab", {
-            screen: 'Pickear',
+            screen: to,
         })
     }
 

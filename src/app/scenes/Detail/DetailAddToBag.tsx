@@ -255,7 +255,7 @@ class DetailAddToBag extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={styles.modalSectionBody}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Escanear Bulto</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Escanea Bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
                                     <CustomInput value={this.state.bagNumber} onChangeText={this.onChangeBagNumber.bind(this)} placeholder="Número de bulto" type={false} editable={true} />
