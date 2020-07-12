@@ -226,7 +226,7 @@ class DetailDelivery extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ flex: 2 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o Digita o escanea el bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
                                     <CustomInput value={this.state.bagNumber} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
