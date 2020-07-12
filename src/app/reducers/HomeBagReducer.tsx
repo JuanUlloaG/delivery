@@ -66,7 +66,7 @@ const homeBagReducer = (state: State = defaultState, action: HomeBagAction): Sta
                 isFetching: true,
                 error: false,
                 success: true,
-                message: "Bolsa actualizada correctamente"
+                message: "Bulto actualizada correctamente"
             }
         case 'FETCH_UPDATE_FAIL':
             return {
