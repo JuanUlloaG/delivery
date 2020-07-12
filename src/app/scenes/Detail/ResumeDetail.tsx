@@ -96,7 +96,7 @@ class Detail extends React.Component<Props, State> {
                 <View style={styles.headerContainer}>
                     {
                         <View style={styles.resumeHeaderInfo}>
-                            <Text style={styles.headerContainerTitleText}>El Pedido Nº {this.state.orderNumber} tiene {this.state.bagContainer.length} bolsa(s): </Text>
+                            <Text style={styles.headerContainerTitleText}>El Pedido Nº {this.state.orderNumber} tiene {this.state.bagContainer.length} Bulto(s): </Text>
                         </View>
                     }
                 </View>

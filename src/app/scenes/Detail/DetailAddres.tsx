@@ -267,7 +267,7 @@ class DetailAddres extends React.Component<Props, State> {
                                         Cliente: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>{order.orderNumber.client.name} </Text>
                                     </Text>
                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                        Nº de Bolsas: <Text style={{ fontSize: RFValue(18), fontFamily: fonts.primaryFont }}> {order.bags.length} </Text>
+                                        Nº de Bultos: <Text style={{ fontSize: RFValue(18), fontFamily: fonts.primaryFont }}> {order.bags.length} </Text>
                                     </Text>
                                     <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
                                         Dirección: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.orderNumber.client.address} </Text>

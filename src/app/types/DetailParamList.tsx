@@ -2,7 +2,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { RouteProp } from "@react-navigation/native"
 
 export type DetailParamList = {
-    Detail: undefined;
+    Detail: { swiper: object };
     Edit: {
         name: string,
         submit?: React.MutableRefObject<() => void>

@@ -211,7 +211,7 @@ class DetailAddToBag extends React.Component<Props, State> {
 
     goBack() {
         this.setState({ bagNumber: "" })
-        this.props.route.params.onGoBack(this.state.bagNumber)
+        this.props.route.params.onGoBack(this.state.bagNumber, this.props.route.params.product)
         this.props.navigation.goBack()
     }
 
@@ -255,10 +255,10 @@ class DetailAddToBag extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={styles.modalSectionBody}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Ingrese Número de Bolsa</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Escanear Bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} onChangeText={this.onChangeBagNumber.bind(this)} placeholder="Número de bolsa" type={false} editable={true} />
+                                    <CustomInput value={this.state.bagNumber} onChangeText={this.onChangeBagNumber.bind(this)} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
                                 <TouchableOpacity onPress={() => { this.captureBagNumber() }} style={styles.modalSectionBodyScanBar}>
                                     <IconBar name={"barcode-scan"} size={RFValue(150)} color={colors.black} />

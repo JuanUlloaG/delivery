@@ -16,6 +16,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { CustomButton } from '../../components/CustomButton';
 var { width, height } = Dimensions.get('window');
 type Animation = any | Animated.Value;
+import SwipeRender from "react-native-swipe-render";
 
 
 postBagsAction
@@ -42,11 +43,12 @@ interface State {
     resume: boolean,
     torchOn: boolean,
     toggleModal: boolean,
-    bagSend: boolean
+    bagSend: boolean,
 }
 
 class Detail extends React.Component<Props, State> {
 
+    private swiper: any
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -62,7 +64,9 @@ class Detail extends React.Component<Props, State> {
             toggleModal: false,
             bagSend: false
         }
+
     }
+
 
     filterData() {
         let result = this.props.home.data.filter((row) => {
@@ -79,94 +83,121 @@ class Detail extends React.Component<Props, State> {
 
     loadItems(index: number) {
         let order = this.filterData()
-        let pickedProductArray = Array.from(Array(order.products[index].units).keys())
+        let objectPicked: any = {}
+        order.products.map((product: any, index: number) => {
+            let pickedProductArray = Array.from(Array(product.units).keys())
+            let pick = pickedProductArray.map((row) => {
+                let item = JSON.parse(JSON.stringify(product))
+                item["picked"] = false
+                item["broken"] = false
+                item["replace"] = false
+                item["substituted"] = false
+                return item
+            })
+            objectPicked[index] = pick
 
-        let pick = pickedProductArray.map((row) => {
-            let item = JSON.parse(JSON.stringify(order.products[index]))
-            item["picked"] = false
-            item["broken"] = false
-            item["replace"] = false
-            item["substituted"] = false
-            return item
         })
-        this.setState({ pickedProductArray: pick })
+
+        this.setState({ pickedProductArray: objectPicked })
     }
 
 
     // add intems to bag 
-    nextItem = () => {
-        let order = this.filterData()
-        let bagContainer = [...this.state.bagContainer]
-        let index = 0
+    nextItem = (producto: number) => {
 
-        let result = bagContainer.filter((bag, ind) => {
-            index = ind
-            return bag.bagNumber == this.state.bagNumber
-        })
+        try {
 
-        let bag
-        if (result.length) {
-            let prod = [...this.state.pickedProductArray]
-            prod[0].units = this.state.pickedProductArray.length
-            prod[0].unitsPicked = this.countPicked()
-            prod[0].unitsBroken = this.countBroken()
-            bagContainer[index].products.push(prod[0])
-        } else {
-            //new bag 
-            let prod = [...this.state.pickedProductArray]
-            prod[0].units = this.state.pickedProductArray.length
-            prod[0].unitsPicked = this.countPicked()
-            prod[0].unitsBroken = this.countBroken()
-            let product = []
-            product.push(prod[0])
-            bag = { bagNumber: this.state.bagNumber, products: [...product] }
-            bagContainer.push(bag)
+            let order = this.filterData()
+            let prodTofind = JSON.parse(JSON.stringify(this.state.pickedProductArray))
+            let bagContainer = [...this.state.bagContainer]
+            let result = bagContainer.filter((bag, ind) => {
+                return bag.bagNumber == this.state.bagNumber
+            })
+
+            let r = bagContainer.indexOf((bag: any) => { return bag.bagNumber === this.state.bagNumber.toString() })
+            bagContainer.map((bag, indBag) => {
+                bag.products = bag.products.filter((productoFind: any, indProd: number) => {
+                    if (productoFind._id !== prodTofind[producto][0]._id) return productoFind
+                })
+            })
+            bagContainer = bagContainer.filter((row) => {
+                return row.products.length
+            })
+            let bag
+            if (result.length) {
+
+                let prod = JSON.parse(JSON.stringify(this.state.pickedProductArray))
+                prod[producto][0].units = prod[producto].length
+                prod[producto][0].unitsPicked = this.countPicked(producto)
+                prod[producto][0].unitsBroken = this.countBroken(producto)
+                bagContainer.map((bag) => {
+                    if (bag.bagNumber == this.state.bagNumber) bag.products.push(prod[producto][0])
+                })
+            } else {
+                //new bag 
+                let prod = JSON.parse(JSON.stringify(this.state.pickedProductArray))
+                prod[producto][0].units = prod[producto].length
+                prod[producto][0].unitsPicked = this.countPicked(producto)
+                prod[producto][0].unitsBroken = this.countBroken(producto)
+                let product = []
+                product.push(prod[producto][0])
+                bag = { bagNumber: this.state.bagNumber, products: [...product] }
+                bagContainer.push(bag)
+            }
+
+            if (this.state.index < order.products.length - 1) {
+                this.setState({ index: this.state.index + 1, bagContainer: bagContainer })
+            } else {
+                this.setState({ bagContainer: bagContainer, resume: true }, () => {
+                    this.evaluateResume()
+                })
+            }
+
+
+            if (this.swiper.state.index < order.products.length - 1) {
+                this.swiper.scrollBy(1, true)
+            }
+        } catch (error) {
+            console.log(error.message);
         }
-
-        if (this.state.index < order.products.length - 1) {
-            this.loadItems(this.state.index + 1)
-            this.setState({ index: this.state.index + 1, bagContainer: bagContainer })
-        } else {
-            this.setState({ bagContainer: bagContainer, resume: true })
-        }
-
 
     }
 
-    ProductPicked(index: number) {
-        let pickedProductArray = [...this.state.pickedProductArray]
+    ProductPicked(index: number, product: number) {
+        let pickedProductArray = JSON.parse(JSON.stringify(this.state.pickedProductArray))
 
-        if (pickedProductArray[index].picked) {
-            pickedProductArray[index].picked = false
+        if (pickedProductArray[product][index].picked) {
+            pickedProductArray[product][index].picked = false
         } else {
-            pickedProductArray[index].picked = true
-            if (pickedProductArray[index].broken) pickedProductArray[index].broken = false
+            pickedProductArray[product][index].picked = true
+            if (pickedProductArray[product][index].broken) pickedProductArray[product][index].broken = false
         }
 
         this.setState({ pickedProductArray })
     }
 
-    ProductBroken(index: number) {
-        let pickedProductArray = [...this.state.pickedProductArray]
+    ProductBroken(index: number, product: number) {
+        let pickedProductArray = JSON.parse(JSON.stringify(this.state.pickedProductArray))
 
-        if (pickedProductArray[index].broken) {
-            pickedProductArray[index].broken = false
+        if (pickedProductArray[product][index].broken) {
+            pickedProductArray[product][index].broken = false
         } else {
-            pickedProductArray[index].broken = true
-            if (pickedProductArray[index].picked) pickedProductArray[index].picked = false
+            pickedProductArray[product][index].broken = true
+            if (pickedProductArray[product][index].picked) pickedProductArray[product][index].picked = false
         }
         this.setState({ pickedProductArray })
     }
 
-    addBag(bag: string) {
+    addBag(bag: string, product: number) {
         this.setState({ bagNumber: bag }, () => {
-            this.nextItem()
+            this.nextItem(product)
         })
     }
 
-    toggleModal() {
+    toggleModal(product: number) {
         this.props.navigation.navigate('DetailAddToBag', {
-            onGoBack: (bag: string) => this.addBag(bag),
+            onGoBack: (bag: string, prod: number) => this.addBag(bag, prod),
+            product: product
         });
     }
 
@@ -174,35 +205,44 @@ class Detail extends React.Component<Props, State> {
         this.setState({ bagSend: true })
     }
 
-    validatePickedItems() {
-        let pickedProductArray = [...this.state.pickedProductArray]
+    validatePickedItems(productIndex: number) {
+        let pickedProductArray = JSON.parse(JSON.stringify(this.state.pickedProductArray));
         let picked = 0
         let broken = 0
-        pickedProductArray.map((product) => {
-            if (product.picked === true) picked = picked + 1
-        })
-        pickedProductArray.map((product) => {
-            if (product.broken === true) broken = broken + 1
-        })
-        return (picked == pickedProductArray.length || broken == pickedProductArray.length || (broken + picked) == pickedProductArray.length)
+        if (pickedProductArray[productIndex]) {
+            pickedProductArray[productIndex].map((product: any) => {
+                if (product.picked === true) picked = picked + 1
+            })
+            pickedProductArray[productIndex].map((product: any) => {
+                if (product.broken === true) broken = broken + 1
+            })
+            return (picked == pickedProductArray[productIndex].length || broken == pickedProductArray[productIndex].length || (broken + picked) == pickedProductArray[productIndex].length)
+        }
+        return false
     }
 
-    countPicked() {
+    countPicked(productIndex: number) {
         let count = 0
-        let pickedProductArray = [...this.state.pickedProductArray]
-        pickedProductArray.map((row) => {
-            if (row.picked) count = count + 1
-        })
+        let pickedProductArray = JSON.parse(JSON.stringify(this.state.pickedProductArray));
+        if (pickedProductArray[productIndex]) {
+            pickedProductArray[productIndex].map((row: any) => {
+                if (row.picked) count = count + 1
+            })
+            return count
+        }
 
         return count
     }
 
-    countBroken() {
+    countBroken(productIndex: number) {
         let count = 0
-        let pickedProductArray = [...this.state.pickedProductArray]
-        pickedProductArray.map((row) => {
-            if (row.broken) count = count + 1
-        })
+        let pickedProductArray = JSON.parse(JSON.stringify(this.state.pickedProductArray));
+        if (pickedProductArray[productIndex]) {
+            pickedProductArray[productIndex].map((row: any) => {
+                if (row.broken) count = count + 1
+            })
+            return count
+        }
 
         return count
     }
@@ -243,147 +283,204 @@ class Detail extends React.Component<Props, State> {
         });
     }
 
+    evaluateResume() {
+        if (this.state.resume) this.resumeAction()
+    }
+
+    updateIndex(index: number) {
+        this.setState({ index }, () => {
+            // this.loadItems(index)
+        })
+    }
+
 
     render() {
 
+        this.props.navigation.setOptions({
+            headerTitle: "Detalle",
+            headerTitleStyle: {
+                textAlign: 'center',
+                flexGrow: 1,
+                marginRight: 0,
+                alignSelf: 'center',
+                color: colors.white,
+                fontFamily: fonts.primaryFontTitle,
+                fontSize: Size(77),
+            },
+            headerLeft: () => (
+                // platform == "ios" &&
+                <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ marginLeft: Size(45) }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <IconChange name='left' size={24} color={colors.white} />
+                    </View>
+                </TouchableOpacity>
+            ),
+            headerRight: () => (
+                this.state.resume &&
+                <TouchableOpacity onPress={() => this.resumeAction()} style={{ marginRight: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={[styles.headerContainerTitleText, { color: colors.white }]}>Ok</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        });
+
         // if (this.state.resume) this.resumeAction();
         const order = this.filterData();
-
-
         if (Object.keys(order).length) {
             return (
                 <Center>
-                    <View style={styles.headerContainer}>
-                        {
-                            <>
-                                <View style={styles.headerContainerTitle}>
-                                    <Text style={styles.headerContainerTitleText}>Pedido Nº {order.orderNumber} </Text>
-                                </View>
-                                <View style={styles.headerContainerCount}>
-                                    <View style={styles.headerContainerCountContainer} >
-                                        <Text style={styles.headerContainerCountContainerText}> Producto {this.state.index + 1} de {order.products.length} </Text>
-                                    </View>
-                                </View>
-                            </>
-                        }
-                    </View>
-                    <View style={styles.bodyContainer}>
-                        <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
-                            {
-                                <View style={styles.bodyContainerScrollViewContainer}>
-                                    <View style={styles.bodyContainerScrollViewContainerInfo}>
-                                        <View style={styles.bodyContainerScrollViewContainerInfoSection}>
-                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].product} </Text>
-                                            </Text>
-                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                Descripción: <Text style={{ fontSize: order.products[this.state.index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[this.state.index].description} </Text>
-                                            </Text>
-                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].id} </Text>
-                                            </Text>
-                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[this.state.index].barcode} </Text>
-                                            </Text>
-
-                                        </View>
-                                    </View>
-
-                                    <View style={styles.bodyContainerScrollViewContainerPicked}>
-                                        <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { alignSelf: 'flex-end', marginRight: 20 }]}>Cantidad Pickeada: {this.countPicked()}</Text>
+                    <SwipeRender
+                        data={order.products}
+                        onIndexChanged={(ind: number) => { this.updateIndex(ind) }}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <View key={index} style={{ flex: 1 }}>
+                                    <View style={styles.headerContainer}>
                                         {
-                                            this.state.pickedProductArray.map((product: any, index: number) => {
-                                                return (
-                                                    <View style={styles.bodyContainerScrollViewContainerPickedSection} key={index}>
-                                                        <View style={styles.bodyContainerScrollViewContainerPickedSectionTitle}>
-                                                            <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Unidad {index + 1}</Text>
-                                                        </View>
-                                                        <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
-                                                            <TouchableWithoutFeedback disabled={this.state.bagSend} onPress={() => { this.ProductBroken(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                                <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.broken && { backgroundColor: colors.mediumRed }]}>
-                                                                    <Icon name="clear" color={colors.black} size={Size(68)} />
-                                                                </View>
-                                                            </TouchableWithoutFeedback>
-                                                            <TouchableWithoutFeedback disabled={this.state.bagSend} onPress={() => { this.ProductPicked(index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
-                                                                <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.darkBlue }]}>
-                                                                    <Icon name="check" color={product.picked ? colors.white : colors.black} size={Size(68)} />
-                                                                </View>
-                                                            </TouchableWithoutFeedback>
+                                            <>
+                                                <View style={styles.headerContainerTitle}>
+                                                    <Text style={styles.headerContainerTitleText}>Pedido Nº {order.orderNumber} </Text>
+                                                </View>
+                                                <View style={styles.headerContainerCount}>
+                                                    <View style={styles.headerContainerCountContainer} >
+                                                        <Text style={styles.headerContainerCountContainerText}> Producto {this.state.index + 1} de {order.products.length} </Text>
+                                                    </View>
+                                                </View>
+                                            </>
+                                        }
+                                    </View>
+                                    <View style={styles.bodyContainer}>
+                                        <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
+                                            {
+                                                <View style={styles.bodyContainerScrollViewContainer}>
+                                                    <View style={styles.bodyContainerScrollViewContainerInfo}>
+                                                        <View style={styles.bodyContainerScrollViewContainerInfoSection}>
+                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                                Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].product} </Text>
+                                                            </Text>
+                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                                Descripción: <Text style={{ fontSize: order.products[index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[index].description} </Text>
+                                                            </Text>
+                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                                SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].id} </Text>
+                                                            </Text>
+                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
+                                                                Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].barcode} </Text>
+                                                            </Text>
+
                                                         </View>
                                                     </View>
-                                                )
-                                            })
-                                        }
-                                    </View>
 
-                                    <View style={styles.bodyContainerScrollViewContainerPosition}>
-                                        <View style={styles.bodyContainerScrollViewContainerPositionSection}>
-                                            <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Categoria</Text>
-                                            {
-                                                order.products[this.state.index].location ?
-                                                    <IconChange name="isv" color={colors.darkBlue} size={Size(68)} /> :
-                                                    <IconBar name="library-shelves" color={colors.darkBlue} size={Size(68)} />
-                                            }
-                                        </View>
-                                    </View>
+                                                    <View style={styles.bodyContainerScrollViewContainerPicked}>
+                                                        <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { alignSelf: 'flex-end', marginRight: 20 }]}>Cantidad Pickeada: {this.countPicked(index)}</Text>
+                                                        {
+                                                            this.state.pickedProductArray[index] && this.state.pickedProductArray[index].map((product: any, indexPicked: number) => {
+                                                                return (
+                                                                    <View style={styles.bodyContainerScrollViewContainerPickedSection} key={indexPicked}>
+                                                                        <View style={styles.bodyContainerScrollViewContainerPickedSectionTitle}>
+                                                                            <Text style={styles.bodyContainerScrollViewContainerPickedSectionTitleText}>Unidad {indexPicked + 1}</Text>
+                                                                        </View>
+                                                                        <View style={styles.bodyContainerScrollViewContainerPickedSectionButtons}>
+                                                                            <TouchableWithoutFeedback disabled={this.state.bagSend} onPress={() => { this.ProductBroken(indexPicked, index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                                <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsClearCont, product.broken && { backgroundColor: colors.mediumRed }]}>
+                                                                                    <Icon name="clear" color={colors.black} size={Size(68)} />
+                                                                                </View>
+                                                                            </TouchableWithoutFeedback>
+                                                                            <TouchableWithoutFeedback disabled={this.state.bagSend} onPress={() => { this.ProductPicked(indexPicked, index) }} style={styles.bodyContainerScrollViewContainerPickedSectionButtonsCont}>
+                                                                                <View style={[styles.bodyContainerScrollViewContainerPickedSectionButtonsOkCont, product.picked && { backgroundColor: colors.darkBlue }]}>
+                                                                                    <Icon name="check" color={product.picked ? colors.white : colors.black} size={Size(68)} />
+                                                                                </View>
+                                                                            </TouchableWithoutFeedback>
+                                                                        </View>
+                                                                    </View>
+                                                                )
+                                                            })
+                                                        }
+                                                    </View>
 
-                                    <View style={styles.bodyContainerScrollViewContainerImage}>
-                                        <View style={styles.baseFlex}>
-                                            <View style={styles.baseFlex}>
-                                                <Text style={styles.bodyContainerScrollViewContainerImageText}>Imagen del producto</Text>
-                                            </View>
-                                            <View style={styles.bodyContainerScrollViewContainerImageContainer}>
-                                                <Image
-                                                    resizeMode={"contain"}
-                                                    style={styles.bodyContainerScrollViewContainerImageContainerImage}
-                                                    source={{ uri: order.products[this.state.index].image }}
-                                                />
-                                            </View>
-                                        </View>
-                                    </View>
-                                    <View style={styles.bodyContainerScrollViewContainerButtons}>
-                                        <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
-                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                <IconChange name="retweet" color={colors.white} size={Size(68)} />
-                                            </View>
-                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                <Icon name="add" color={colors.white} size={Size(68)} />
-                                            </View>
-                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                                <Icon name="phone" color={colors.white} size={Size(68)} />
-                                            </View>
-                                        </View>
-                                        {
-                                            !this.state.bagSend ?
-                                                !this.state.resume ?
-                                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                                        <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                                            <CustomButton onPress={() => this.validatePickedItems() && this.toggleModal()} color={this.validatePickedItems() ? colors.lightBlue : colors.lightgrayDisabled} size={"m"} disable={!this.validatePickedItems()} >
-                                                                <Text style={{
-                                                                    fontFamily: fonts.buttonFont,
-                                                                    fontSize: RFValue(Size(56)),
-                                                                    color: "#333333"
-                                                                }}>Siguiente</Text>
-                                                            </CustomButton>
+                                                    <View style={styles.bodyContainerScrollViewContainerPosition}>
+                                                        <View style={styles.bodyContainerScrollViewContainerPositionSection}>
+                                                            <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Categoria</Text>
+                                                            {
+                                                                order.products[index].location ?
+                                                                    <IconChange name="isv" color={colors.darkBlue} size={Size(68)} /> :
+                                                                    <IconBar name="library-shelves" color={colors.darkBlue} size={Size(68)} />
+                                                            }
                                                         </View>
+                                                    </View>
 
-                                                        {/* <CustomButtonList onPress={() => this.validatePickedItems() && this.toggleModal()} title="Siguiente" disable={!this.validatePickedItems()} size={"L"} /> */}
-                                                    </View> :
-                                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                                        <CustomButtonList onPress={() => this.resumeAction()} title="Listo" disable={false} size={"L"} />
-                                                    </View> :
-                                                // <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                                //     <CustomButtonList onPress={() => this.resumeAction()} title="Finalizar" disable={true} size={"L"} />
-                                                // </View>
-                                                null
-                                        }
+                                                    <View style={styles.bodyContainerScrollViewContainerImage}>
+                                                        <View style={styles.baseFlex}>
+                                                            <View style={styles.baseFlex}>
+                                                                <Text style={styles.bodyContainerScrollViewContainerImageText}>Imagen del producto</Text>
+                                                            </View>
+                                                            <View style={styles.bodyContainerScrollViewContainerImageContainer}>
+                                                                <Image
+                                                                    resizeMode={"contain"}
+                                                                    style={styles.bodyContainerScrollViewContainerImageContainerImage}
+                                                                    source={{ uri: order.products[index].image }}
+                                                                />
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                    <View style={styles.bodyContainerScrollViewContainerButtons}>
+                                                        <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
+                                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                                <IconChange name="retweet" color={colors.white} size={Size(68)} />
+                                                            </View>
+                                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                                <Icon name="add" color={colors.white} size={Size(68)} />
+                                                            </View>
+                                                            <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
+                                                                <Icon name="phone" color={colors.white} size={Size(68)} />
+                                                            </View>
+                                                        </View>
+                                                        {
+                                                            !this.state.bagSend ?
+                                                                !this.state.resume ?
+                                                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                                                        <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                                                            <CustomButton onPress={() => this.validatePickedItems(index) && this.toggleModal(index)} color={this.validatePickedItems(index) ? colors.lightBlue : colors.lightgrayDisabled} size={"m"} disable={!this.validatePickedItems(index)} >
+                                                                                <Text style={{
+                                                                                    fontFamily: fonts.buttonFont,
+                                                                                    fontSize: RFValue(Size(56)),
+                                                                                    color: "#333333"
+                                                                                }}>Agregar</Text>
+                                                                            </CustomButton>
+                                                                        </View>
+                                                                    </View> :
+                                                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                                                        <CustomButtonList onPress={() => this.toggleModal(index)} title="Editar" disable={false} size={"L"} />
+
+                                                                    </View> :
+                                                                null
+                                                        }
+                                                    </View>
+                                                </View>
+                                            }
+
+                                        </ScrollView>
                                     </View>
-                                </View>
-                            }
 
-                        </ScrollView>
-                    </View>
+
+                                </View>
+
+                            );
+                        }}
+                        index={0} // Initial index can be placed anywhere.  Dynamic index support for only iOS.
+                        loadMinimal={true}
+                        ref={(component: object) => { this.swiper = component }}
+                        refScrollView={(component: object) => { this.swiper = component }}
+                        showsHorizontalScrollIndicator
+                        loadMinimalSize={2}
+                        removeClippedSubviews={true}
+                    />
+
+
+
                 </Center >
+
             );
         }
         return (
