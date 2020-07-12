@@ -51,7 +51,7 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                     fontSize: Size(77),
                 },
                 headerStatusBarHeight: Size(30),
-                headerTitle: "Delivery"
+                headerTitle: "Entrega"
             })
             } />
 
@@ -117,6 +117,7 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
+                headerTitle: "Detalle Delivery",
                 headerTitleStyle: {
                     textAlign: 'center',
                     flexGrow: 1,
@@ -127,7 +128,6 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                     fontSize: Size(77),
                 },
                 headerStatusBarHeight: Size(30),
-                headerTitle: "Detalle Delivery",
                 // headerRight: () => (
 
                 // ),

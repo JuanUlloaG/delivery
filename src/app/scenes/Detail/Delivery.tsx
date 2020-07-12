@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView, Alert, Keyboard } from 'react-native';
 import { connect } from 'react-redux'
 import { Center } from '../../components/Center';
 import colors from '../../assets/Colors';
@@ -53,6 +53,8 @@ interface State {
 
 class Delivery extends React.Component<Props, State> {
 
+
+    private find: boolean = false;
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -82,14 +84,18 @@ class Delivery extends React.Component<Props, State> {
     }
 
     componentDidMount() {
+        try {
+            let data = this.filterData()
 
-        let data = this.filterData()
-        // console.log(object);
-        data.bags.map((bag) => {
-            bag['delivery'] = false
-        })
-        this.setState({ order: data })
-        // this.loadItems(0)
+            if (Object.keys(data).length > 0) {
+                data.bags.map((bag: any) => {
+                    bag['delivery'] = false
+                })
+                this.setState({ order: data })
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
     loadItems(index: number) {
@@ -139,12 +145,16 @@ class Delivery extends React.Component<Props, State> {
     }
 
     onChangeBagNumber = (text: string) => {
-        if (text.length > 4) {
+        if (text.length > 1) {
             let bags = [...this.state.bags]
             bags.push(text)
             const order = this.state.order;
             order.bags.map((row: any) => {
-                if (text == row.bagNumber) row.delivery = true
+                if (text == row.bagNumber) {
+                    this.find = true
+                    row.delivery = true
+                    Keyboard.dismiss()
+                }
             })
             this.setState({ bagNumber: text, bags, order: order })
         } else {
@@ -173,6 +183,23 @@ class Delivery extends React.Component<Props, State> {
     }
 
     onBarCodeRead = (e: any) => {
+        if (e.data.length > 1) {
+            let bags = [...this.state.bags]
+            bags.push(e.data)
+            const order = this.state.order;
+            order.bags.map((row: any) => {
+                if (e.data == row.bagNumber) {
+                    this.find = true
+                    row.delivery = true
+                    this.focusLose()
+                }
+            })
+            this.setState({ bagNumber: e.data, bags, order: order })
+        } else {
+            this.setState({ bagNumber: e.data })
+        }
+
+
         let bags = [...this.state.bags]
         bags.push(e.data)
         this.setState({ bagNumber: e.data, bags, torchOn: false, })
@@ -195,11 +222,15 @@ class Delivery extends React.Component<Props, State> {
         return delivery
     }
 
+    focusLose() {
+        if (this.find) {
+            this.setState({ bagNumber: "" })
+            this.find = false
+        }
+    }
+
 
     render() {
-        this.props.navigation.setOptions({
-            headerTitle: "Entrega"
-        });
 
         const order = this.state.order;
         if (Object.keys(order).length) {
@@ -209,10 +240,10 @@ class Delivery extends React.Component<Props, State> {
                         <View style={styles.bodyContainer}>
                             <View style={{ flex: 1 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Escanea el bultos</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} keyType={"numeric"} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
+                                    <CustomInput value={this.state.bagNumber} onBlur={() => this.focusLose()} keyType={"numeric"} onChangeText={this.onChangeBagNumber.bind(this)} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
                             </View>
                             <View style={{ flex: 3 }}>
@@ -286,7 +317,7 @@ class Delivery extends React.Component<Props, State> {
                                     </View>
                                     <View style={{ flex: 3, alignItems: 'center' }}>
                                         <View style={styles.personContainer}>
-                                            <TextInput onChangeText={(text) => { this.updatePerson(text) }} placeholder="Quien recive?" value={this.state.person} style={styles.textComment} />
+                                            <TextInput onChangeText={(text) => { this.updatePerson(text) }} placeholder="Nombre" value={this.state.person} style={styles.textComment} />
                                         </View>
                                         <View style={styles.commentContainer} >
                                             <TextInput placeholder="Comentario" onChangeText={(text) => { this.updateComment(text) }} value={this.state.comment} multiline={true} style={styles.textComment} />

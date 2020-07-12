@@ -66,7 +66,7 @@ const homeBagReducer = (state: State = defaultState, action: HomeBagAction): Sta
                 isFetching: true,
                 error: false,
                 success: true,
-                message: "Bulto actualizada correctamente"
+                message: "Pedido recepcionado exitosamente"
             }
         case 'FETCH_UPDATE_FAIL':
             return {
@@ -74,7 +74,7 @@ const homeBagReducer = (state: State = defaultState, action: HomeBagAction): Sta
                 isFetching: false,
                 error: true,
                 success: false,
-                message: "Fallo la actualización del bulto"
+                message: "Fallo la recepción del pedido"
             }
         case 'FETCH_BAG_CLEAR':
             return {

@@ -52,7 +52,6 @@ class Home extends React.Component<HomeAddresProps, State> {
         this.props.navigation.navigate('DetailAddres', { ordernumber: id });
     }
     render() {
-        console.log("object, ", this.props.bags.data.length);
         if (this.props.bags.data.length > 0) {
             return (
                 <Center>

@@ -4,6 +4,7 @@ import { AppParamList } from '../types/AppParamList';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Antdesing from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/Feather";
 import { HomeStack } from './HomeStack';
 import { Profile } from '../scenes/Profile/Profile';
 import { Search } from '../scenes/Search/Search';
@@ -34,15 +35,26 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                 return "search1"
         }
     }
+    const getname = () => {
+        switch (getProfile().toString()) {
+            case "2":
+                return "Pickear"
+            case "3":
+                return "Repeción"
+
+            default:
+                return "Pickear"
+        }
+    }
+
+
     return (
         <Tabs.Navigator initialRouteName="Pickear"
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
                     if (route.name === 'Pickear') {
-                        iconName = focused
-                            ? 'shopping-basket'
-                            : 'shopping-basket';
+                        iconName = 'shopping-basket'
                         return <FontAwesome name={iconName} size={size} color={color} />;
                     } else if (route.name === 'Search') {
                         iconName = returnParams();
@@ -53,6 +65,9 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                     } else if (route.name === 'Entrega') {
                         iconName = returnParams();
                         return <Antdesing name={iconName} size={size} color={color} />;
+                    } else if (route.name === 'Repeción') {
+                        iconName = "shopping-bag"
+                        return <Icon name={iconName} size={size} color={color} />;
                     }
                     // You can return any component that you like here!
                 },
@@ -65,7 +80,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
 
             }}
         >
-            <Tabs.Screen name='Pickear' component={HomeStack} />
+            <Tabs.Screen name={getname()} component={HomeStack} />
             {
                 getProfile() == "2" ?
                     <Tabs.Screen name='Search' component={Search} /> :

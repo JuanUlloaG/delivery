@@ -178,19 +178,17 @@ class DeliveryReception extends React.Component<Props, State> {
             ),
         });
 
-        console.log(this.props.bags);
-
         return (
             <Center>
                 <View style={styles.bodyContainer}>
                     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                         <View style={styles.modalSectionBody}>
                             <View style={[styles.modalSectionBodyTitle]}>
-                                <Text style={styles.modalSectionBodyTitleText}>Quien recibe el pedido </Text>
+                                <Text style={styles.modalSectionBodyTitleText}>Datos de entrega</Text>
                             </View>
                             <View style={{ flex: 3, alignItems: 'center' }}>
                                 <View style={styles.personContainer}>
-                                    <TextInput onChangeText={(text) => { this.updatePerson(text) }} placeholder="Quien recive?" value={this.state.person} style={styles.textComment} />
+                                    <TextInput onChangeText={(text) => { this.updatePerson(text) }} placeholder="Nombre " value={this.state.person} style={styles.textComment} />
                                 </View>
                                 <View style={styles.commentContainer} >
                                     <TextInput placeholder="Comentario" onChangeText={(text) => { this.updateComment(text) }} value={this.state.comment} multiline={true} style={styles.textComment} />
@@ -544,7 +542,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     commentContainer: {
-        alignItems: 'center',
+        alignItems: 'flex-start',
         paddingStart: Size(95),
         width: wp(100) - Size(95),
         height: Size(227),
