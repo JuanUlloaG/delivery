@@ -4,7 +4,7 @@ const colors = {
     ultraLightBlue: '#E4E9F1',
     higthLightBlue: '#77D0DA',
     lightYellow: '#FAC361',
-    darkYellow: '#F4C56F',
+    darkYellow: '#F9B232',
     lightBlack: '#333333',
     darkBlack: '#101010',
     mediumBlack: '#2F2F2F',
