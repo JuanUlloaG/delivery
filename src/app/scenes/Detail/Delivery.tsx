@@ -212,7 +212,7 @@ class Delivery extends React.Component<Props, State> {
                                     <Text style={styles.modalSectionBodyTitleText}>Escanea el bultos</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} keyType={"numeric"} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bolsa" type={false} editable={true} />
+                                    <CustomInput value={this.state.bagNumber} keyType={"numeric"} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
                             </View>
                             <View style={{ flex: 3 }}>

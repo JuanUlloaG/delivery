@@ -226,10 +226,10 @@ class DetailDelivery extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ flex: 2 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Pickea el bulto</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bolsa" type={false} editable={true} />
+                                    <CustomInput value={this.state.bagNumber} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
                                 <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
                                     <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
@@ -288,7 +288,7 @@ class DetailDelivery extends React.Component<Props, State> {
                                                 !this.props.bags.success ?
                                                     (Object.keys(order).length > 0) &&
                                                         (order.bags.length > 0 && (this.state.bags.length == order.bags.length)) ?
-                                                        <CustomButtonList onPress={() => { this.clearBagNumber() }} title="Siguiente Bolsa" disable={false} size={"XL"} /> :
+                                                        <CustomButtonList onPress={() => { this.clearBagNumber() }} title="Siguiente Bulto" disable={false} size={"XL"} /> :
                                                         <CustomButtonList onPress={() => { this.updateOrder() }} title="Finalizar" disable={false} size={"XL"} />
                                                     :
                                                     <CustomButtonList onPress={() => { this.finish() }} title="Terminar" disable={false} size={"XL"} />

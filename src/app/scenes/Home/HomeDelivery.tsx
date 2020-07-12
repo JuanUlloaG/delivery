@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
-import { FlatList, View, Text, StyleSheet, Animated, ScrollView, Dimensions } from 'react-native';
+import { FlatList, View, Text, StyleSheet, Animated, ScrollView, Dimensions, Keyboard } from 'react-native';
 import { getHomeBagItems, updateBagAction, updateBagActionFinish } from '../../actions/HomeListBagAction'
 import IconBar from "react-native-vector-icons/MaterialCommunityIcons";
 import Loading from '../Loading/Loading'
@@ -55,6 +55,7 @@ interface State {
 class HomeDelivery extends React.Component<Props, State> {
 
     private camera: RNCamera;
+    private find: boolean = false;
     constructor(props: Props) {
         super(props)
         this.state = {
@@ -202,6 +203,10 @@ class HomeDelivery extends React.Component<Props, State> {
         }
     }
 
+    validateBag(text: string) {
+
+    }
+
     clearBagNumber() {
         this.setState({ bagNumber: "" })
     }
@@ -218,22 +223,34 @@ class HomeDelivery extends React.Component<Props, State> {
         // this.props.navigation.goBack()
     }
 
+    Validate(bagNumber: string) {
+        if (this.state.bags.includes(bagNumber)) {
+            this.find = true
+            return true
+        }
+        return false
+    }
+
+    focusLose() {
+        if (this.find) {
+            this.setState({ bagNumber: "" })
+            this.find = false
+        }
+    }
+
 
 
     render() {
 
-        const title = !this.state.resume ? "Detalle" : "Resumen"
         this.props.navigation.setOptions({
-            headerTitle: title
+            headerTitle: "Recepcionar"
         });
 
         const order = this.state.order
-        // this.filterData(this.state.bagNumber)
 
         const animatedStyle = {
             height: this.state.animationValue
         }
-        console.log(this.state.order);
 
         return (
             <Center>
@@ -242,10 +259,10 @@ class HomeDelivery extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ flex: 2 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Pickea el bulto</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bolsa" type={false} editable={true} />
+                                    <CustomInput value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
                                 <View style={styles.modalSectionBodyScanBar}>
                                     <TouchableOpacity onPress={() => this.captureBagNumber()} style={{}}>
@@ -258,8 +275,8 @@ class HomeDelivery extends React.Component<Props, State> {
                                 <View style={styles.modalSectionBodyTitle}>
                                     {
                                         this.state.empty ?
-                                            <Text style={styles.modalSectionBodyTitleText2}>No se encontraron bolsas para ese codigo</Text> :
-                                            <Text style={styles.modalSectionBodyTitleText2}>Lista de todos los bolsas asociadas </Text>
+                                            <Text style={styles.modalSectionBodyTitleText2}>No se encontraron Bultos para ese codigo</Text> :
+                                            <Text style={styles.modalSectionBodyTitleText2}>Lista de todos los Bultos asociados </Text>
                                     }
 
                                 </View>
@@ -274,10 +291,14 @@ class HomeDelivery extends React.Component<Props, State> {
                                                         order.bags.map((bag: any, index: number) => {
                                                             return (
                                                                 <View key={index} style={{ height: hp(7), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                                                                    <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bagNumber) ? colors.darkGreen : colors.black }]}>Nº {bag.bagNumber}</Text>
+                                                                    <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bagNumber) ? colors.darkGreen : colors.lightgray }]}>Nº {bag.bagNumber}</Text>
                                                                     {
-                                                                        this.state.bags.includes(bag.bagNumber) &&
+                                                                        this.Validate(bag.bagNumber) &&
                                                                         <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
+                                                                    }
+                                                                    {
+                                                                        this.Validate(bag.bagNumber) && Keyboard.dismiss()
+                                                                        // this.Validate(bag.bagNumber) && this.clearBagNumber()
                                                                     }
                                                                 </View>
                                                             )
@@ -312,7 +333,7 @@ class HomeDelivery extends React.Component<Props, State> {
                                                 !this.props.bags.success ?
                                                     (Object.keys(order).length > 0) &&
                                                         (order.bags.length > 0 && (this.state.bags.length == order.bags.length)) ?
-                                                        <CustomButtonList onPress={() => { this.clearBagNumber() }} title="Siguiente Bolsa" disable={false} size={"XL"} /> :
+                                                        <CustomButtonList onPress={() => { this.clearBagNumber() }} title="Siguiente Bulto" disable={false} size={"XL"} /> :
                                                         <CustomButtonList onPress={() => { this.updateOrder() }} title="Finalizar" disable={false} size={"XL"} />
                                                     :
                                                     <CustomButtonList onPress={() => { this.finish() }} title="Terminar" disable={false} size={"XL"} />
