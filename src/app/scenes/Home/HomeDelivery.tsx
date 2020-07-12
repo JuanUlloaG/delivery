@@ -226,6 +226,7 @@ class HomeDelivery extends React.Component<Props, State> {
     Validate(bagNumber: string) {
         if (this.state.bags.includes(bagNumber)) {
             this.find = true
+            Keyboard.dismiss()
             return true
         }
         return false
@@ -259,7 +260,7 @@ class HomeDelivery extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ flex: 2 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o Digita o escanea el bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
                                     <CustomInput value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
@@ -275,7 +276,7 @@ class HomeDelivery extends React.Component<Props, State> {
                                 <View style={styles.modalSectionBodyTitle}>
                                     {
                                         this.state.empty ?
-                                            <Text style={styles.modalSectionBodyTitleText2}>No se encontraron Bultos para ese codigo</Text> :
+                                            <Text style={styles.modalSectionBodyTitleText2}>No se encontraron Bultos para ese número</Text> :
                                             <Text style={styles.modalSectionBodyTitleText2}>Lista de todos los Bultos asociados </Text>
                                     }
 
@@ -297,7 +298,7 @@ class HomeDelivery extends React.Component<Props, State> {
                                                                         <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
                                                                     }
                                                                     {
-                                                                        this.Validate(bag.bagNumber) && Keyboard.dismiss()
+                                                                        // this.Validate(bag.bagNumber) && Keyboard.dismiss()
                                                                         // this.Validate(bag.bagNumber) && this.clearBagNumber()
                                                                     }
                                                                 </View>

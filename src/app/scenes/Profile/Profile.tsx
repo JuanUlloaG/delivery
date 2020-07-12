@@ -10,13 +10,7 @@ interface ProfileProps {
 }
 
 export const Profile: React.FC<ProfileProps> = ({ navigation }) => {
-    console.log();
-    const { login, logout } = useContext(AuthContext)
-    const out = () => {
-        logout()
-        navigation.navigate("Pickear")
-    }
-
+    const { login, logout, getProfile } = useContext(AuthContext)
     return (
         <Center>
             <Text>Perfil del Usuario </Text>
