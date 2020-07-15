@@ -1,9 +1,9 @@
-import { UpdateShop, AuthUnverifiedUserAction, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail } from "../types/AuthParamLIst";
+import { UpdateShop, AuthUnverifiedUserAction, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail, AuthClearError } from "../types/AuthParamLIst";
 import { login } from "../services/Api";
 import { Dispatch, Action } from "redux";
 import AsyncStorage from "@react-native-community/async-storage";
 
-export type AuthType = AuthUnverifiedUserAction | UpdateShop | AuthVerifyUserAction | AuthLogOutUserAction | AuthLoginUserAction | AuthLoginAction | AuthLoginActionSuccess | AuthLoginActionFail;
+export type AuthType = AuthUnverifiedUserAction | UpdateShop | AuthVerifyUserAction | AuthLogOutUserAction | AuthLoginUserAction | AuthLoginAction | AuthLoginActionSuccess | AuthLoginActionFail | AuthClearError;
 
 export const loginAction = (user: { user: string, password: string }) => {
     return (dispatch: Dispatch<Action>) => {
@@ -29,6 +29,10 @@ export const unverifiedUser = (email: string): AuthUnverifiedUserAction => ({
 export const updateShop = (shop: string): UpdateShop => ({
     type: 'UPDATE_SHOP',
     shop: shop
+});
+
+export const AuthClear = (): AuthClearError => ({
+    type: 'CLEAR_ERROR',
 });
 
 export const verifyUser = (name: string): AuthVerifyUserAction => ({
