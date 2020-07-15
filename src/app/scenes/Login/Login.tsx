@@ -13,6 +13,9 @@ import store from '../../store/Store';
 import { RFValue } from "react-native-responsive-fontsize";
 import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import { RNNotificationBanner } from 'react-native-notification-banner';
+import Icon from 'react-native-vector-icons/FontAwesome'
+let copy = <Icon name="close" size={24} color="red" family={"FontAwesome"} />;
 
 
 interface LoginProps {
@@ -20,7 +23,7 @@ interface LoginProps {
 }
 
 export function Login({ navigation, route }: AuthNavProps<'Login'>) {
-    const { login } = useContext(AuthContext)
+    const { login, clear } = useContext(AuthContext)
     const [rut, setrut] = useState("");
     const [password, setPassword] = useState("");
     const { error, message, isFetching } = store.getState().auth
@@ -34,7 +37,7 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
         setPassword(text)
     }
 
-    const clear = () => {
+    const clearInput = () => {
         setPassword("")
         setrut("")
     }
@@ -50,6 +53,15 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
         if (rut && password) login(rut, password)
         else { Alert.alert("Información", "Debes completar todos los datos para iniciar sesión") }
     }
+
+
+    if (error) RNNotificationBanner.Show({
+        title: "Error", subTitle: message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+            clear()
+            clearInput()
+        }
+    })
+
     if (store.getState().auth.isFetching) {
         return (
             <Center>
@@ -63,8 +75,12 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
             <ScrollView contentContainerStyle={styles.scrollView} >
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={styles.title}>Te damos la bienvenida</Text>
-                    <CustomInput value={rut} onBlur={focusLose} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} editable={true} />
-                    <CustomInput value={password} onBlur={() => { }} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} editable={true} />
+                    <View style={{ marginTop: Size(66), }}>
+                        <CustomInput size='l' value={rut} onBlur={focusLose} onChangeText={onChangeRut} placeholder="Ingresa Rut" type={false} editable={true} />
+                    </View>
+                    <View style={{ marginTop: Size(66) }}>
+                        <CustomInput size='l' value={password} onBlur={() => { }} onChangeText={onChangePassword} placeholder="Ingresa tu contraseña" type={true} editable={true} />
+                    </View>
                     <View style={{ width: wp(100), marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                         <CustomButton onPress={loginAction} size={"l"}>
                             <Text style={{
@@ -74,13 +90,6 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
                             }}>Iniciar Sesión</Text>
                         </CustomButton>
                     </View>
-
-                    {
-                        error &&
-                        <View style={{ width: wp(90), backgroundColor: colors.mediumRed, marginTop: 40, justifyContent: 'center', alignItems: 'center', height: hp(4), borderRadius: 4 }}>
-                            <Text style={styles.passwordForget}>{message}</Text>
-                        </View>
-                    }
                     <TouchableOpacity style={{ paddingTop: 50 }}>
                         <Text style={styles.passwordForget}>¿Olvidaste tu contraseña?</Text>
                     </TouchableOpacity>
