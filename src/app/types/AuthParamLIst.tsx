@@ -25,6 +25,9 @@ export interface AuthVerifyUserAction {
     type: 'VERIFY_USER';
     name: string;
 }
+export interface AuthClearError {
+    type: 'CLEAR_ERROR';
+}
 
 export interface AuthLoginUserAction {
     type: 'LOGIN_USER';

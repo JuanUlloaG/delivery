@@ -5,5 +5,6 @@ export type AppParamList = {
     Pickear: undefined;
     Repeción: undefined;
     Profile: undefined;
+    Perfil: undefined;
     Entrega: undefined;
 }
