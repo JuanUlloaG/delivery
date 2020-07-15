@@ -19,9 +19,11 @@ var { width, height } = Dimensions.get('window');
 import { RNCamera } from "react-native-camera";
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
+import { RNNotificationBanner } from 'react-native-notification-banner';
+import Icons from 'react-native-vector-icons/FontAwesome'
+Icons.loadFont('AntDesign.ttf')
+let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
 
-
-postBagsAction
 
 import { State as AuthState } from "../../reducers/AuthReducer";
 
@@ -60,6 +62,7 @@ class Detail extends React.Component<Props, State> {
     }
 
     finishProcess() {
+        this.props.restart()
         this.props.route.params.updateBagSend()
         let to
         (this.props.auth.profile == "2") ? to = "Pickear" : "Repeción"
@@ -70,7 +73,18 @@ class Detail extends React.Component<Props, State> {
 
 
     render() {
-        console.log(this.props.route.params.bagContainer);
+
+        if (this.props.detail.error) RNNotificationBanner.Show({
+            title: "Error", subTitle: this.props.detail.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+
+            }
+        })
+        if (this.props.detail.success) RNNotificationBanner.Show({
+            title: "Mensaje", subTitle: this.props.detail.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+                this.finishProcess()
+            }
+        })
+        
         this.props.navigation.setOptions({
             headerTitle: "Resumen",
             headerTitleStyle: {
@@ -143,16 +157,16 @@ class Detail extends React.Component<Props, State> {
 
                         </View>
                         {
-                            this.props.detail.success ?
-                                <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                    <CustomButton onPress={() => this.finishProcess()} size={"m"} >
-                                        <Text style={{
-                                            fontFamily: fonts.buttonFont,
-                                            fontSize: RFValue(Size(56)),
-                                            color: "#333333"
-                                        }}>Ir a pedidos</Text>
-                                    </CustomButton>
-                                </View> :
+                            // this.props.detail.success ?
+                            //     <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
+                            //         <CustomButton onPress={() => this.finishProcess()} size={"m"} >
+                            //             <Text style={{
+                            //                 fontFamily: fonts.buttonFont,
+                            //                 fontSize: RFValue(Size(56)),
+                            //                 color: "#333333"
+                            //             }}>Ir a pedidos</Text>
+                            //         </CustomButton>
+                            //     </View> :
                                 <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                                     <CustomButton onPress={() => this.finishPacking()} size={"m"} >
                                         <Text style={{

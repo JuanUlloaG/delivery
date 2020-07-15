@@ -18,6 +18,8 @@ var { width, height } = Dimensions.get('window');
 import { RNCamera } from "react-native-camera";
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
+import RNPrint from 'react-native-print';
+import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter } from 'react-native-bluetooth-escpos-printer';
 
 
 import { State as AuthState } from "../../reducers/AuthReducer";
@@ -43,7 +45,8 @@ interface State {
     pickedProductArray: Array<any>,
     resume: boolean,
     torchOn: boolean,
-    toggleModal: boolean
+    toggleModal: boolean,
+    selectedPrinter: any
 }
 
 class DetailAddToBag extends React.Component<Props, State> {
@@ -61,7 +64,8 @@ class DetailAddToBag extends React.Component<Props, State> {
             pickedProductArray: [],
             resume: false,
             torchOn: false,
-            toggleModal: false
+            toggleModal: false,
+            selectedPrinter: null
         }
     }
 
@@ -75,6 +79,12 @@ class DetailAddToBag extends React.Component<Props, State> {
 
     componentDidMount() {
         // this.loadItems(0)
+        // this.selectPrinter()
+    }
+
+    selectPrinter = async () => {
+        const selectedPrinter = await RNPrint.selectPrinter()
+        this.setState({ selectedPrinter })
     }
 
     loadItems(index: number) {
@@ -217,6 +227,9 @@ class DetailAddToBag extends React.Component<Props, State> {
 
 
     render() {
+
+        console.log(this.state.selectedPrinter);
+
         this.props.navigation.setOptions({
             headerTitle: "Agregar",
             headerTitleStyle: {

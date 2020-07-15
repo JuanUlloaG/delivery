@@ -19,6 +19,8 @@ type Animation = any | Animated.Value;
 import SwipeRender from "react-native-swipe-render";
 
 
+
+
 postBagsAction
 
 
@@ -573,7 +575,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         marginBottom: 5,
-        marginTop: 5
+        marginTop: 5,
+        marginRight: 20
     },
     bodyContainerScrollViewContainerPickedSectionTitle: {
         flex: 1,
