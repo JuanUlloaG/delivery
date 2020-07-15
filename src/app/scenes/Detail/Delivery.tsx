@@ -250,7 +250,7 @@ class Delivery extends React.Component<Props, State> {
                                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                                     <View style={{ flex: 2 }}>
                                         <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
-                                            <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
+                                            <IconBar name={"barcode-scan"} size={RFValue(100)} color={colors.black} />
                                         </TouchableOpacity>
                                         <View style={styles.modalSectionBodyTitle}>
                                             <Text style={styles.modalSectionBodyTitleText}>Lista de todos los bultos asociados </Text>

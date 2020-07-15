@@ -232,7 +232,7 @@ class DetailDelivery extends React.Component<Props, State> {
                                     <CustomInput value={this.state.bagNumber} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
                                 <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
-                                    <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
+                                    <IconBar name={"barcode-scan"} size={RFValue(100)} color={colors.black} />
                                 </TouchableOpacity>
                             </View>
                             <View style={{ flex: 2 }}>
