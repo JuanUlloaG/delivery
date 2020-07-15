@@ -52,7 +52,8 @@ class Home extends React.Component<HomeAddresProps, State> {
         this.props.navigation.navigate('DetailAddres', { ordernumber: id });
     }
     render() {
-        if (this.props.bags.data.length > 0) {
+        console.log(this.props.bags);
+        if (this.props.bags.data && this.props.bags.data.length > 0) {
             return (
                 <Center>
                     <View style={styles.header}>
@@ -90,6 +91,9 @@ class Home extends React.Component<HomeAddresProps, State> {
                                                         }
 
                                                     </View>
+                                                    <View>
+                                                        <CountDown date={""} />
+                                                    </View>
                                                 </View>
                                             </View>
                                             <View style={styles.bodyListContainerButton}>
@@ -117,8 +121,9 @@ class Home extends React.Component<HomeAddresProps, State> {
         return (
             <Center>
                 {
-                    this.props.bags.isFetching &&
-                    <Loading />
+                    this.props.bags.isFetching ?
+                        <Loading /> :
+                        <Text>No hay data para mostrar 👨🏾‍💻</Text>
                 }
             </Center>
         )

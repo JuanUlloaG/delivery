@@ -18,6 +18,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CustomButton } from '../../components/CustomButton';
 import { CustomInput } from '../../components/TextInput';
 import { RNCamera } from 'react-native-camera';
+import { RNNotificationBanner } from 'react-native-notification-banner';
+import Icons from 'react-native-vector-icons/FontAwesome'
+Icons.loadFont('AntDesign.ttf')
+let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
 
 
 var { width, height } = Dimensions.get('window');
@@ -77,7 +81,7 @@ class HomeDelivery extends React.Component<Props, State> {
     componentDidMount() {
         this.props.fetchDataBags()
         // let data = this.filterData()
-        // console.log(object);
+        console.log(this.props.bags);
     }
 
     filterData(bagNumber: string) {
@@ -220,6 +224,7 @@ class HomeDelivery extends React.Component<Props, State> {
         this.props.updateBagFinish()
         this.setState({ bagNumber: "", order: {} })
         this.props.fetchDataBags()
+        this.setState({ order: {} })
         // this.props.navigation.goBack()
     }
 
@@ -247,6 +252,17 @@ class HomeDelivery extends React.Component<Props, State> {
             headerTitle: "Recepcionar"
         });
 
+        if (this.props.bags.error) RNNotificationBanner.Show({
+            title: "Error", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+
+            }
+        })
+        if (this.props.bags.success) RNNotificationBanner.Show({
+            title: "Mensaje", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+                this.finish()
+            }
+        })
+
         const order = this.state.order
 
         const animatedStyle = {
@@ -260,14 +276,14 @@ class HomeDelivery extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ flex: 2 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Digita o Digita o escanea el bulto</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
                                     <CustomInput value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
                                 <View style={styles.modalSectionBodyScanBar}>
                                     <TouchableOpacity onPress={() => this.captureBagNumber()} style={{}}>
-                                        <IconBar name={"barcode-scan"} size={RFValue(120)} color={colors.black} />
+                                        <IconBar name={"barcode-scan"} size={RFValue(100)} color={colors.black} />
                                     </TouchableOpacity>
                                 </View>
 
@@ -312,7 +328,7 @@ class HomeDelivery extends React.Component<Props, State> {
                                 </View>
                             </View>
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                {
+                                {/* {
                                     this.props.bags.error &&
                                     <View style={{ width: wp(95), backgroundColor: colors.mediumRed, marginTop: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 4 }}>
                                         <Text style={styles.resumeBodyInfoText}>Ha ocurrido un error al finalizar el proceso</Text>
@@ -324,20 +340,20 @@ class HomeDelivery extends React.Component<Props, State> {
                                     <View style={{ width: wp(95), backgroundColor: colors.darkGreen, marginTop: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 4 }}>
                                         <Text style={styles.resumeBodyInfoText}>{this.props.bags.message}</Text>
                                     </View>
-                                }
+                                } */}
                             </View>
                             <View style={styles.headerContainer}>
                                 {
                                     <View style={styles.resumeHeaderInfo}>
                                         <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
                                             {
-                                                !this.props.bags.success ?
+                                                // !this.props.bags.success ?
                                                     (Object.keys(order).length > 0) &&
                                                         (order.bags.length > 0 && (this.state.bags.length == order.bags.length)) ?
                                                         <CustomButtonList onPress={() => { this.clearBagNumber() }} title="Siguiente Bulto" disable={false} size={"XL"} /> :
                                                         <CustomButtonList onPress={() => { this.updateOrder() }} title="Finalizar" disable={false} size={"XL"} />
-                                                    :
-                                                    <CustomButtonList onPress={() => { this.finish() }} title="Terminar" disable={false} size={"XL"} />
+                                                    // :
+                                                    // <CustomButtonList onPress={() => { this.finish() }} title="Terminar" disable={false} size={"XL"} />
                                             }
                                         </View>
                                     </View>

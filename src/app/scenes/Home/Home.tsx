@@ -82,7 +82,19 @@ class Home extends React.Component<HomeProps, State> {
                             data={this.getData()}
                             extraData={this.props}
                             refreshing={isfetch}
+                            // ListHeaderComponent={() => {
+                            //     return ()
+                            // }}
                             onRefresh={() => this.handleRefresh()}
+                            ListEmptyComponent={() => {
+                                return (
+                                    <Center>
+                                        <Text>No hay ordenes para mostrar 👨🏾‍💻</Text>
+                                    </Center>
+                                )
+                            }
+
+                            }
                             keyExtractor={(item, index) => item._id.toString()}
                             renderItem={({ item }) => {
                                 return (
@@ -116,13 +128,11 @@ class Home extends React.Component<HomeProps, State> {
                         />
                     }
                 </View>
-                {
-                    this.props.home.isFetching &&
-                    <Loading />
-                }
+
             </Center>
         );
     }
+
 }
 
 const styles = StyleSheet.create({
