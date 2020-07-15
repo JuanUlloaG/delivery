@@ -6,14 +6,16 @@ import Antdesing from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Icon from "react-native-vector-icons/Feather";
 import { HomeStack } from './HomeStack';
-import { Profile } from '../scenes/Profile/Profile';
-import { Search } from '../scenes/Search/Search';
+import { ProfileStack } from './ProfileStack';
+import Search from '../scenes/Search/Search';
+
 import { DeliveryStack } from './DeliveryStack';
 
 import { useIsFocused } from '@react-navigation/native';
 
 import colors from '../assets/Colors';
 import { AuthContext } from "../providers/AuthProvider";
+import { SearchStack } from './SearchStack';
 
 interface AppTabProps {
 
@@ -51,6 +53,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
     return (
         <Tabs.Navigator initialRouteName="Pickear"
             screenOptions={({ route }) => ({
+
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
                     if (route.name === 'Pickear') {
@@ -59,7 +62,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                     } else if (route.name === 'Search') {
                         iconName = returnParams();
                         return <Antdesing name={iconName} size={size} color={color} />;
-                    } else if (route.name === 'Profile') {
+                    } else if (route.name === 'Perfil') {
                         iconName = focused ? 'user' : 'user';
                         return <Antdesing name={iconName} size={size} color={color} />;
                     } else if (route.name === 'Entrega') {
@@ -77,16 +80,18 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                 activeTintColor: colors.darkYellow,
                 inactiveTintColor: colors.gray,
                 keyboardHidesTabBar: true,
+                style: { backgroundColor: '#f9f9f9' }
+
 
             }}
         >
             <Tabs.Screen name={getname()} component={HomeStack} />
             {
                 getProfile() == "2" ?
-                    <Tabs.Screen name='Search' component={Search} /> :
+                    <Tabs.Screen name='Search' component={SearchStack} /> :
                     <Tabs.Screen name='Entrega' component={DeliveryStack} />
             }
-            <Tabs.Screen name='Profile' component={Profile} />
+            <Tabs.Screen name='Perfil' component={ProfileStack} />
         </Tabs.Navigator>
     );
 }
