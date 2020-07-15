@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 import store from '../store/Store';
-import { loginUser, logOutUser, loginAction } from '../actions';
+import { loginUser, logOutUser, loginAction, AuthClear } from '../actions/AuthActions';
 import axios, { AxiosResponse } from "axios";
-import { AuthUnverifiedUserAction, AuthVerifyUserAction, AuthUnapprovedUserAction, AuthLogOutUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail, AuthLoginUserAction } from '../types/AuthParamLIst';
+import { AuthUnverifiedUserAction, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail, AuthLoginUserAction, AuthClearError } from '../types/AuthParamLIst';
 type AuthAction =
     | AuthUnverifiedUserAction
     | AuthVerifyUserAction
-    | AuthUnapprovedUserAction
     | AuthLogOutUserAction
     | AuthLoginAction
     | AuthLoginActionSuccess
     | AuthLoginActionFail
+    | AuthClearError
     | AuthLoginUserAction;
 
 
@@ -24,6 +24,7 @@ export const AuthContext = React.createContext<{
     user: User,
     login: (user: string, password: string) => void,
     logout: () => void,
+    clear: () => void,
     getToken: () => Boolean,
     getProfile: () => String,
     getShop: () => String
@@ -31,6 +32,7 @@ export const AuthContext = React.createContext<{
     user: { name: "", email: "", token: "" },
     login: (user: string, password: string) => { },
     logout: () => { },
+    clear: () => { },
     getToken: Boolean,
     getProfile: String,
     getShop: String
@@ -66,6 +68,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (store.getState().auth.token) return true
         return false
     }
+    function clearAuth() {
+        store.dispatch(AuthClear())
+    }
 
     function getProfile(): String {
         if (store.getState().auth.token) return store.getState().auth.profile
@@ -82,6 +87,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             user,
             login: login,
             logout: logout,
+            clear: clearAuth,
             getShop: getShop,
             getToken: getToken,
             getProfile: getProfile
