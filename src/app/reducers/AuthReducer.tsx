@@ -1,4 +1,4 @@
-import { AuthUnverifiedUserAction, UpdateShop, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail } from "../types/AuthParamLIst";
+import { AuthUnverifiedUserAction, UpdateShop, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail, AuthClearError } from "../types/AuthParamLIst";
 
 type AuthAction =
     | AuthUnverifiedUserAction
@@ -8,12 +8,13 @@ type AuthAction =
     | AuthLoginAction
     | AuthLoginActionSuccess
     | AuthLoginActionFail
+    | AuthClearError
     | AuthLoginUserAction;
 
 
 export interface State {
     name: string;
-    id:string
+    id: string
     email: string;
     token: string;
     profile: string;
@@ -27,7 +28,7 @@ export interface State {
 
 const defaultState: State = {
     name: '',
-    id:'',
+    id: '',
     email: '',
     token: '',
     profile: '',
@@ -74,6 +75,11 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
             return {
                 ...state,
                 shop: action.shop
+            }
+        case 'CLEAR_ERROR':
+            return {
+                ...state,
+                error: false
             }
         case 'UNVERIFIED_USER':
             return state;
