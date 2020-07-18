@@ -8,9 +8,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 export const getShopItems = () => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(getShopList());
-        // dispatch(fetchItemsSuccess([]));
         ShopList().then((response: any) => {
-            // console.log(response);
             if (response.length) dispatch(fetchItemsSuccess(response));
             else { dispatch(fetchItemsFail()); }
         })

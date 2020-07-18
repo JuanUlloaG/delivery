@@ -18,6 +18,7 @@ export const getHomeBagItems = () => {
 export const getHomeBagItemsForDelivery = () => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(getHomeListBag());
+        console.log("aquis");
         HomeListBag().then((response: any) => {
             if (response.length) dispatch(fetchItemsBagSuccess(response));
             else { dispatch(fetchItemsBagFail()); }
@@ -25,20 +26,20 @@ export const getHomeBagItemsForDelivery = () => {
     }
 }
 
-export const updateBagAction = (id: string) => {
+export const updateBagAction = (id: string, orderId: string) => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(updateBag());
-        updateBagCall(id).then((response: any) => {
+        updateBagCall(id, orderId).then((response: any) => {
             if (response) dispatch(updateBagSuccess());
             else { dispatch(updateBagFail()); }
         })
     }
 }
 
-export const updateBagReceivedAction = (id: string, comment: string, received: string) => {
+export const updateBagReceivedAction = (id: string, orderId: string, comment: string, received: string) => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(updateBag());
-        UpdateBagReceived(id, comment, received).then((response: any) => {
+        UpdateBagReceived(id, orderId, comment, received).then((response: any) => {
             if (response) dispatch(updateBagSuccess());
             else { dispatch(updateBagFail()); }
         })
