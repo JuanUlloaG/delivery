@@ -84,9 +84,9 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
                     <View style={{ width: wp(100), marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                         <CustomButton onPress={loginAction} size={"l"}>
                             <Text style={{
-                                fontFamily: "AvenirNextBold",
+                                fontFamily: fonts.primaryFontTitle,
                                 fontSize: RFValue(Size(56)),
-                                color: "rgba(0, 0, 0, 255)"
+                                color: colors.white
                             }}>Iniciar Sesión</Text>
                         </CustomButton>
                     </View>
@@ -103,12 +103,12 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
 const styles = StyleSheet.create({
     title: {
         fontFamily: fonts.primaryFontTitle,
-        fontSize: RFValue(25),
+        fontSize: RFValue(20),
         color: colors.black
     },
     passwordForget: {
-        fontFamily: 'AvenirNextRegular',
-        // fontSize: RFValue(22)
+        fontFamily: fonts.primaryFont,
+        fontSize: RFValue(14)
     },
     scrollView: {
         flexGrow: 1,
