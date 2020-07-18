@@ -11,6 +11,19 @@ export type DeliveryParamList = {
     };
 }
 
+export type SendOrderState = {
+    type: 'REQUEST_STATE';
+}
+export type SendOrderStateSuccess = {
+    type: 'REQUEST_STATE_SUCCESS';
+}
+export type SendOrderStateFail = {
+    type: 'REQUEST_STATE_FAIL';
+}
+export type ClearState = {
+    type: 'REQUEST_STATE_CLEAR';
+}
+
 export type SendBagToOrder = {
     type: 'REQUEST_BAG';
 }

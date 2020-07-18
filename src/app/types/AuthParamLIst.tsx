@@ -14,7 +14,12 @@ export interface AuthUnverifiedUserAction {
 }
 export interface UpdateShop {
     type: 'UPDATE_SHOP';
-    shop: string;
+    shop: { key: string, description: string };
+}
+
+export interface UpdateState {
+    type: 'UPDATE_STATE';
+    state: boolean;
 }
 
 export interface AuthPass {
@@ -25,17 +30,22 @@ export interface AuthVerifyUserAction {
     type: 'VERIFY_USER';
     name: string;
 }
+
 export interface AuthClearError {
     type: 'CLEAR_ERROR';
 }
 
+export interface AuthClear {
+    type: 'CLEAR_STATE';
+}
+
 export interface AuthLoginUserAction {
     type: 'LOGIN_USER';
-    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
+    data: { name: string, id: string, email: string, token: string, profile: { key: string, description: string }, company: { id: string, name: string }, shop: { key: string, description: string }, message: string, state: boolean };
 }
 export interface AuthLogOutUserAction {
     type: 'LOGOUT_USER';
-    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
+    data: { name: string, id: string, email: string, token: string, profile: { key: string, description: string }, company: { id: string, name: string }, shop: { key: string, description: string }, message: string, state: boolean };
 }
 
 
@@ -45,12 +55,12 @@ export interface AuthLoginAction {
 
 export interface AuthLoginActionSuccess {
     type: 'FETCHING_LOGIN_SUCCESS';
-    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string };
+    data: { name: string, id: string, email: string, token: string, profile: { key: string, description: string }, company: { id: string, name: string }, shop: { key: string, description: string }, message: string, state: boolean };
 }
 
 export interface AuthLoginActionFail {
     type: 'FETCHING_LOGIN_FAIL';
-    data: { name: string, id: string, email: string, token: string, profile: string, company: string, shop: string, message: string, error: boolean };
+    data: { name: string, id: string, email: string, token: string, profile: { key: string, description: string }, company: { id: string, name: string }, shop: { key: string, description: string }, message: string, error: boolean, state: boolean };
 }
 
 export type AuthNavProps<T extends keyof AuthParamList> = {
