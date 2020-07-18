@@ -10,6 +10,7 @@ import DetailAddres from '../scenes/Detail/DetailAddres';
 import DeliveryDetail from '../scenes/Detail/DeliveryDetail';
 import DetailMap from '../scenes/Detail/DetailMap';
 import Search from '../scenes/Search/Search';
+import SearchDetail from '../scenes/Search/SearchDetail';
 import HomeAddres from '../scenes/Delivery/HomeAddres';
 import Delivery from '../scenes/Detail/Delivery';
 import { Edit } from '../scenes/Edit/Edit';
@@ -38,8 +39,8 @@ export const SearchStack: React.FC<SearchStackProps> = ({ navigation, route }) =
 
 
     return (
-        <Stack.Navigator mode={mode} screenOptions={scOptions} initialRouteName={"Search"}>
-            <Stack.Screen name={"Search"} component={Search} options={(navigation) => ({
+        <Stack.Navigator mode={mode} screenOptions={scOptions} initialRouteName={"Buscar"}>
+            <Stack.Screen name={"Buscar"} component={Search} options={(navigation) => ({
                 headerStyle: {
                     backgroundColor: colors.darkBlue,
                 },
@@ -49,10 +50,35 @@ export const SearchStack: React.FC<SearchStackProps> = ({ navigation, route }) =
                     alignSelf: 'center',
                     color: colors.white,
                     fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(77),
+                    fontSize: Size(65),
                 },
                 headerStatusBarHeight: Size(30),
-                headerTitle: "Entrega"
+                headerTitle: "Consulta"
+            })
+            } />
+            <Stack.Screen name={"Detalle"} component={SearchDetail} options={(navigation) => ({
+                headerStyle: {
+                    backgroundColor: colors.darkBlue,
+                },
+                headerTitleStyle: {
+                    textAlign: 'center',
+                    flexGrow: 1,
+                    alignSelf: 'center',
+                    color: colors.white,
+                    marginRight: 50,
+                    fontFamily: fonts.primaryFontTitle,
+                    fontSize: Size(65),
+                },
+                headerStatusBarHeight: Size(30),
+                headerTitle: "Detalle Del Bulto",
+                headerLeft: () => (
+                    // platform == "ios" &&
+                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <Antdesing name='left' size={24} color={colors.white} />
+                        </View>
+                    </TouchableOpacity>
+                )
             })
             } />
         </Stack.Navigator>

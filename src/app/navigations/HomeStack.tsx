@@ -76,7 +76,7 @@ function HomeNavigator({ navigation, route }) {
                     alignSelf: 'center',
                     color: colors.white,
                     fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(77),
+                    fontSize: Size(65),
                 },
                 headerStatusBarHeight: Size(35)
             })

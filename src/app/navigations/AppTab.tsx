@@ -42,7 +42,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
             case "2":
                 return "Pickear"
             case "3":
-                return "Repeción"
+                return "Recepción"
 
             default:
                 return "Pickear"
@@ -59,7 +59,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                     if (route.name === 'Pickear') {
                         iconName = 'shopping-basket'
                         return <FontAwesome name={iconName} size={size} color={color} />;
-                    } else if (route.name === 'Search') {
+                    } else if (route.name === 'Buscar') {
                         iconName = returnParams();
                         return <Antdesing name={iconName} size={size} color={color} />;
                     } else if (route.name === 'Perfil') {
@@ -68,7 +68,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
                     } else if (route.name === 'Entrega') {
                         iconName = returnParams();
                         return <Antdesing name={iconName} size={size} color={color} />;
-                    } else if (route.name === 'Repeción') {
+                    } else if (route.name === 'Recepción') {
                         iconName = "shopping-bag"
                         return <Icon name={iconName} size={size} color={color} />;
                     }
@@ -88,7 +88,7 @@ export const AppTab: React.FC<AppTabProps> = ({ }) => {
             <Tabs.Screen name={getname()} component={HomeStack} />
             {
                 getProfile() == "2" ?
-                    <Tabs.Screen name='Search' component={SearchStack} /> :
+                    <Tabs.Screen name='Buscar' component={SearchStack} /> :
                     <Tabs.Screen name='Entrega' component={DeliveryStack} />
             }
             <Tabs.Screen name='Perfil' component={ProfileStack} />

@@ -73,12 +73,12 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     function getProfile(): String {
-        if (store.getState().auth.token) return store.getState().auth.profile
+        if (store.getState().auth.token) return store.getState().auth.profile.key
         return ""
     }
 
     function getShop(): String {
-        if (store.getState().auth.shop) return store.getState().auth.shop
+        if (store.getState().auth.shop) return store.getState().auth.shop.key
         return ""
     }
 
