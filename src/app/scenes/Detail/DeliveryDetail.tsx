@@ -66,11 +66,9 @@ class DetailDelivery extends React.Component<Props, State> {
     }
 
     filterData(bagNumber: string) {
-        console.log(this.props.bags);
         const result = this.props.bags.data.filter((obj) => {
             return obj.bags.some((bag: any) => bag.bagNumber === bagNumber)
         })
-        // console.log(result);
         if (result.length) {
             this.setState({ order: result[0] })
             return result[0]
@@ -115,7 +113,6 @@ class DetailDelivery extends React.Component<Props, State> {
                 useNativeDriver: false
             })
         ]).start(() => {
-            // console.log("object");
         });
     }
 
@@ -144,7 +141,6 @@ class DetailDelivery extends React.Component<Props, State> {
                 useNativeDriver: false
             })
         ]).start(() => {
-            // console.log("dismiss");
         });
     }
 
@@ -217,7 +213,6 @@ class DetailDelivery extends React.Component<Props, State> {
             height: this.state.animationValue
         }
 
-        // console.log("order", order);
         // if (Object.keys(order).length) {
         return (
             <Center>
@@ -226,7 +221,7 @@ class DetailDelivery extends React.Component<Props, State> {
                         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                             <View style={{ flex: 2 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Digita o Digita o escanea el bulto</Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
                                 </View>
                                 <View style={styles.modalSectionBodyInput}>
                                     <CustomInput value={this.state.bagNumber} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
@@ -237,7 +232,7 @@ class DetailDelivery extends React.Component<Props, State> {
                             </View>
                             <View style={{ flex: 2 }}>
                                 <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Lista de todos los bultos asociados </Text>
+                                    <Text style={styles.modalSectionBodyTitleText}>Lista de todos los bultos asociados</Text>
                                 </View>
                                 <View style={{ flex: 5 }}>
                                     <ScrollView contentContainerStyle={styles.bodyContainerScrollView}>
@@ -249,7 +244,7 @@ class DetailDelivery extends React.Component<Props, State> {
                                                     {
                                                         order.bags.map((bag: any, index: number) => {
                                                             return (
-                                                                <View key={index} style={{ height: hp(7), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                                                <View key={index} style={{ width: wp(60), height: hp(6), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: colors.grayHeader, marginTop: 10, borderRadius: 10 }}>
                                                                     <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bagNumber) ? colors.darkGreen : colors.black }]}>Nº {bag.bagNumber}</Text>
                                                                     {
                                                                         this.state.bags.includes(bag.bagNumber) &&
@@ -603,7 +598,8 @@ const styles = StyleSheet.create({
     },
     modalSectionBodyTitleText: {
         fontSize: RFValue(18),
-        fontFamily: fonts.primaryFontTitle
+        fontFamily: fonts.primaryFontTitle,
+        color: colors.black2
     },
     modalSectionBodyInput: {
         flex: 1,

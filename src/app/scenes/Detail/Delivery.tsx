@@ -29,7 +29,7 @@ interface Props {
     bags: { isFetching: boolean, data: [any], success: boolean, error: boolean, message: string },
     home: { isFetching: boolean, data: [any] },
     camera: RNCamera,
-    updateBagReceived: (id: string, comment: string, received: string) => {},
+    updateBagReceived: (id: string, orderId: string, comment: string, received: string) => {},
     updateBagFinish: () => {}
 }
 
@@ -78,12 +78,12 @@ class Delivery extends React.Component<Props, State> {
     }
 
     filterData() {
-
         if (this.props.route.params.order) return this.props.route.params.order
         return {}
     }
 
     componentDidMount() {
+        this.props.updateBagFinish()
         try {
             let data = this.filterData()
 
@@ -94,7 +94,6 @@ class Delivery extends React.Component<Props, State> {
                 this.setState({ order: data })
             }
         } catch (error) {
-            console.log(error.message);
         }
     }
 
@@ -102,12 +101,10 @@ class Delivery extends React.Component<Props, State> {
 
     }
 
-
-    // add intems to bag 
     finishAction = () => {
         // this.dissmissModal()
         const order = this.state.order
-        this.props.updateBagReceived(order._id, this.state.comment, this.state.person)
+        this.props.updateBagReceived(order._id, order.orderNumber._id, this.state.comment, this.state.person)
     }
 
     addProductPicked(index: number) {
@@ -238,20 +235,26 @@ class Delivery extends React.Component<Props, State> {
                 return (
                     <Center>
                         <View style={styles.bodyContainer}>
-                            <View style={{ flex: 1 }}>
+                            <View style={{ flex: 1, backgroundColor: colors.grayHeader }}>
                                 <View style={styles.modalSectionBodyTitle}>
                                     <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
                                 </View>
-                                <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} onBlur={() => this.focusLose()} keyType={"numeric"} onChangeText={this.onChangeBagNumber.bind(this)} placeholder="Número de bulto" type={false} editable={true} />
+                                <View style={[styles.modalSectionBodyInput, { justifyContent: 'center', flexDirection: 'row' }]}>
+                                    <View style={{ flex: 4, alignItems: 'flex-end', justifyContent: 'center' }}>
+                                        <CustomInput keyType="numeric" size="m" value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: "center", justifyContent: 'center' }}>
+                                        <TouchableOpacity onPress={() => this.captureBagNumber()} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                            <IconBar name={"barcode-scan"} size={RFValue(45)} color={colors.black} />
+                                        </TouchableOpacity>
+
+                                    </View>
                                 </View>
                             </View>
                             <View style={{ flex: 3 }}>
                                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                                     <View style={{ flex: 2 }}>
-                                        <TouchableOpacity onPress={() => this.captureBagNumber()} style={styles.modalSectionBodyScanBar}>
-                                            <IconBar name={"barcode-scan"} size={RFValue(100)} color={colors.black} />
-                                        </TouchableOpacity>
+
                                         <View style={styles.modalSectionBodyTitle}>
                                             <Text style={styles.modalSectionBodyTitleText}>Lista de todos los bultos asociados </Text>
                                         </View>
@@ -263,7 +266,7 @@ class Delivery extends React.Component<Props, State> {
                                                             {
                                                                 order.bags.map((bag: any, index: number) => {
                                                                     return (
-                                                                        <View key={index} style={{ height: hp(7), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                                                        <View key={index} style={{ width: wp(60), height: hp(6), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: colors.grayHeader, marginTop: 10, borderRadius: 10 }}>
                                                                             <Text key={index} style={[styles.resumeBodyInfoText, { color: this.state.bags.includes(bag.bag) ? colors.darkGreen : colors.black }]}>Nº {bag.bagNumber} </Text>
                                                                             {
                                                                                 bag.delivery &&
@@ -284,9 +287,10 @@ class Delivery extends React.Component<Props, State> {
                                         <View style={styles.resumeHeaderInfo}>
                                             {
                                                 (this.validate() && !this.props.bags.success) &&
-                                                <CustomButton onPress={() => this.toggleModal()} size={"l"}>
+                                                <CustomButton onPress={() => this.toggleModal()} size={"m"}>
                                                     <Text style={styles.buttonText}>Entregar Bultos</Text>
                                                 </CustomButton>
+
                                             }
                                         </View>
                                     </View>
@@ -631,7 +635,8 @@ const styles = StyleSheet.create({
     },
     modalSectionBodyTitleText: {
         fontSize: RFValue(18),
-        fontFamily: fonts.primaryFontTitle
+        fontFamily: fonts.primaryFontTitle,
+        color: colors.black2
     },
     modalSectionBodyInput: {
         flex: 1,
@@ -720,9 +725,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     buttonText: {
-        fontFamily: fonts.primaryFont,
+        fontFamily: fonts.primaryFontTitle,
         fontSize: RFValue(Size(56)),
-        color: "rgba(0, 0, 0, 255)"
+        color: colors.white
     }
 
 });
@@ -735,7 +740,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 
-    updateBagReceived: (id: string, comment: string, received: string) => dispatch(updateBagReceivedAction(id, comment, received)),
+    updateBagReceived: (id: string, orderId: string, comment: string, received: string) => dispatch(updateBagReceivedAction(id, orderId, comment, received)),
     updateBagFinish: () => dispatch(updateBagActionFinish()),
 })
 
