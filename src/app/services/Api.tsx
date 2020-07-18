@@ -8,6 +8,9 @@ let config = {
     }
 }
 
+const devURL = 'https://pickingserver.azurewebsites.net'
+const localURL = 'https://pickingserver.azurewebsites.net'
+
 const getRoute = (profile: string) => {
     switch (profile) {
         case 2:
@@ -25,10 +28,9 @@ const getRoute = (profile: string) => {
 export const HomeList = async () => {
     config.headers["access-token"] = store.getState().auth.token
     let route = "orders"
-    route = getRoute(store.getState().auth.profile)
-    let request = { profile: store.getState().auth.profile, company: store.getState().auth.company }
-    return axios.post('http://192.168.1.100:3000/orders', request, config).then((response: AxiosResponse) => {
-        // console.log("Ordenes", response);
+    route = getRoute(store.getState().auth.profile.key)
+    let request = { profile: store.getState().auth.profile.key, company: store.getState().auth.company.id }
+    return axios.post(devURL+'/orders', request, config).then((response: AxiosResponse) => {
         if (response.status == 200) {
             return response.data.data;
         }
@@ -41,10 +43,10 @@ export const HomeList = async () => {
 export const HomeListBag = async () => {
     config.headers["access-token"] = store.getState().auth.token
     let route = "orders"
-    route = getRoute(store.getState().auth.profile)
-    let request = { shopId: store.getState().auth.shop, deliveryId: store.getState().auth.id }
-    return axios.post('http://192.168.1.100:3000/orderBags/list', request, config).then((response: AxiosResponse) => {
-
+    route = getRoute(store.getState().auth.profile.key)
+    let request = { shopId: store.getState().auth.shop.key, deliveryId: store.getState().auth.id }
+    return axios.post(devURL+'/orderBags/list', request, config).then((response: AxiosResponse) => {
+        console.log("Aers: ", response.data.data);
         if (response.status == 200) {
             return response.data.data;
         }
@@ -57,9 +59,9 @@ export const HomeListBag = async () => {
 export const HomeListBagTake = async () => {
     config.headers["access-token"] = store.getState().auth.token
     let route = "orders"
-    route = getRoute(store.getState().auth.profile)
-    let request = { shopId: store.getState().auth.shop }
-    return axios.post('http://192.168.1.100:3000/orderBags/listTake', request, config).then((response: AxiosResponse) => {
+    route = getRoute(store.getState().auth.profile.key)
+    let request = { shopId: store.getState().auth.shop.key }
+    return axios.post(devURL+'/orderBags/listTake', request, config).then((response: AxiosResponse) => {
         if (response.status == 200) {
             return response.data;
         }
@@ -69,10 +71,10 @@ export const HomeListBagTake = async () => {
     });
 }
 
-export const UpdateBag = async (id: string) => {
+export const UpdateBag = async (id: string, orderId: string) => {
     config.headers["access-token"] = store.getState().auth.token
-    let request = { id: id, deliveryId: store.getState().auth.id }
-    return axios.post('http://192.168.1.100:3000/orderBags/update', request, config).then((response: AxiosResponse) => {
+    let request = { id: id, deliveryId: store.getState().auth.id, orderId: orderId }
+    return axios.post(devURL+'/orderBags/update', request, config).then((response: AxiosResponse) => {
 
         if (response.status == 200) {
             return response.data.success;
@@ -83,10 +85,27 @@ export const UpdateBag = async (id: string) => {
     });
 }
 
+export const UpdateOrderState = async (id: string, state: {}) => {
+    config.headers["access-token"] = store.getState().auth.token
+    let request = { id: id, state: state }
+    return axios.post(devURL+'/order/update/state', request, config).then((response: AxiosResponse) => {
+        if (response.status == 200) {
+            if (response.data.success) {
+                return response.data.success;
+            } else {
+                return response.data.success;
+            }
+        }
+        else {
+            return false;
+        }
+    });
+}
+
 export const takeOrder = async (id: string) => {
     config.headers["access-token"] = store.getState().auth.token
     let request = { id: id, pickerId: store.getState().auth.id }
-    return axios.post('http://192.168.1.100:3000/orders/take', request, config).then((response: AxiosResponse) => {
+    return axios.post(devURL+'/orders/take', request, config).then((response: AxiosResponse) => {
 
         if (response.status == 200) {
             return response.data.success;
@@ -100,8 +119,7 @@ export const takeOrder = async (id: string) => {
 export const leaveOrder = async (id: string) => {
     config.headers["access-token"] = store.getState().auth.token
     let request = { id: id }
-    return axios.post('http://192.168.1.100:3000/orders/leave', request, config).then((response: AxiosResponse) => {
-        // console.log("Aqui", response);
+    return axios.post(devURL+'/orders/leave', request, config).then((response: AxiosResponse) => {
         if (response.status == 200) {
             return response.data.success;
         }
@@ -111,11 +129,34 @@ export const leaveOrder = async (id: string) => {
     });
 }
 
-export const UpdateBagReceived = async (id: string, comment: string, received: string) => {
+export const getOrderByNumber = async (number: string) => {
     config.headers["access-token"] = store.getState().auth.token
-    let request = { id: id, comment: comment, received: received }
-    return axios.post('http://192.168.1.100:3000/orderBags/update/received', request, config).then((response: AxiosResponse) => {
-        // console.log("Aqui", response);
+    let request = { number: number }
+    let responseCustom = { success: false, data: {}, message: "" }
+    return axios.post(devURL+'/orderBags/list/all', request, config).then((response: AxiosResponse) => {
+        if (response.status == 200) {
+            if (response.data.success) {
+                responseCustom.data = response.data
+                responseCustom.success = response.data.success
+                responseCustom.message = response.data.message
+                return responseCustom;
+            } else {
+                responseCustom.data = response.data
+                responseCustom.success = response.data.success
+                responseCustom.message = response.data.message
+                return responseCustom;
+            }
+        }
+        else {
+            return responseCustom;
+        }
+    });
+}
+
+export const UpdateBagReceived = async (id: string, orderId: string, comment: string, received: string) => {
+    config.headers["access-token"] = store.getState().auth.token
+    let request = { id: id, orderId: orderId, comment: comment, received: received }
+    return axios.post(devURL+'/orderBags/update/received', request, config).then((response: AxiosResponse) => {
         if (response.status == 200) {
             return response.data.success;
         }
@@ -128,9 +169,9 @@ export const UpdateBagReceived = async (id: string, comment: string, received: s
 export const ShopList = async () => {
     config.headers["access-token"] = store.getState().auth.token
     let route = "orders"
-    route = getRoute(store.getState().auth.profile)
-    let query = { profile: store.getState().auth.profile, userCompany: store.getState().auth.company }
-    return axios.post('http://192.168.1.100:3000/shop/user', query, config).then((response: AxiosResponse) => {
+    route = getRoute(store.getState().auth.profile.key)
+    let query = { profile: store.getState().auth.profile.key, userCompany: store.getState().auth.company.id }
+    return axios.post(devURL+'/shop/user', query, config).then((response: AxiosResponse) => {
         if (response.status == 200) {
             return response.data.data;
         }
@@ -142,8 +183,8 @@ export const ShopList = async () => {
 
 export const PostBags = async (bags: any) => {
     config.headers["access-token"] = store.getState().auth.token
-    let query = { profile: store.getState().auth.profile, userCompany: store.getState().auth.company }
-    return axios.post('http://192.168.1.100:3000/orderBags/save', bags, config).then((response: AxiosResponse) => {
+    let query = { profile: store.getState().auth.profile.key, userCompany: store.getState().auth.company.id }
+    return axios.post(devURL+'/orderBags/save', bags, config).then((response: AxiosResponse) => {
         let res = { message: "", error: false, success: false }
         if (response.status == 200) {
             if (response.data.success) {
@@ -167,6 +208,28 @@ export const PostBags = async (bags: any) => {
     });
 }
 
+export const updateUser = async (state: boolean) => {
+    config.headers["access-token"] = store.getState().auth.token
+    let request = { id: getRoute(store.getState().auth.id), state: state }
+    let user = { state: state, message: "" }
+    return axios.post(devURL+'/users/updateState', request, config).then((response: AxiosResponse) => {
+        if (response.status == 200) {
+            if (response.data.success) {
+                user.state = response.data.state
+                user.message = response.data.message
+                return user;
+            } else {
+                user.state = response.data.state
+                user.message = response.data.message
+                return user;
+            }
+        }
+        else {
+            return [];
+        }
+    });
+}
+
 
 export const login = async (user: string, password: string) => {
     let params: {} = {
@@ -174,16 +237,17 @@ export const login = async (user: string, password: string) => {
         "password": password
     }
     config.headers["access-token"] = store.getState().auth.token
-    const fakeuser = { name: user, id: "", email: user, token: "", profile: "", company: "", message: "" }
-    return axios.post('http://192.168.1.100:3000/users/auth', params).then((response: AxiosResponse) => {
+    let fakeuser = { name: user, id: "", email: user, token: "", profile: {}, company: { id: "", name: "" }, message: "", state: false }
+    return axios.post(devURL+'/users/auth', params).then((response: AxiosResponse) => {
         if (response.status == 200) {
             if (response.data.success) {
-                fakeuser.name = ""
-                fakeuser.email = ""
+                fakeuser.name = response.data.name
+                fakeuser.email = response.data.email
                 fakeuser.token = response.data.token
                 fakeuser.profile = response.data.profile
                 fakeuser.company = response.data.company
                 fakeuser.message = response.data.message
+                fakeuser.state = response.data.state
                 fakeuser.id = response.data.id
                 return { fakeuser: fakeuser, success: true };
             } else {
