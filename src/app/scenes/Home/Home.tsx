@@ -3,19 +3,21 @@ import { connect } from 'react-redux'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
-import { FlatList, View, Text, StyleSheet } from 'react-native'
+import { FlatList, View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { getHomeItems } from '../../actions/HomeListAction'
 import Loading from '../Loading/Loading'
 import { Size } from '../../services/Service'
 import colors from '../../assets/Colors'
 import fonts from '../../assets/Fonts'
+import IconCustom from "../../assets/Icon";
 import CountDown from '../../components/CountDown';
 import { CustomButtonList } from "../../components/CustomButtonList";
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { NavigationProp } from "@react-navigation/native";
 import { CustomButton } from '../../components/CustomButton';
-
+import IconBar from "react-native-vector-icons/MaterialCommunityIcons";
+import IconChange from "react-native-vector-icons/AntDesign";
 
 
 
@@ -66,7 +68,7 @@ class Home extends React.Component<HomeProps, State> {
             <Center>
                 <View style={styles.header}>
                     <View style={styles.headerSectionTitle}>
-                        <Text style={styles.headerSectionTitleText}>Selecciona tu Nº de pedido</Text>
+                        <Text style={styles.headerSectionTitleText}>Ordenar</Text>
                     </View>
                     <View style={styles.headerSectionButton}>
                         <View style={styles.headerSectionButtonContainer}>
@@ -75,58 +77,86 @@ class Home extends React.Component<HomeProps, State> {
                     </View>
                 </View>
                 <View style={styles.body}>
-                    {
-                        !this.props.home.isFetching &&
-                        <FlatList
-                            style={styles.bodyList}
-                            data={this.getData()}
-                            extraData={this.props}
-                            refreshing={isfetch}
-                            // ListHeaderComponent={() => {
-                            //     return ()
-                            // }}
-                            onRefresh={() => this.handleRefresh()}
-                            ListEmptyComponent={() => {
-                                return (
-                                    <Center>
-                                        <Text>No hay ordenes para mostrar 👨🏾‍💻</Text>
-                                    </Center>
-                                )
-                            }
+                    <Text style={[styles.headerSectionTitleText, { marginLeft: Size(80), marginTop: 10 }]}>Selecciona pedido</Text>
 
-                            }
-                            keyExtractor={(item, index) => item._id.toString()}
-                            renderItem={({ item }) => {
-                                return (
-                                    <View key={item._id} style={styles.bodyListContainer}>
-                                        <View style={styles.bodyListContainerSectionInfo}>
-                                            <View style={styles.bodyListContainerSectionInfoContainer}>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                                                    <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Pedido Nº "}</Text>
-                                                    <Text style={[styles.bodyListContainerSectionInfoContainerTitle, { fontSize: item.orderNumber.length > 7 ? RFValue(19) : RFValue(25) }]}>{item.orderNumber}</Text>
-                                                </View>
-                                                <View style={styles.bodyListContainerSectionInfoContainerDetail}>
-                                                    <View style={styles.bodyListContainerSectionInfoContainerPoint} />
-                                                    <CountDown date={item.startPickingDate} />
-                                                </View>
+                    <FlatList
+                        style={[styles.bodyList, { marginTop: 10 }]}
+                        data={this.getData()}
+                        extraData={this.props}
+                        refreshing={isfetch}
+                        // ListHeaderComponent={() => {
+                        //     return ()
+                        // }}
+                        onRefresh={() => this.handleRefresh()}
+                        ListEmptyComponent={() => {
+                            return (
+                                <Center>
+                                    <Text style={{ fontFamily: fonts.primaryFont, marginTop: 20, fontSize:RFValue(18) }}>No hay ordenes para mostrar</Text>
+                                </Center>
+                            )
+                        }
+
+                        }
+                        keyExtractor={(item, index) => item._id.toString()}
+                        renderItem={({ item }) => {
+                            return (
+                                <TouchableWithoutFeedback onPress={() => { this.navigate(item._id) }}>
+                                    <View style={
+                                        {
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: 'center',
+                                            paddingTop: 0,
+                                            // "width": wp(65),
+                                            height: hp(11),
+                                            flex: 1,
+                                            marginHorizontal: 20,
+                                            marginVertical: 5,
+                                            borderRadius: 14,
+                                            backgroundColor: colors.grayHeader,
+                                            shadowColor: "#BCBCBC",
+                                            shadowOffset: {
+                                                width: 0,
+                                                height: 3,
+                                            },
+                                            shadowOpacity: 0.27,
+                                            shadowRadius: 2.65,
+                                            elevation: 3,
+                                        }
+                                    } >
+                                        <View style={{
+                                            flex: 1,
+                                            justifyContent: 'center', alignItems: 'center'
+                                        }} >
+                                            <View style={{ width: 55, height: 55, borderRadius: 55 / 2, backgroundColor: colors.lightBlue, justifyContent: 'center', alignItems: 'center' }}>
+                                                <IconCustom name={"lunch"} size={RFValue(27)} color={colors.white} />
                                             </View>
                                         </View>
-                                        <View style={styles.bodyListContainerButton}>
-                                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                                <CustomButton onPress={() => { this.navigate(item._id) }} size={"s"}>
-                                                    <Text style={{
-                                                        fontFamily: "AvenirNextBold",
-                                                        fontSize: RFValue(Size(46)),
-                                                        color: "rgba(0, 0, 0, 255)"
-                                                    }}>Seleccionar</Text>
-                                                </CustomButton>
+                                        <View style={{
+                                            flex: 3,
+                                            justifyContent: 'center', alignItems: 'flex-start'
+                                        }} >
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                                                <Text style={styles.bodyListContainerSectionInfoContainerTitle}>{"Nº de pedido "}</Text>
+                                                <Text style={[styles.bodyListContainerSectionInfoContainerTitle, { fontSize: item.orderNumber.length > 7 ? RFValue(16) : RFValue(16) }]}>{item.orderNumber}</Text>
                                             </View>
+                                            <CountDown date={item.startPickingDate} />
                                         </View>
+                                        <View style={{
+                                            flex: 1,
+                                            justifyContent: 'center', alignItems: 'center'
+                                        }} >
+                                            <IconChange name='right' size={24} color={colors.black2} />
+                                        </View>
+
+
+
                                     </View>
-                                )
-                            }}
-                        />
-                    }
+                                </TouchableWithoutFeedback>
+                            )
+                        }}
+                    />
+
                 </View>
 
             </Center>
@@ -146,18 +176,20 @@ const styles = StyleSheet.create({
     headerSectionTitle: {
         flex: 8,
         justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 50
+        alignItems: 'flex-end',
+        marginRight: 10,
     },
     headerSectionTitleText: {
-        fontSize: RFValue(25),
+        fontSize: RFValue(17),
         fontFamily: fonts.primaryFont
     },
     headerSectionButton: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'flex-start',
-        height: Size(76)
+        height: Size(76),
+        marginTop: 8,
+        marginRight: Size(53)
     },
     headerSectionButtonContainer: {
         justifyContent: 'center',
@@ -166,7 +198,8 @@ const styles = StyleSheet.create({
         width: Size(84),
         height: Size(66),
         marginTop: 18,
-        borderRadius: 4
+        borderRadius: 4,
+
     },
     body: {
         flex: 10
@@ -190,8 +223,10 @@ const styles = StyleSheet.create({
         marginHorizontal: Size(94)
     },
     bodyListContainerSectionInfoContainerTitle: {
-        fontSize: RFValue(23),
-        fontFamily: fonts.primaryFontTitle
+        fontSize: RFValue(16),
+        fontFamily: fonts.primaryFont,
+        color: colors.black2,
+        fontWeight: 'bold'
     },
     bodyListContainerSectionInfoContainerDetail: {
         flexDirection: 'row',
