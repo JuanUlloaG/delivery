@@ -19,8 +19,7 @@ export default function CountDown(props: CountDownProps) {
     // let initMinute = date.minutes()
     // let finishMinute = date.add(15, "minute").minute()
     // let minute = (initMinute - initMinute)
-    // console.log(date.add(15, "minute").minute());
-    const [minutes, setMinutes] = useState(1)
+    const [minutes, setMinutes] = useState(59)
     const [seconds, setSeconds] = useState(59)
     const [finish, setfinish] = useState(false)
 

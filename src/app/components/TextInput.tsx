@@ -5,6 +5,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import colors from '../assets/Colors';
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import fonts from '../assets/Fonts';
 
 type keyType = "phone-pad" | "default" | "numeric"
 type size = "xs" | "s" | "m" | "l"
@@ -77,15 +78,15 @@ export const CustomInput: React.FC<CustomInputProps> = (props) => {
         borderColor: "rgba(117, 117, 117, 255)",
         justifyContent: 'center',
         alignContent: 'center',
-        // marginTop: Size(66),
+        backgroundColor: colors.white,
         flexDirection: 'row'
     }
 
     let InputTextStyleCustom = {
         width: width,
-        // height: Size(117),
+        fontFamily: fonts.primaryFont,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     }
     return (
         <View style={[styles.intputContainer, intputContainerCustom]} >
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
         // alignContent: 'center',
         // marginTop: Size(66),
         // flexDirection: 'row'
+
     },
     InputTextStyle: {
         // width: wp(100) - Size(95),
