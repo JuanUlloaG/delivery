@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import Icon from "react-native-vector-icons/Feather";
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
+import { State as StateAuth } from "../../reducers/AuthReducer";
 import { FlatList, View, Text, StyleSheet, Switch } from 'react-native'
-import { logOutUser } from '../../actions/AuthActions'
+import { logOutUser, updateState, AuthClearState } from '../../actions/AuthActions'
 import Loading from '../Loading/Loading'
 import { Size } from '../../services/Service'
 import colors from '../../assets/Colors'
@@ -17,16 +18,21 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { NavigationProp } from "@react-navigation/native";
 import { CustomButton } from '../../components/CustomButton';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
-
+import { RNNotificationBanner } from 'react-native-notification-banner';
+import Icons from 'react-native-vector-icons/FontAwesome'
+Icons.loadFont('AntDesign.ttf')
+let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
 
 
 
 interface ProfileProps {
     navigation: NavigationProp<any, any>,
-    auth: object,
+    auth: StateAuth,
     home: { isFetching: boolean, data: [any] },
-    fetchData: () => {}
-    logOut: () => {}
+    shop: { data: [], isFetching: boolean, error: boolean },
+    setStateAction: (state: boolean) => {},
+    logOut: () => {},
+    clearStateAction: () => {}
 }
 
 interface State {
@@ -43,8 +49,6 @@ class Profile extends React.Component<ProfileProps, State> {
     }
 
     componentDidMount() {
-        console.log(this.props.auth);
-
     }
 
     componentWillUnmount() {
@@ -61,84 +65,113 @@ class Profile extends React.Component<ProfileProps, State> {
     };
 
 
-    toggleSwitch = () => {
-        this.setState({ isEnabled: !this.state.isEnabled })
-        // this.props.logOut()
+    toggleSwitch = (state: boolean) => {
+        this.props.setStateAction(!state)
     };
 
 
     render() {
+
+        if (this.props.auth.error) RNNotificationBanner.Show({
+            title: "Error", subTitle: "Error al actualizar el estado", withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+                console.log("aqui5");
+                this.props.clearStateAction()
+            }
+        })
+        if (this.props.auth.success) RNNotificationBanner.Show({
+            title: "Mensaje", subTitle: "Estado actualizado correctamente", withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+                this.props.clearStateAction()
+            }
+        })
+
+
         const isfetch = this.props.home.isFetching
+        if (Object.keys(this.props.auth).length > 0) {
+            let { name, state, profile, company, shop } = this.props.auth
+            return (
+                <Center>
+                    <View style={styles.containerInfo}>
+                        <View style={styles.containerConfigHeader}>
+                            <View style={styles.containerConfigHeaderView}>
+                                <Text style={styles.containerInfoText}>Información Personal</Text>
+                            </View>
+                        </View>
+                        <View style={styles.containerInfoNames}>
+                            <Text style={styles.containerInfoText}>{name}</Text>
+                            <Text style={[styles.containerInfoText, { fontFamily: fonts.primaryFont }]}>{profile.description}</Text>
+                            <Text style={[styles.containerInfoText, { fontFamily: fonts.primaryFont }]}>{company.name + " - Local " + shop.description}</Text>
+                        </View>
+                        <View style={styles.containerInfoEstado}>
+                            <Text style={styles.containerInfoText}>Estado: </Text>
+                            <Text style={styles.containerInfoTextRol}>{state ? "Activo" : "Inactivo"}</Text>
+                            <Text style={[styles.containerIcon, { backgroundColor: state ? '#85D000' : colors.mediumRed }]}></Text>
+                        </View>
+                    </View>
+                    <View style={styles.containerConfig}>
+                        <View style={styles.containerConfigHeader}>
+                            <View style={styles.containerConfigHeaderView}>
+                                <Text style={styles.containerInfoText}>Configuraciones</Text>
+                            </View>
+                        </View>
+                        <View style={styles.containerConfigItemContent}>
+                            <View style={styles.containerConfigItemContentAction}>
+                                <Text style={styles.containeractionIntemText}>Cambiar Estado</Text>
+                                <Text style={styles.containeractionIntemTextSub}>De Activo a Inactivo</Text>
+                            </View>
+                            <View style={styles.containerConfigItemContentButton}>
+                                <Switch
+                                    trackColor={{ false: "#767577", true: colors.lightGreen2 }}
+                                    thumbColor={state ? "#85D000" : "#f4f3f4"}
+                                    ios_backgroundColor="#85D000"
+                                    onValueChange={() => this.toggleSwitch(state)}
+                                    value={state}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                    <View style={styles.containerSesion}>
+                        <View style={styles.containerSesionItem}>
+                            <View style={styles.containerSesionItemAction}>
+                                <Text style={styles.containeractionIntemText}>Cerrar Sesión</Text>
+                            </View>
+                            <View style={styles.containerSesionItemButton}>
+                                <TouchableOpacity onPress={() => { this.logOut() }}>
+                                    <Icon name="log-out" color={colors.black2} size={RFValue(28)} />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+
+                </Center >
+            );
+        }
         return (
             <Center>
-                <View style={styles.containerInfo}>
-                    <View style={styles.containerInfoNames}>
-                        <Text style={styles.containerInfoText}>Nombre</Text>
-                        <Text style={styles.containerInfoText}>Rol</Text>
-                    </View>
-                    <View style={styles.containerInfoEstado}>
-                        <Text style={styles.containerInfoText}>Estado: </Text>
-                        <Text style={styles.containerInfoTextRol}>Activo</Text>
-                        <Text style={[styles.containerIcon, { backgroundColor: '#5CAA6E' }]}></Text>
-                    </View>
-                </View>
-                <View style={styles.containerConfig}>
-                    <View style={styles.containerConfigHeader}>
-                        <View style={styles.containerConfigHeaderView}>
-                            <Text style={styles.containerInfoText}>Configuraciones</Text>
-                        </View>
-                    </View>
-                    <View style={styles.containerConfigItemContent}>
-                        <View style={styles.containerConfigItemContentAction}>
-                            <Text style={styles.containeractionIntemText}>Cambiar Estado</Text>
-                            <Text style={styles.containeractionIntemTextSub}>De Activo a Inactivo</Text>
-                        </View>
-                        <View style={styles.containerConfigItemContentButton}>
-                            <Switch
-                                trackColor={{ false: "#767577", true: "#9CDAAB" }}
-                                thumbColor={this.state.isEnabled ? "#5CAA6E" : "#f4f3f4"}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => this.toggleSwitch()}
-                                value={this.state.isEnabled}
-                            />
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.containerSesion}>
-                    <View style={styles.containerSesionItem}>
-                        <View style={styles.containerSesionItemAction}>
-                            <Text style={styles.containeractionIntemText}>Cerrar Sesion</Text>
-                        </View>
-                        <View style={styles.containerSesionItemButton}>
-                            <TouchableOpacity onPress={() => { this.logOut() }}>
-                                <Icon name="log-out" color={colors.black2} size={Size(90)} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
+                <Text>No hay data para mostrar 👨🏾‍💻</Text>
+            </Center>
+        )
 
-            </Center >
-        );
     }
 
 }
 
 const styles = StyleSheet.create({
     containerInfo: {
-        flex: 1,
+        // flex: 2,
         width: wp(100),
         justifyContent: 'center',
         borderBottomColor: '#E0E0E0',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        height: hp(28)
     },
     containerInfoNames: {
-        flex: 1,
+        flex: 2,
         justifyContent: "flex-end",
         marginLeft: Size(111)
     },
     containerInfoText: {
         fontFamily: fonts.primaryFontTitle,
-        fontSize: RFValue(20)
+        fontSize: RFValue(18)
     },
     containeractionIntemText: {
         fontFamily: fonts.primaryFontTitle,
@@ -150,7 +183,7 @@ const styles = StyleSheet.create({
     },
     containerInfoTextRol: {
         fontFamily: fonts.primaryFont,
-        fontSize: RFValue(20)
+        fontSize: RFValue(18)
     },
     containerInfoEstado: {
         flex: 1,
@@ -160,7 +193,7 @@ const styles = StyleSheet.create({
         marginLeft: Size(111)
     },
     containerConfig: {
-        flex: 1,
+        flex: 2,
         width: wp(100),
         borderBottomColor: '#E0E0E0',
         borderBottomWidth: 1
@@ -175,8 +208,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     containerConfigItemContent: {
-        flex: 3,
-        justifyContent: 'center',
+        flex: 2,
+        justifyContent: 'flex-start',
+        alignItems:'flex-start',
         flexDirection: 'row'
     },
     containerConfigItemContentAction: {
@@ -191,7 +225,7 @@ const styles = StyleSheet.create({
         marginRight: Size(111)
     },
     containerSesion: {
-        flex: 2,
+        flex: 3,
         width: wp(100)
     },
     containerSesionItem: {
@@ -227,13 +261,15 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
-    home: state.home
+    home: state.home,
+    shop: state.shop,
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
 
-    // fetchData: () => dispatch(getHomeItems()),
+    setStateAction: (state: boolean) => dispatch(updateState(state)),
     logOut: () => dispatch(logOutUser()),
+    clearStateAction: () => dispatch(AuthClearState()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

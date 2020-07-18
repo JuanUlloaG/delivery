@@ -4,9 +4,12 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
 import { FlatList, View, Text, StyleSheet, Animated, ScrollView, Dimensions, Keyboard } from 'react-native';
-import { getHomeBagItems, updateBagAction, updateBagActionFinish } from '../../actions/HomeListBagAction'
+import { getOrderAction, getOrderFetch } from '../../actions/SearchAction'
+import { State as UserState } from "../../reducers/AuthReducer";
 import IconBar from "react-native-vector-icons/MaterialCommunityIcons";
+import IconChange from "react-native-vector-icons/AntDesign";
 import Loading from '../Loading/Loading'
+import IconCustom from "../../assets/Icon";
 import { Size } from '../../services/Service'
 import colors from '../../assets/Colors'
 import fonts from '../../assets/Fonts'
@@ -14,7 +17,7 @@ import CountDown from '../../components/CountDown';
 import { CustomButtonList } from "../../components/CustomButtonList";
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { CustomButton } from '../../components/CustomButton';
 import { CustomInput } from '../../components/TextInput';
 import { RNCamera } from 'react-native-camera';
@@ -24,17 +27,31 @@ var { width, height } = Dimensions.get('window');
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
 
+const defaultUserState = {
+    name: 'N/A',
+    id: '',
+    email: '',
+    token: '',
+    profile: { key: '', description: '' },
+    shop: { key: '', description: '' },
+    company: { id: "", name: "" },
+    message: '',
+    state: false,
+    success: false,
+    isFetching: false,
+    error: false
+}
+
 
 
 interface Props {
     navigation: any,
     auth: object,
+    search: { data: { data: { bags: [{ _id: string, bagNumber: string, products: [] }], pickerId: UserState, deliveryId: UserState } }, isFetching: false, error: false, success: false, message: "", }
     bags: { isFetching: boolean, data: [any], success: boolean, error: boolean, message: string },
     route: any,
     home: { isFetching: boolean, data: [any] },
-    updateBag: (id: string) => {},
-    updateBagFinish: () => {},
-    fetchDataBags: () => {}
+    fetchDataOrder: (number: string) => {},
 }
 
 interface State {
@@ -77,14 +94,12 @@ class Search extends React.Component<Props, State> {
     componentDidMount() {
         // this.props.fetchDataBags()
         // let data = this.filterData()
-        // console.log(object);
     }
 
     filterData(bagNumber: string) {
         const result = this.props.bags.data.filter((obj) => {
             return obj.bags.some((bag: any) => bag.bagNumber === bagNumber)
         })
-        // console.log(result);
         if (result.length) {
             this.setState({ order: result[0] })
             return result[0]
@@ -109,54 +124,6 @@ class Search extends React.Component<Props, State> {
     removeProductPicked(index: number) {
     }
 
-    toggleModal() {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                toValue: 1,
-                useNativeDriver: false,
-                duration: 300
-            }),
-            Animated.spring(this.state.animationValue, {
-                toValue: HEIGHT_MODAL,
-                velocity: 7,
-                tension: 2,
-                friction: 8,
-                useNativeDriver: false
-            })
-        ]).start(() => {
-            // console.log("object");
-        });
-    }
-
-    validatePickedItems() {
-        let pickedProductArray = [...this.state.pickedProductArray]
-        let picked = true
-        pickedProductArray.map((product) => {
-            if (product.picked === false) picked = false
-        })
-        return picked
-    }
-
-    dissmissModal() {
-        Animated.parallel([
-            Animated.timing(this.state.opacity, {
-                toValue: 0,
-                delay: 10,
-                useNativeDriver: false,
-                duration: 50
-            }),
-            Animated.spring(this.state.animationValue, {
-                toValue: 0,
-                velocity: 6,
-                tension: 2,
-                friction: 8,
-                useNativeDriver: false
-            })
-        ]).start(() => {
-            // console.log("dismiss");
-        });
-    }
-
     handleTourch(value: boolean) {
         if (value === true) {
             this.setState({ torchOn: false });
@@ -174,18 +141,24 @@ class Search extends React.Component<Props, State> {
     }
 
     onChangeBagNumber = (text: string) => {
-        const order = this.state.order
-        let empty = false
-        if (!Object.keys(order).length) {
-            let bags = [...this.state.bags]
-            bags.push(text)
-            if (text.length > 3 && Object.keys(order).length == 0) empty = true
-            this.setState({ bagNumber: text, bags, order: this.filterData(text), empty })
+        if (text.length >= 6) {
+            this.props.fetchDataOrder(text)
+            this.setState({ bagNumber: text })
         } else {
-            let bags = [...this.state.bags]
-            bags.push(text)
-            this.setState({ bagNumber: text, bags })
+            this.setState({ bagNumber: text })
         }
+
+        // let empty = false
+        // if (!Object.keys(order).length) {
+        //     let bags = [...this.state.bags]
+        //     bags.push(text)
+        //     if (text.length > 3 && Object.keys(order).length == 0) empty = true
+        //     this.setState({ bagNumber: text, bags, order: this.filterData(text), empty })
+        // } else {
+        //     let bags = [...this.state.bags]
+        //     bags.push(text)
+        //     this.setState({ bagNumber: text, bags })
+        // }
     }
 
     onBarCodeRead = (e: any) => {
@@ -203,49 +176,46 @@ class Search extends React.Component<Props, State> {
         }
     }
 
-    validateBag(text: string) {
-
-    }
-
     clearBagNumber() {
         this.setState({ bagNumber: "" })
     }
 
-    updateOrder() {
-        this.props.updateBag(this.state.order._id)
-    }
 
     finish() {
 
-        this.props.updateBagFinish()
-        this.setState({ bagNumber: "", order: {} })
-        this.props.fetchDataBags()
-        this.setState({ order: {} })
+        // this.props.updateBagFinish()
+        // this.setState({ bagNumber: "", order: {} })
+        // this.props.fetchDataBags()
+        // this.setState({ order: {} })
         // this.props.navigation.goBack()
     }
 
     Validate(bagNumber: string) {
-        if (this.state.bags.includes(bagNumber)) {
-            this.find = true
-            Keyboard.dismiss()
-            return true
-        }
-        return false
+        // if (this.state.bags.includes(bagNumber)) {
+        //     this.find = true
+        //     Keyboard.dismiss()
+        //     return true
+        // }
+        // return false
     }
 
     focusLose() {
-        if (this.find) {
-            this.setState({ bagNumber: "" })
-            this.find = false
-        }
+        // if (this.find) {
+        //     this.setState({ bagNumber: "" })
+        //     this.find = false
+        // }
     }
 
-
+    navigate(index: number) {
+        let bag: [{ _id: string, bagNumber: string, products: [] }]
+        bag = [...this.props.search.data.data.bags]
+        this.props.navigation.navigate('Detalle', { bagContent: bag[index] });
+    }
 
     render() {
 
         this.props.navigation.setOptions({
-            headerTitle: "Detalle",
+            headerTitle: "Consulta",
             headerTitleStyle: {
                 textAlign: 'center',
                 flexGrow: 1,
@@ -253,102 +223,268 @@ class Search extends React.Component<Props, State> {
                 alignSelf: 'center',
                 color: colors.white,
                 fontFamily: fonts.primaryFontTitle,
-                fontSize: Size(77),
-            },
-            // headerLeft: () => (
-            //     // platform == "ios" &&
-            //     // <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ marginLeft: Size(45) }}>
-            //     //     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            //     //         <IconChange name='left' size={24} color={colors.white} />
-            //     //     </View>
-            //     // </TouchableOpacity>
-            // ),
-            // headerRight: () => (
-            //     this.state.resume &&
-            //     <TouchableOpacity onPress={() => this.resumeAction()} style={{ marginRight: 20 }}>
-            //         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            //             <Text style={[styles.headerContainerTitleText, { color: colors.white }]}>Ok</Text>
-            //         </View>
-            //     </TouchableOpacity>
-            // )
+                fontSize: Size(65),
+            }
         });
-
-        const order = this.state.order
 
         const animatedStyle = {
             height: this.state.animationValue
         }
 
+
+
+        let bagss: [{ _id: string, bagNumber: string, products: [] }] = []
+        let picker: UserState = Object.assign({}, defaultUserState)
+        let deliveryId: UserState = Object.assign({}, defaultUserState)
+        let orderNumber = ""
+        let orderState = { key: "", description: "" }
+        const order = this.props.search.data.data
+        if (Object.keys(this.props.search.data).length > 0 && Object.keys(this.props.search.data.data).length > 0) {
+            bagss = [...order.bags]
+            picker = Object.assign({}, this.props.search.data.data.pickerId)
+            if (this.props.search.data.data.deliveryId) {
+                deliveryId = Object.assign({}, this.props.search.data.data.deliveryId)
+            }
+            orderNumber = order.orderNumber.orderNumber
+            orderState = Object.assign({}, order.orderNumber.state)
+
+        }
+
         return (
             <Center>
-                <View style={styles.bodyContainer}>
-                    <View style={{ flex: 1 }}>
-                        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                            <View style={{ flex: 1 }}>
-                                <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
-                                </View>
-                                <View style={[styles.modalSectionBodyInput, { justifyContent: 'center' }]}>
-                                    <View style={{ flex: 4, alignItems: 'flex-end', justifyContent: 'center' }}>
-                                        <CustomInput size="m" value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
-                                    </View>
-                                    <View style={{ flex: 1, alignItems:"center", justifyContent:'center' }}>
-                                        <TouchableOpacity onPress={() => this.captureBagNumber()} style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                            <IconBar name={"barcode-scan"} size={RFValue(45)} color={colors.black} />
-                                        </TouchableOpacity>
-
-                                    </View>
-                                </View>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <View style={styles.bodyContainer}>
+                        <View style={{ flex: 1, backgroundColor: colors.grayHeader, }}>
+                            <View style={styles.modalSectionBodyTitle}>
+                                <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
                             </View>
-                            <View style={{ flex: 4 }}>
+                            <View style={[styles.modalSectionBodyInput, { justifyContent: 'center' }]}>
+                                <View style={{ flex: 4, alignItems: 'flex-end', justifyContent: 'center' }}>
+                                    <CustomInput keyType="numeric" size="m" value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
+                                </View>
+                                <View style={{ flex: 1, alignItems: "center", justifyContent: 'center' }}>
+                                    <TouchableOpacity onPress={() => this.captureBagNumber()} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <IconBar name={"barcode-scan"} size={RFValue(45)} color={colors.black} />
+                                    </TouchableOpacity>
 
-                            </View>
-
-                        </ScrollView>
-
-                    </View>
-
-                    {
-                        (this.state.torchOn) &&
-                        <View style={{
-                            width: wp(100),
-                            height: hp(76),
-                            flexDirection: 'column',
-                            position: 'absolute',
-                            zIndex: 1000,
-                            backgroundColor: 'black',
-                            justifyContent: 'flex-start',
-                            alignItems: 'center'
-                        }}>
-                            <RNCamera
-
-                                style={{ width: wp(100), height: hp(50) }}
-                                onBarCodeRead={this.onBarCodeRead}
-                                ref={(cam: RNCamera) => { this.camera = cam }}
-                                // aspect={RNCamera.Constants}
-                                autoFocus={RNCamera.Constants.AutoFocus.on}
-                                captureAudio={false}
-                                onGoogleVisionBarcodesDetected={({ barcodes }) => {
-                                }}
-                            />
-                            <View style={{ position: 'absolute', bottom: 0 }}>
-                                <TouchableOpacity onPress={() => this.disableCamera()} style={{
-                                    flex: 1,
-                                    backgroundColor: '#fff',
-                                    borderRadius: 5,
-                                    padding: 15,
-                                    paddingHorizontal: 20,
-                                    alignSelf: 'center',
-                                    margin: 20,
-                                }}>
-                                    <Text style={{ fontSize: 14 }}> Terminar </Text>
-                                </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                    }
-                </View>
+                        <View style={{ flex: 4 }}>
+                            {
 
-            </Center>
+                                <>
+                                    <View style={{ flex: 1 }}>
+                                        {
+                                            this.props.search.success &&
+                                                (Object.keys(this.props.search.data).length > 0 && Object.keys(this.props.search.data.data).length > 0) ?
+                                                <View style={{ flex: 1, justifyContent: 'center', marginHorizontal: Size(111), borderBottomColor: '#E0E0E0', borderBottomWidth: 1 }}>
+                                                    <Text style={styles.modalSectionBodyTitleText}>Información de pedido</Text>
+                                                </View> :
+                                                this.state.bagNumber ?
+                                                    <View style={{ flex: 1, justifyContent: 'center', marginHorizontal: Size(111), borderBottomColor: '#E0E0E0', borderBottomWidth: 1 }}>
+                                                        <Text style={styles.modalSectionBodyTitleText}>{this.props.search.data.message}</Text>
+                                                    </View> : null
+                                        }
+                                    </View>
+
+
+                                    <View style={{ flex: 2 }}>
+                                        {
+                                            this.props.search.success &&
+                                            (Object.keys(this.props.search.data).length > 0 && Object.keys(this.props.search.data.data).length > 0) &&
+                                            <View style={{ flex: 1, justifyContent: 'center', marginHorizontal: Size(111), borderBottomColor: '#E0E0E0', borderBottomWidth: 1 }}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        fontWeight: 'bold',
+                                                        color: colors.black2
+                                                    }}>Nº de pedido: </Text>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        color: colors.black2
+                                                    }}>{orderNumber}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        fontWeight: 'bold',
+                                                        color: colors.black2
+                                                    }}>Picker: </Text>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        color: colors.black2
+                                                    }}>{picker.name}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        fontWeight: 'bold',
+                                                        color: colors.black2
+                                                    }}>Delivery: </Text>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        color: colors.black2
+                                                    }}>{deliveryId.name}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        fontWeight: 'bold',
+                                                        color: colors.black2
+                                                    }}>Estado del pedido: </Text>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        color: colors.black2
+                                                    }}>{orderState.description}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        fontWeight: 'bold',
+                                                        color: colors.black2
+                                                    }}>Nº de bultos: </Text>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        color: colors.black2
+                                                    }}>{bagss.length}</Text>
+                                                </View>
+                                            </View>
+                                        }
+                                    </View>
+
+
+                                    <View style={{ flex: 3 }}>
+                                        {
+                                            this.props.search.success &&
+                                            (Object.keys(this.props.search.data).length > 0 && Object.keys(this.props.search.data.data).length > 0) &&
+                                            <View style={{ flex: 1, justifyContent: 'flex-start', marginHorizontal: Size(111), marginTop: 20 }}>
+                                                <View style={{ marginBottom: 5 }}>
+                                                    <Text style={{
+                                                        fontSize: RFValue(16),
+                                                        fontFamily: fonts.primaryFont,
+                                                        color: colors.black2,
+                                                        fontWeight: 'bold'
+
+                                                    }}>Bultos Asociados: </Text>
+                                                </View>
+                                                {
+                                                    bagss.map((bag, index: number) => {
+                                                        return (
+                                                            <TouchableWithoutFeedback onPress={() => { this.navigate(index) }}>
+                                                                <View style={
+                                                                    {
+                                                                        flexDirection: "row",
+                                                                        alignItems: "center",
+                                                                        justifyContent: 'center',
+                                                                        paddingTop: 0,
+                                                                        // "width": wp(65),
+                                                                        height: hp(11),
+                                                                        flex: 1,
+                                                                        marginHorizontal: 4,
+                                                                        marginVertical: 5,
+                                                                        borderRadius: 14,
+                                                                        backgroundColor: colors.grayHeader,
+                                                                        shadowColor: "#BCBCBC",
+                                                                        shadowOffset: {
+                                                                            width: 0,
+                                                                            height: 3,
+                                                                        },
+                                                                        shadowOpacity: 0.27,
+                                                                        shadowRadius: 2.65,
+                                                                        elevation: 3,
+                                                                    }
+                                                                } >
+                                                                    <View style={{
+                                                                        flex: 1,
+                                                                        justifyContent: 'center', alignItems: 'center'
+                                                                    }} >
+                                                                        <View style={{ width: 55, height: 55, borderRadius: 55 / 2, backgroundColor: colors.mediumYellow, justifyContent: 'center', alignItems: 'center' }}>
+                                                                            <IconCustom name={"lunch"} size={RFValue(25)} color={colors.white} />
+                                                                        </View>
+                                                                    </View>
+                                                                    <View style={{
+                                                                        flex: 2,
+                                                                        justifyContent: 'center', alignItems: 'flex-start'
+                                                                    }} >
+                                                                        <Text style={{
+                                                                            fontSize: RFValue(18),
+                                                                            fontFamily: fonts.primaryFont,
+                                                                            color: colors.black2,
+                                                                            fontWeight: 'bold'
+                                                                        }}>123456</Text>
+                                                                    </View>
+                                                                    <View style={{
+                                                                        flex: 1,
+                                                                        justifyContent: 'center', alignItems: 'center'
+                                                                    }} >
+                                                                        <IconChange name='right' size={24} color={colors.black2} />
+                                                                    </View>
+
+
+
+                                                                </View>
+                                                            </TouchableWithoutFeedback>
+                                                        )
+                                                    })
+                                                }
+                                            </View>
+                                        }
+                                    </View>
+                                </>
+                            }
+                        </View>
+                        {
+                            (this.state.torchOn) &&
+                            <View style={{
+                                width: wp(100),
+                                height: hp(76),
+                                flexDirection: 'column',
+                                position: 'absolute',
+                                zIndex: 1000,
+                                backgroundColor: 'black',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center'
+                            }}>
+                                <RNCamera
+
+                                    style={{ width: wp(100), height: hp(50) }}
+                                    onBarCodeRead={this.onBarCodeRead}
+                                    ref={(cam: RNCamera) => { this.camera = cam }}
+                                    // aspect={RNCamera.Constants}
+                                    autoFocus={RNCamera.Constants.AutoFocus.on}
+                                    captureAudio={false}
+                                    onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                                    }}
+                                />
+                                <View style={{ position: 'absolute', bottom: 0 }}>
+                                    <TouchableOpacity onPress={() => this.disableCamera()} style={{
+                                        flex: 1,
+                                        backgroundColor: '#fff',
+                                        borderRadius: 5,
+                                        padding: 15,
+                                        paddingHorizontal: 20,
+                                        alignSelf: 'center',
+                                        margin: 20,
+                                    }}>
+                                        <Text style={{ fontSize: 14 }}> Terminar </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        }
+                    </View>
+                </ScrollView>
+            </Center >
 
         );
     }
@@ -392,7 +528,7 @@ const styles = StyleSheet.create({
         color: 'rgba(51, 51, 51, 255)'
     },
     bodyContainer: {
-        flex: 8,
+        flex: 1,
         width: wp(100)
     },
     bodyContainerScrollView: {
@@ -598,18 +734,20 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-
+        marginTop: 0
     },
     modalSectionBodyTitleText: {
-        fontSize: RFValue(22),
-        fontFamily: fonts.primaryFontTitle
+        fontSize: RFValue(17),
+        fontFamily: fonts.primaryFont,
+        color: colors.black2
     },
     modalSectionBodyTitleText2: {
         fontSize: RFValue(18),
-        fontFamily: fonts.primaryFontTitle
+        fontFamily: fonts.primaryFontTitle,
+        color: colors.black2
     },
     modalSectionBodyInput: {
-        flex: 3,
+        flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
@@ -639,7 +777,8 @@ const styles = StyleSheet.create({
     },
     resumeBodyInfoText: {
         fontFamily: fonts.primaryFont,
-        fontSize: RFValue(21)
+        fontSize: RFValue(21),
+        color: colors.black2
     },
     resumeBodyInfoIcon: {
         flex: 1,
@@ -667,14 +806,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state: any) => ({
     auth: state.auth,
     home: state.home,
-    bags: state.bags
+    bags: state.bags,
+    search: state.search
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
-
-    fetchDataBags: () => dispatch(getHomeBagItems()),
-    updateBag: (id: string) => dispatch(updateBagAction(id)),
-    updateBagFinish: () => dispatch(updateBagActionFinish()),
+    fetchDataOrder: (number: string) => dispatch(getOrderAction(number))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search)
