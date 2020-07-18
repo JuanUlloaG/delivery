@@ -15,7 +15,10 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { CustomInput } from '../../components/TextInput';
 import { RNCamera } from "react-native-camera";
 import { TextInput } from 'react-native-gesture-handler';
-
+import { RNNotificationBanner } from 'react-native-notification-banner';
+import Icons from 'react-native-vector-icons/FontAwesome'
+Icons.loadFont('AntDesign.ttf')
+let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
 
 var { width, height } = Dimensions.get('window');
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.76;
@@ -157,6 +160,20 @@ class DeliveryReception extends React.Component<Props, State> {
 
 
     render() {
+
+        if (this.props.bags.error) RNNotificationBanner.Show({
+            title: "Error", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+                this.props.route.params.finish()
+            }
+        })
+        if (this.props.bags.success) RNNotificationBanner.Show({
+            title: "Mensaje", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+                this.props.route.params.finish()
+                this.props.navigation.navigate('HomeAddres')
+            }
+        })
+
+
         this.props.navigation.setOptions({
             headerTitle: "Entregar",
             headerTitleStyle: {
@@ -166,7 +183,7 @@ class DeliveryReception extends React.Component<Props, State> {
                 alignSelf: 'center',
                 color: colors.white,
                 fontFamily: fonts.primaryFontTitle,
-                fontSize: Size(77),
+                fontSize: Size(65),
             },
             headerLeft: () => (
                 // platform == "ios" &&
@@ -196,7 +213,7 @@ class DeliveryReception extends React.Component<Props, State> {
                             </View>
 
                             <View style={{ flex: 1, alignItems: 'center' }}>
-                                {
+                                {/* {
                                     this.props.bags.error &&
                                     <>
                                         <Text style={styles.resumeBodyInfoText}>Ha ocurrido un error al finalizar el proceso</Text>
@@ -206,22 +223,20 @@ class DeliveryReception extends React.Component<Props, State> {
                                 {
                                     this.props.bags.success &&
                                     <Text style={styles.resumeBodyInfoText}>{this.props.bags.message}</Text>
-                                }
-                                {
+                                } */}
+                                {/* {
                                     (!this.props.bags.success && !this.props.bags.error) &&
-                                    <Text style={styles.resumeBodyInfoText}>{"¿Desea confirmar envío de pedido?"}</Text>
-                                }
+                                    <Text style={styles.resumeBodyInfoText}>{"¿Desea confirmar la recepción del pedido?"}</Text>
+                                } */}
                             </View>
                             <View style={{ flex: 1, alignItems: 'center' }}>
                                 {
                                     !this.props.bags.success ?
                                         (this.state.person !== "" && this.state.comment !== "") &&
-                                        <CustomButton onPress={() => this.toggleModal()} size={"l"}>
+                                        <CustomButton onPress={() => !this.props.bags.isFetching && this.toggleModal()} size={"l"}>
                                             <Text style={styles.buttonText}>Finalizar Entrega</Text>
                                         </CustomButton> :
-                                        <CustomButton onPress={() => this.finish()} size={"l"}>
-                                            <Text style={styles.buttonText}>Ir a ordenes</Text>
-                                        </CustomButton>
+                                        null
                                 }
                             </View>
                         </View>
@@ -573,9 +588,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     buttonText: {
-        fontFamily: fonts.primaryFont,
+        fontFamily: fonts.primaryFontTitle,
         fontSize: RFValue(Size(56)),
-        color: "rgba(0, 0, 0, 255)"
+        color: colors.white
     }
 
 });
