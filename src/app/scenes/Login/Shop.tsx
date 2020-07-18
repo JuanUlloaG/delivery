@@ -21,7 +21,7 @@ interface ShopProps {
     home: { isFetching: boolean, data: [any] },
     shop: { isFetching: boolean, data: [{ _id: string, address: string, number: string }] },
     fetchData: () => {}
-    setShop: (shop: string) => {}
+    setShop: (shop: { key: string, description: string }) => {}
 }
 
 interface State {
@@ -45,7 +45,12 @@ class Shop extends React.Component<ShopProps, State> {
 
     setShop() {
         if (this.state.value) {
-            this.props.setShop(this.state.value)
+            let name = ""
+            this.props.shop.data.map((row) => {
+                if (row._id == this.state.value) name = row.number
+            })
+            let shop = { key: this.state.value, description: name }
+            this.props.setShop(shop)
             this.props.navigation.navigate("AppTab")
         } else {
             this.setState({ error: true })
@@ -68,10 +73,10 @@ class Shop extends React.Component<ShopProps, State> {
                         <View style={{ width: wp(100), marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                             <CustomButton onPress={this.setShop.bind(this)} size={"l"}>
                                 <Text style={{
-                                    fontFamily: "AvenirNextBold",
+                                    fontFamily: fonts.primaryFontTitle,
                                     fontSize: RFValue(Size(56)),
-                                    color: "rgba(0, 0, 0, 255)"
-                                }}>Iniciar Sesión</Text>
+                                    color: colors.white
+                                }}>Continuar</Text>
                             </CustomButton>
                         </View>
                     </View>
@@ -104,7 +109,7 @@ class Shop extends React.Component<ShopProps, State> {
 const styles = StyleSheet.create({
     title: {
         fontFamily: fonts.primaryFontTitle,
-        fontSize: RFValue(25),
+        fontSize: RFValue(20),
         color: colors.black
     },
     passwordForget: {
