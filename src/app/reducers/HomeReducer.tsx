@@ -29,7 +29,6 @@ const homeReducer = (state: State = defaultState, action: HomeAction): State => 
         case 'FETCHING_LIST':
             return {
                 ...state,
-                data: [],
                 isFetching: true,
                 error: false
             }

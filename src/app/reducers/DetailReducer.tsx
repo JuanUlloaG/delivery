@@ -22,7 +22,7 @@ const defaultState: State = {
     error: false,
 };
 
-const homeReducer = (state: State = defaultState, action: DetailAction): State => {
+const DetailReducer = (state: State = defaultState, action: DetailAction): State => {
     switch (action.type) {
         case 'REQUEST_BAG':
             return {
@@ -61,4 +61,4 @@ const homeReducer = (state: State = defaultState, action: DetailAction): State =
     }
 };
 
-export default homeReducer
+export default DetailReducer

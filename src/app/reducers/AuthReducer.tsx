@@ -1,4 +1,4 @@
-import { AuthUnverifiedUserAction, UpdateShop, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail, AuthClearError } from "../types/AuthParamLIst";
+import { AuthUnverifiedUserAction, AuthClear, UpdateShop, AuthVerifyUserAction, AuthLogOutUserAction, AuthLoginUserAction, AuthLoginAction, AuthLoginActionSuccess, AuthLoginActionFail, AuthClearError, UpdateState } from "../types/AuthParamLIst";
 
 type AuthAction =
     | AuthUnverifiedUserAction
@@ -9,6 +9,8 @@ type AuthAction =
     | AuthLoginActionSuccess
     | AuthLoginActionFail
     | AuthClearError
+    | UpdateState
+    | AuthClear
     | AuthLoginUserAction;
 
 
@@ -17,11 +19,13 @@ export interface State {
     id: string
     email: string;
     token: string;
-    profile: string;
+    profile: { key: string, description: string };
     isFetching: boolean;
     error: boolean,
-    shop: string,
-    company: string,
+    shop: { key: string, description: string },
+    state: boolean,
+    success: boolean,
+    company: { id: string, name: string },
     message: string
 }
 
@@ -31,12 +35,14 @@ const defaultState: State = {
     id: '',
     email: '',
     token: '',
-    profile: '',
-    shop: '',
-    company: '',
+    profile: { key: '', description: '' },
+    shop: { key: '', description: '' },
+    company: { id: "", name: "" },
+    message: '',
+    state: false,
+    success: false,
     isFetching: false,
-    error: false,
-    message: ''
+    error: false
 };
 
 const authReducer = (state: State = defaultState, action: AuthAction): State => {
@@ -52,9 +58,11 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 token: action.data.token,
                 profile: action.data.profile,
                 company: action.data.company,
-                shop: "",
+                state: action.data.state,
+                shop: { key: '', description: '' },
                 message: "",
                 isFetching: true,
+                success: false,
                 error: false
             }
         case 'LOGOUT_USER':
@@ -68,7 +76,9 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 company: action.data.company,
                 shop: action.data.shop,
                 message: action.data.message,
+                state: action.data.state,
                 isFetching: false,
+                success: false,
                 error: false
             }
         case 'UPDATE_SHOP':
@@ -76,9 +86,22 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 ...state,
                 shop: action.shop
             }
+        case 'UPDATE_STATE':
+            return {
+                ...state,
+                state: action.state,
+                success: true
+            }
         case 'CLEAR_ERROR':
             return {
                 ...state,
+                error: false
+            }
+        case 'CLEAR_STATE':
+            return {
+                ...state,
+                success: false,
+                isFetching: false,
                 error: false
             }
         case 'UNVERIFIED_USER':
@@ -90,12 +113,14 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 id: "",
                 email: "",
                 token: "",
-                profile: "",
+                profile: { key: '', description: '' },
                 company: "",
-                shop: "",
+                shop: { key: '', description: '' },
                 message: "",
                 isFetching: true,
-                error: false
+                error: false,
+                success: false,
+                state: false
             }
         case 'FETCHING_LOGIN_SUCCESS':
             return {
@@ -107,9 +132,11 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 token: action.data.token,
                 profile: action.data.profile,
                 company: action.data.company,
-                shop: "",
+                state: action.data.state,
+                shop: { key: '', description: '' },
                 message: action.data.message,
-                error: false
+                error: false,
+                success: false
             }
         case 'FETCHING_LOGIN_FAIL':
             return {
@@ -122,8 +149,10 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 profile: action.data.profile,
                 company: action.data.company,
                 shop: action.data.shop,
+                state: action.data.state,
                 message: action.data.message,
-                error: action.data.error
+                error: action.data.error,
+                success: false,
             }
         default:
             return state;
