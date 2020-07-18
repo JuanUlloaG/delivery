@@ -28,8 +28,8 @@ import MapViewDirections from 'react-native-maps-directions';
 
 const SCREEN_HEIGHT = height
 const SCREEN_WIDTH = width
-const ASPECT_RATIO = width / hp(35)
-const LATITUDE_DELTA = 0.0922
+const ASPECT_RATIO = width / height
+const LATITUDE_DELTA = 0.60
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 
@@ -57,6 +57,7 @@ interface State {
     person: string,
     comment: string,
     order: any,
+    markers: Array<any>,
     region: {
         latitude: number,
         longitude: number,
@@ -79,6 +80,7 @@ class DetailMap extends React.Component<Props, State> {
             pickedProductArray: [],
             resume: false,
             torchOn: false,
+            markers: [],
             bags: [],
             showModal: false,
             person: "",
@@ -87,8 +89,8 @@ class DetailMap extends React.Component<Props, State> {
             region: {
                 latitude: 0,
                 longitude: 0,
-                latitudeDelta: 0,
-                longitudeDelta: 0,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
             },
         }
 
@@ -101,8 +103,17 @@ class DetailMap extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.getPosition()
-        // this.loadItems(0)
+        const order = this.filterData()
+        let markers = [...this.state.markers]
+
+        let { lat, long } = order.orderNumber.client
+        let position = {
+            "color": "red", "coordinate": {
+                "latitude": parseFloat(lat), "longitude": parseFloat(long), "latitudeDelta": LATITUDE_DELTA, "longitudeDelta": LONGITUDE_DELTA }, "key": markers.length + 1
+        }
+        markers.push(position)
+        this.setState({ order: order, markers })
+        this.goToInitialLocation()
     }
 
     async getPosition() {
@@ -121,14 +132,18 @@ class DetailMap extends React.Component<Props, State> {
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 Geolocation.getCurrentPosition((info) => {
-                    // console.log(info)
                     var initialRegion = {
                         latitude: info.coords.latitude,
                         longitude: info.coords.longitude,
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LONGITUDE_DELTA,
                     }
-                    this.setState({ region: initialRegion })
+
+                    let markers = [...this.state.markers]
+
+                    let position = { "color": "red", "coordinate": { "latitude": info.coords.latitude, "longitude": info.coords.longitude }, "key": markers.length + 1 }
+                    markers.push(position)
+                    this.setState({ region: initialRegion, markers })
                 });
             } else {
                 console.log("Camera permission denied");
@@ -141,8 +156,8 @@ class DetailMap extends React.Component<Props, State> {
     async goToInitialLocation() {
         await this.getPosition()
         let initialRegion = Object.assign({}, this.state.region);
-        initialRegion["latitudeDelta"] = 0.005;
-        initialRegion["longitudeDelta"] = 0.005;
+        initialRegion["latitudeDelta"] = 0.04;
+        initialRegion["longitudeDelta"] = 0.04;
         this.mapView.animateToRegion(initialRegion, 2000);
     }
 
@@ -169,13 +184,13 @@ class DetailMap extends React.Component<Props, State> {
                     initialRegion={this.state.region}
                     onMapReady={this.goToInitialLocation.bind(this)}
                     style={[StyleSheet.absoluteFillObject, { height: hp(100) }]}>
-                    {/* {this.state.markers.map(marker => ( */}
-                    {/* <Marker
-                                            coordinate={this.state.region}
-                                            title={"marker.title"}
-                                            description={"marker.description"}
-                                        /> */}
-                    {/* ))} */}
+                    {this.state.markers.map(marker => (
+                        <Marker
+                            key={marker.key}
+                            coordinate={marker.coordinate}
+                            pinColor={marker.color}
+                        />
+                    ))}
                 </MapView>
             </Center>
         );

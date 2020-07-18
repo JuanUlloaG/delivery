@@ -160,7 +160,7 @@ class Detail extends React.Component<Props, State> {
                 this.swiper.scrollBy(1, true)
             }
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
 
     }
@@ -218,7 +218,8 @@ class Detail extends React.Component<Props, State> {
             pickedProductArray[productIndex].map((product: any) => {
                 if (product.broken === true) broken = broken + 1
             })
-            return (picked == pickedProductArray[productIndex].length || broken == pickedProductArray[productIndex].length || (broken + picked) == pickedProductArray[productIndex].length)
+            return (picked == pickedProductArray[productIndex].length)
+            // return (picked == pickedProductArray[productIndex].length || broken == pickedProductArray[productIndex].length || (broken + picked) == pickedProductArray[productIndex].length)
         }
         return false
     }
@@ -259,7 +260,7 @@ class Detail extends React.Component<Props, State> {
 
         let bag = {
             orderNumber: order._id,
-            shopId: this.props.auth.shop,
+            shopId: this.props.auth.shop.key,
             pickerId: this.props.auth.id,
             bags: [...this.state.bagContainer]
         }
@@ -303,11 +304,11 @@ class Detail extends React.Component<Props, State> {
             headerTitleStyle: {
                 textAlign: 'center',
                 flexGrow: 1,
-                marginRight: 0,
+                marginRight: 55,
                 alignSelf: 'center',
                 color: colors.white,
                 fontFamily: fonts.primaryFontTitle,
-                fontSize: Size(77),
+                fontSize: Size(65),
             },
             headerLeft: () => (
                 // platform == "ios" &&
@@ -358,18 +359,26 @@ class Detail extends React.Component<Props, State> {
                                                 <View style={styles.bodyContainerScrollViewContainer}>
                                                     <View style={styles.bodyContainerScrollViewContainerInfo}>
                                                         <View style={styles.bodyContainerScrollViewContainerInfoSection}>
-                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                                Nombre: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].product} </Text>
-                                                            </Text>
-                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                                Descripción: <Text style={{ fontSize: order.products[index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[index].description} </Text>
-                                                            </Text>
-                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                                SKU: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].id} </Text>
-                                                            </Text>
-                                                            <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}>
-                                                                Barra: <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].barcode} </Text>
-                                                            </Text>
+                                                            <View style={{ flexDirection: 'row' }}>
+                                                                <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { fontWeight: 'bold' }]}>Nombre: </Text>
+                                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].product} </Text>
+                                                            </View>
+                                                            <View style={{ flexDirection: 'row' }}>
+                                                                <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { fontWeight: 'bold' }]}>SKU: </Text>
+                                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].id} </Text>
+                                                            </View>
+                                                            <View style={{ flexDirection: 'row' }}>
+                                                                <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { fontWeight: 'bold' }]}>Barra: </Text>
+                                                                <Text style={styles.bodyContainerScrollViewContainerInfoSectionText}> {order.products[index].barcode} </Text>
+                                                            </View>
+                                                            <View style={{ flexDirection: 'row' }}>
+                                                                <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { fontWeight: 'bold' }]}>Descripción: </Text>
+                                                            </View>
+                                                            <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                                                                {/* <Text style={[styles.bodyContainerScrollViewContainerInfoSectionText, { fontWeight: 'bold' }]}>Desc: </Text> */}
+                                                                <Text style={{ fontSize: order.products[index].description.length < 30 ? RFValue(18) : RFValue(16), fontFamily: fonts.primaryFont }}> {order.products[index].description} </Text>
+                                                            </View>
+
 
                                                         </View>
                                                     </View>
@@ -403,7 +412,7 @@ class Detail extends React.Component<Props, State> {
 
                                                     <View style={styles.bodyContainerScrollViewContainerPosition}>
                                                         <View style={styles.bodyContainerScrollViewContainerPositionSection}>
-                                                            <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Categoria</Text>
+                                                            <Text style={styles.bodyContainerScrollViewContainerPositionSectionText}>Categoría</Text>
                                                             {
                                                                 order.products[index].location ?
                                                                     <IconChange name="isv" color={colors.darkBlue} size={Size(68)} /> :
@@ -445,15 +454,22 @@ class Detail extends React.Component<Props, State> {
                                                                         <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                                                                             <CustomButton onPress={() => this.validatePickedItems(index) && this.toggleModal(index)} color={this.validatePickedItems(index) ? colors.lightBlue : colors.lightgrayDisabled} size={"m"} disable={!this.validatePickedItems(index)} >
                                                                                 <Text style={{
-                                                                                    fontFamily: fonts.buttonFont,
+                                                                                    fontFamily: fonts.primaryFontTitle,
                                                                                     fontSize: RFValue(Size(56)),
-                                                                                    color: "#333333"
+                                                                                    color: this.validatePickedItems(index) ? colors.white : "#333333"
                                                                                 }}>Agregar</Text>
                                                                             </CustomButton>
                                                                         </View>
                                                                     </View> :
                                                                     <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                                                        <CustomButtonList onPress={() => this.toggleModal(index)} title="Editar" disable={false} size={"L"} />
+                                                                        <CustomButton onPress={() => this.toggleModal(index)} size={"m"}>
+                                                                            <Text style={{
+                                                                                fontFamily: fonts.primaryFontTitle,
+                                                                                fontSize: RFValue(Size(56)),
+                                                                                color: colors.white
+                                                                            }}>Editar</Text>
+                                                                        </CustomButton>
+                                                                        {/* <CustomButtonList onPress={() => this.toggleModal(index)} title="Editar" disable={false} size={"L"} /> */}
 
                                                                     </View> :
                                                                 null
@@ -506,10 +522,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
         marginLeft: Size(98),
-
     },
     headerContainerTitleText: {
-        fontSize: RFValue(21),
+        fontSize: RFValue(17),
         fontFamily: fonts.primaryFont
     },
     headerContainerCount: {
@@ -521,7 +536,7 @@ const styles = StyleSheet.create({
     headerContainerCountContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: wp(45),
+        width: wp(40),
         height: hp(6),
         borderRadius: Size(16),
         backgroundColor: colors.ultraLightgray,
@@ -532,11 +547,11 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.27,
         shadowRadius: 2.65,
-        elevation: 3,
+        elevation: 4,
     },
     headerContainerCountContainerText: {
         fontFamily: fonts.primaryFontTitle,
-        fontSize: RFValue(19),
+        fontSize: RFValue(15),
         color: 'rgba(51, 51, 51, 255)'
     },
     bodyContainer: {
@@ -559,10 +574,12 @@ const styles = StyleSheet.create({
     },
     bodyContainerScrollViewContainerInfoSection: {
         marginLeft: Size(98),
-        marginBottom: 10
+        marginBottom: 10,
+        flex: 1,
+        marginRight: Size(66)
     },
     bodyContainerScrollViewContainerInfoSectionText: {
-        fontSize: RFValue(18),
+        fontSize: RFValue(15),
         fontFamily: fonts.primaryFont
     },
     bodyContainerScrollViewContainerPicked: {
@@ -574,7 +591,7 @@ const styles = StyleSheet.create({
     bodyContainerScrollViewContainerPickedSection: {
         flex: 1,
         flexDirection: 'row',
-        marginBottom: 5,
+        marginBottom: 10,
         marginTop: 5,
         marginRight: 20
     },
@@ -584,7 +601,8 @@ const styles = StyleSheet.create({
         marginLeft: Size(103)
     },
     bodyContainerScrollViewContainerPickedSectionTitleText: {
-
+        fontFamily: fonts.primaryFont,
+        fontSize: RFValue(17)
     },
     bodyContainerScrollViewContainerPickedSectionButtons: {
         flex: 1,
@@ -641,7 +659,7 @@ const styles = StyleSheet.create({
         marginRight: Size(75)
     },
     bodyContainerScrollViewContainerPositionSectionText: {
-        fontSize: RFValue(19),
+        fontSize: RFValue(17),
         fontFamily: fonts.primaryFont,
         marginRight: 5,
         color: colors.mediumGray

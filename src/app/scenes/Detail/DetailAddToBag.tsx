@@ -225,10 +225,13 @@ class DetailAddToBag extends React.Component<Props, State> {
         this.props.navigation.goBack()
     }
 
+    focusLose() {
+    }
+
 
     render() {
 
-        console.log(this.state.selectedPrinter);
+        // console.log(this.state.selectedPrinter);
 
         this.props.navigation.setOptions({
             headerTitle: "Agregar",
@@ -239,7 +242,7 @@ class DetailAddToBag extends React.Component<Props, State> {
                 alignSelf: 'center',
                 color: colors.white,
                 fontFamily: fonts.primaryFontTitle,
-                fontSize: Size(77),
+                fontSize: Size(65),
             },
             headerLeft: () => (
                 // platform == "ios" &&
@@ -253,7 +256,7 @@ class DetailAddToBag extends React.Component<Props, State> {
                 // platform == "ios" &&
                 <TouchableOpacity onPress={() => null} style={{ marginRight: 20 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <Iconprinter name={"printer"} size={RFValue(35)} color={colors.darkYellow} />
+                        <Iconprinter name={"printer"} size={RFValue(30)} color={colors.white} />
                     </View>
                 </TouchableOpacity>
             )
@@ -263,36 +266,93 @@ class DetailAddToBag extends React.Component<Props, State> {
         return (
 
             <Center>
-                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                    <View style={{ flex: 1 }}>
-                        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                            <View style={styles.modalSectionBody}>
-                                <View style={styles.modalSectionBodyTitle}>
-                                    <Text style={styles.modalSectionBodyTitleText}>Escanea Bulto</Text>
+                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <View style={styles.bodyContainer}>
+                        <View style={{ flex: 1, backgroundColor: colors.grayHeader }}>
+                            <View style={styles.modalSectionBodyTitle}>
+                                <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
+                            </View>
+                            <View style={[styles.modalSectionBodyInput, { justifyContent: 'center', flexDirection: 'row' }]}>
+                                <View style={{ flex: 4, alignItems: 'flex-end', justifyContent: 'center' }}>
+                                    <CustomInput keyType={'numeric'} size="m" value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
                                 </View>
-                                <View style={styles.modalSectionBodyInput}>
-                                    <CustomInput value={this.state.bagNumber} onChangeText={this.onChangeBagNumber.bind(this)} placeholder="Número de bulto" type={false} editable={true} />
+                                <View style={{ flex: 1, alignItems: "center", justifyContent: 'center' }}>
+                                    <TouchableOpacity onPress={() => this.captureBagNumber()} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <IconBar name={"barcode-scan"} size={RFValue(45)} color={colors.black} />
+                                    </TouchableOpacity>
+
                                 </View>
-                                <TouchableOpacity onPress={() => { this.captureBagNumber() }} style={styles.modalSectionBodyScanBar}>
-                                    <IconBar name={"barcode-scan"} size={RFValue(150)} color={colors.black} />
-                                </TouchableOpacity>
-                                <View style={styles.modalSectionBodyPrinter}>
-                                    <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
-                                        <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                            <CustomButton onPress={() => this.goBack()} size={"m"} disable={this.state.bagNumber ? false : true} color={this.state.bagNumber ? colors.lightBlue : colors.lightgrayDisabled} >
-                                                <Text style={{
-                                                    fontFamily: fonts.buttonFont,
-                                                    fontSize: RFValue(Size(56)),
-                                                    color: "#333333"
-                                                }}>Siguiente</Text>
-                                            </CustomButton>
-                                        </View>
+                            </View>
+                        </View>
+                        <View style={{ flex: 6 }}>
+                            <View style={styles.modalSectionBodyPrinter}>
+                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                    <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                        <CustomButton onPress={() => this.goBack()} size={"m"} disable={this.state.bagNumber ? false : true} color={this.state.bagNumber ? colors.lightBlue : colors.lightgrayDisabled} >
+                                            <Text style={{
+                                                fontFamily: fonts.primaryFontTitle,
+                                                fontSize: RFValue(Size(56)),
+                                                color: this.state.bagNumber ? colors.white : "#333333"
+                                            }}>Siguiente</Text>
+                                        </CustomButton>
                                     </View>
                                 </View>
                             </View>
-                        </ScrollView>
+                        </View>
                     </View>
-                </TouchableWithoutFeedback>
+                </ScrollView>
+
+                {/* <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                        <View style={{ flex: 1, width: wp(100) }}>
+                            <View style={{ flex: 2, backgroundColor: colors.grayHeader, height: hp(15) }}>
+                                <View style={styles.modalSectionBodyTitle}>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
+                                </View>
+                                <View style={[styles.modalSectionBodyInput, { justifyContent: 'center' }]}>
+                                    <View style={{ flex: 4, alignItems: 'flex-end', justifyContent: 'center' }}>
+                                        <CustomInput size="m" value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={(text) => { this.onChangeBagNumber(text) }} placeholder="Número de bulto" type={false} editable={true} />
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: "center", justifyContent: 'center' }}>
+                                        <TouchableOpacity onPress={() => this.captureBagNumber()} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                            <IconBar name={"barcode-scan"} size={RFValue(45)} color={colors.black} />
+                                        </TouchableOpacity>
+
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={{ flex: 1, width: wp(100) }}>
+                                <View style={styles.modalSectionBodyTitle}>
+                                    <Text style={styles.modalSectionBodyTitleText}>Digita o escanea el bulto</Text>
+                                </View>
+                                <View style={[styles.modalSectionBodyInput, { justifyContent: 'center', flexDirection: 'row' }]}>
+                                    <View style={{ flex: 4, alignItems: 'flex-end', justifyContent: 'center' }}>
+                                        <CustomInput size="m" value={this.state.bagNumber} onBlur={() => this.focusLose()} onChangeText={this.onChangeBagNumber.bind(this)} keyType={'numeric'} placeholder="Número de bulto" type={false} editable={true} />
+                                    </View>
+                                    <View style={{ flex: 1, alignItems: "center", justifyContent: 'center' }}>
+                                        <TouchableOpacity onPress={() => this.captureBagNumber()} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                            <IconBar name={"barcode-scan"} size={RFValue(45)} color={colors.black} />
+                                        </TouchableOpacity>
+
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.modalSectionBodyPrinter}>
+                                <View style={styles.bodyContainerScrollViewContainerButtonsSectionButtonNext}>
+                                    <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                        <CustomButton onPress={() => this.goBack()} size={"m"} disable={this.state.bagNumber ? false : true} color={this.state.bagNumber ? colors.lightBlue : colors.lightgrayDisabled} >
+                                            <Text style={{
+                                                fontFamily: fonts.buttonFont,
+                                                fontSize: RFValue(Size(56)),
+                                                color: "#333333"
+                                            }}>Siguiente</Text>
+                                        </CustomButton>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </ScrollView> */}
 
                 {
                     (this.state.torchOn && !this.state.bagNumber) &&
@@ -303,7 +363,9 @@ class DetailAddToBag extends React.Component<Props, State> {
                         flexDirection: 'column',
                         position: 'absolute',
                         zIndex: 1000,
-                        backgroundColor: 'black'
+                        backgroundColor: 'black',
+                        justifyContent: 'center',
+                        alignItems: 'center'
                     }}>
                         <RNCamera
                             style={{ width: wp(100), height: hp(55), justifyContent: 'center', alignItems: 'center' }}
@@ -312,17 +374,19 @@ class DetailAddToBag extends React.Component<Props, State> {
                             captureAudio={false}
                             onGoogleVisionBarcodesDetected={({ barcodes }) => { }}
                         />
-                        <View style={{ position: 'absolute', bottom: 0, marginBottom: 120, marginLeft: 100 }}>
+                        <View style={{ position: 'absolute', flex: 1, bottom: 0, marginBottom: 120, marginLeft: 100 }}>
                             <TouchableOpacity onPress={() => this.disableCamera()} style={{
                                 flex: 1,
                                 backgroundColor: '#fff',
                                 borderRadius: 5,
                                 padding: 15,
-                                paddingHorizontal: 20,
+                                // paddingHorizontal: 20,
+                                // margin: 20,
                                 alignSelf: 'center',
-                                margin: 20,
+                                justifyContent: 'center',
+                                alignItems: 'center'
                             }}>
-                                <Text style={{ fontSize: 14 }}> Terminar </Text>
+                                <Text style={{ fontSize: 14 }}> Volver </Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -581,7 +645,8 @@ const styles = StyleSheet.create({
     },
     modalSectionBodyTitleText: {
         fontSize: RFValue(18),
-        fontFamily: fonts.primaryFontTitle
+        fontFamily: fonts.primaryFontTitle,
+        color: colors.black2
     },
     modalSectionBodyInput: {
         flex: 1,
@@ -594,7 +659,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     modalSectionBodyPrinter: {
-        flex: 2,
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },

@@ -65,10 +65,26 @@ class Detail extends React.Component<Props, State> {
         this.props.restart()
         this.props.route.params.updateBagSend()
         let to
-        (this.props.auth.profile == "2") ? to = "Pickear" : "Repeción"
+        (this.props.auth.profile.key == "2") ? to = "Pickear" : "Recepción"
         this.props.navigation.push("AppTab", {
             screen: to,
         })
+    }
+
+    alert() {
+        Alert.alert(
+            "Confirmación",
+            "¿ Desea confirmar envio de bultos ?",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => this.finishPacking() }
+            ],
+            { cancelable: false }
+        );
     }
 
 
@@ -76,7 +92,7 @@ class Detail extends React.Component<Props, State> {
 
         if (this.props.detail.error) RNNotificationBanner.Show({
             title: "Error", subTitle: this.props.detail.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
-
+                console.log("aqui4");
             }
         })
         if (this.props.detail.success) RNNotificationBanner.Show({
@@ -84,7 +100,7 @@ class Detail extends React.Component<Props, State> {
                 this.finishProcess()
             }
         })
-        
+
         this.props.navigation.setOptions({
             headerTitle: "Resumen",
             headerTitleStyle: {
@@ -94,7 +110,7 @@ class Detail extends React.Component<Props, State> {
                 alignSelf: 'center',
                 color: colors.white,
                 fontFamily: fonts.primaryFontTitle,
-                fontSize: Size(77),
+                fontSize: Size(65),
             },
             headerLeft: () => (
                 // platform == "ios" &&
@@ -125,7 +141,10 @@ class Detail extends React.Component<Props, State> {
                                     {
                                         this.state.bagContainer.map((bag, index) => {
                                             return (
-                                                <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bagNumber}</Text>
+                                                <View key={index} style={{ width: wp(60), height: hp(6), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: colors.grayHeader, marginTop: 10, borderRadius: 10 }}>
+                                                    <Text key={index} style={styles.resumeBodyInfoText}>Nº {bag.bagNumber} </Text>
+                                                    <IconBar name="check-circle" color={colors.darkGreen} size={RFValue(30)} />
+                                                </View>
                                             )
                                         })
                                     }
@@ -146,14 +165,14 @@ class Detail extends React.Component<Props, State> {
                                     <Text style={styles.resumeBodyInfoText}>{this.props.detail.message}</Text>
                                 </>
                             }
-                            {
+                            {/* {
                                 this.props.detail.success &&
                                 <Text style={styles.resumeBodyInfoText}>{this.props.detail.message}</Text>
-                            }
-                            {
+                            } */}
+                            {/* {
                                 (!this.props.detail.success && !this.props.detail.error) &&
                                 <Text style={styles.resumeBodyInfoText}>{"¿Desea confirmar envío de pedido?"}</Text>
-                            }
+                            } */}
 
                         </View>
                         {
@@ -167,15 +186,16 @@ class Detail extends React.Component<Props, State> {
                             //             }}>Ir a pedidos</Text>
                             //         </CustomButton>
                             //     </View> :
-                                <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                    <CustomButton onPress={() => this.finishPacking()} size={"m"} >
-                                        <Text style={{
-                                            fontFamily: fonts.buttonFont,
-                                            fontSize: RFValue(Size(56)),
-                                            color: "#333333"
-                                        }}>Aceptar</Text>
-                                    </CustomButton>
-                                </View>
+                            !this.props.detail.success &&
+                            <View style={{ flex: 1, marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                <CustomButton onPress={() => !this.props.detail.isFetching && this.alert()} size={"m"} >
+                                    <Text style={{
+                                        fontFamily: fonts.primaryFontTitle,
+                                        fontSize: RFValue(Size(56)),
+                                        color: colors.white
+                                    }}>Confirmar</Text>
+                                </CustomButton>
+                            </View>
                             // <CustomButtonList onPress={() => this.finishProcess()} title="Ir a pedidos" disable={false} size={"XL"} /> :
                             // <CustomButtonList onPress={() => this.finishPacking()} title="Aceptar" disable={false} size={"XL"} />
 
@@ -208,7 +228,7 @@ const styles = StyleSheet.create({
         marginLeft: Size(98)
     },
     headerContainerTitleText: {
-        fontSize: RFValue(21),
+        fontSize: RFValue(17),
         fontFamily: fonts.primaryFont
     },
     headerContainerCount: {
@@ -473,7 +493,7 @@ const styles = StyleSheet.create({
     },
     resumeBodyInfoText: {
         fontFamily: fonts.primaryFont,
-        fontSize: RFValue(21)
+        fontSize: RFValue(19)
     },
     resumeBodyInfoIcon: {
         flex: 1,
