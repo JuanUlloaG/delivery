@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import { AuthNavProps } from '../../types/AuthParamLIst'
 import { AuthContext } from '../../providers/AuthProvider'
 import { Center } from '../../components/Center'
@@ -55,12 +55,16 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     }
 
 
-    if (error) RNNotificationBanner.Show({
-        title: "Error", subTitle: message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
-            clear()
-            clearInput()
-        }
-    })
+    if (error) {
+        clearInput()
+        clear()
+
+        RNNotificationBanner.Show({
+            title: "Error", subTitle: message, withIcon: true, duration: 2000, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+
+            }
+        })
+    }
 
     if (store.getState().auth.isFetching) {
         return (

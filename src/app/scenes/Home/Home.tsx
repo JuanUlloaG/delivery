@@ -4,7 +4,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { HomeNavProps } from '../../types/HomeParamaList'
 import { Center } from '../../components/Center'
 import { FlatList, View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import { getHomeItems } from '../../actions/HomeListAction'
+import { getHomeItems, takeOrderAction } from '../../actions/HomeListAction'
+import { State as HomeState } from "../../reducers/HomeReducer";
 import Loading from '../Loading/Loading'
 import { Size } from '../../services/Service'
 import colors from '../../assets/Colors'
@@ -24,8 +25,9 @@ import IconChange from "react-native-vector-icons/AntDesign";
 interface HomeProps {
     navigation: NavigationProp<any, any>,
     auth: object,
-    home: { isFetching: boolean, data: [any] },
+    home: { isFetching: boolean, data: [any], canTake: boolean },
     fetchData: () => {}
+    takeOrder: (id: string) => {}
 }
 
 interface State {
@@ -51,9 +53,10 @@ class Home extends React.Component<HomeProps, State> {
     }
 
     navigate(id: string) {
+        this.props.takeOrder(id)
         this.props.navigation.navigate('Detail', {
             screen: 'Detail',
-            params: { ordernumber: id },
+            params: { ordernumber: id, updateHome: () => this.props.fetchData(), },
         });
     }
 
@@ -91,12 +94,10 @@ class Home extends React.Component<HomeProps, State> {
                         ListEmptyComponent={() => {
                             return (
                                 <Center>
-                                    <Text style={{ fontFamily: fonts.primaryFont, marginTop: 20, fontSize:RFValue(18) }}>No hay ordenes para mostrar</Text>
+                                    <Text style={{ fontFamily: fonts.primaryFont, marginTop: 20, fontSize: RFValue(18) }}>No hay ordenes para mostrar</Text>
                                 </Center>
                             )
-                        }
-
-                        }
+                        }}
                         keyExtractor={(item, index) => item._id.toString()}
                         renderItem={({ item }) => {
                             return (
@@ -148,17 +149,12 @@ class Home extends React.Component<HomeProps, State> {
                                         }} >
                                             <IconChange name='right' size={24} color={colors.black2} />
                                         </View>
-
-
-
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
                         }}
                     />
-
                 </View>
-
             </Center>
         );
     }
@@ -253,7 +249,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 
-    fetchData: () => dispatch(getHomeItems())
+    fetchData: () => dispatch(getHomeItems()),
+    takeOrder: (id: string) => dispatch(takeOrderAction(id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

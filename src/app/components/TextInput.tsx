@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { View, TextInput, StyleSheet } from 'react-native';
 import { Size } from '../services/Service';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -19,7 +19,8 @@ interface CustomInputProps {
     editable: boolean,
     icon?: boolean,
     keyType?: keyType,
-    size?: size
+    size?: size,
+    ref?: boolean
 }
 
 const defaultProps: CustomInputProps = {
@@ -31,12 +32,12 @@ const defaultProps: CustomInputProps = {
     editable: true,
     icon: false,
     keyType: 'default',
-    size: 'l'
+    size: 'l',
+    ref: false
 }
 
 export const CustomInput: React.FC<CustomInputProps> = (props) => {
     const propss = Object.assign({}, defaultProps, props);
-
     let width = wp(100) - Size(75)
     let height = Size(35)
 

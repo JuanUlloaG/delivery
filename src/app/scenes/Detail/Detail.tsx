@@ -7,6 +7,7 @@ import colors from '../../assets/Colors';
 import { Size } from '../../services/Service';
 import fonts from '../../assets/Fonts';
 import { CustomButtonList } from '../../components/CustomButtonList';
+import { leaveOrderAction } from '../../actions/HomeListAction'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import IconChange from "react-native-vector-icons/AntDesign";
 import IconBar from "react-native-vector-icons/MaterialCommunityIcons";
@@ -32,6 +33,7 @@ interface Props {
     home: { isFetching: boolean, data: [any] },
     postData: (bag: any) => {},
     restart: () => {}
+    leaveOrder: (id: string) => {}
 }
 
 interface State {
@@ -296,6 +298,13 @@ class Detail extends React.Component<Props, State> {
         })
     }
 
+    backAction() {
+        const order = this.filterData();
+        this.props.leaveOrder(order._id)
+        this.props.route.params.updateHome()
+        this.props.navigation.goBack()
+    }
+
 
     render() {
 
@@ -312,7 +321,7 @@ class Detail extends React.Component<Props, State> {
             },
             headerLeft: () => (
                 // platform == "ios" &&
-                <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={{ marginLeft: Size(45) }}>
+                <TouchableOpacity onPress={() => this.backAction()} style={{ marginLeft: Size(45) }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <IconChange name='left' size={24} color={colors.white} />
                     </View>
@@ -860,6 +869,7 @@ const mapStateToProps = (state: any) => ({
 const mapDispatchToProps = (dispatch: any) => ({
 
     postData: (bag: any) => dispatch(postBagsAction(bag)),
+    leaveOrder: (id: string) => dispatch(leaveOrderAction(id)),
     restart: () => dispatch(RestartAction())
 })
 

@@ -8,7 +8,6 @@ import AsyncStorage from "@react-native-community/async-storage";
 export const getHomeItems = () => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(getHomeList());
-        // dispatch(fetchItemsSuccess([]));
         HomeList().then((response: any) => {
             if (response.length) dispatch(fetchItemsSuccess(response));
             else { dispatch(fetchItemsFail()); }
@@ -19,9 +18,8 @@ export const getHomeItems = () => {
 export const takeOrderAction = (id: string) => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(setOrderDetail());
-        // dispatch(fetchItemsSuccess([]));
         takeOrder(id).then((response: any) => {
-            if (response.length) dispatch(setOrderDetailSuccess());
+            if (response) dispatch(setOrderDetailSuccess());
             else { dispatch(setOrderDetailFail()); }
         })
     }
@@ -31,7 +29,7 @@ export const leaveOrderAction = (id: string) => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(setOrderDetail());
         leaveOrder(id).then((response: any) => {
-            if (response.length) dispatch(setOrderDetailSuccess());
+            if (response) dispatch(setOrderDetailSuccess());
             else { dispatch(setOrderDetailFail()); }
         })
     }

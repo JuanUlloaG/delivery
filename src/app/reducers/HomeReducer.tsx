@@ -9,7 +9,7 @@ type HomeAction =
     | FetchDetailSuccess
 
 
-interface State {
+export interface State {
     data: [];
     isFetching: Boolean;
     error: Boolean,
@@ -21,7 +21,7 @@ const defaultState: State = {
     data: [],
     isFetching: false,
     error: false,
-    canTake: true
+    canTake: false
 };
 
 const homeReducer = (state: State = defaultState, action: HomeAction): State => {
@@ -49,7 +49,7 @@ const homeReducer = (state: State = defaultState, action: HomeAction): State => 
         case 'FETCHING_ORDER_DETAIL':
             return {
                 ...state,
-                canTake: true
+                canTake: false
             }
         case 'FETCHING_ORDER_DETAIL_FAIL':
             return {
