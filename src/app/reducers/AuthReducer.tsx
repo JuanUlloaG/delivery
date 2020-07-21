@@ -114,7 +114,7 @@ const authReducer = (state: State = defaultState, action: AuthAction): State => 
                 email: "",
                 token: "",
                 profile: { key: '', description: '' },
-                company: "",
+                company: { id: "", name: "" },
                 shop: { key: '', description: '' },
                 message: "",
                 isFetching: true,
