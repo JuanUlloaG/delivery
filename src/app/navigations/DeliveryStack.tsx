@@ -50,7 +50,7 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Entrega"
             })
             } />
@@ -69,7 +69,7 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Delivery",
                 // headerRight: () => (
 
@@ -98,7 +98,7 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Mapa",
                 // headerRight: () => (
 
@@ -127,7 +127,7 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 // headerRight: () => (
 
                 // ),
@@ -154,7 +154,7 @@ export const DeliveryStack: React.FC<DetailStackProps> = ({ navigation, route })
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Detalle Delivery",
                 // headerRight: () => (
 

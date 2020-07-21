@@ -50,7 +50,7 @@ const ShopStackCreator = createStackNavigator<AuthParamList>()
 
 export const ShopStack: React.FC<ShopStackProps> = ({ }) => {
     const { logout, getProfile, getShop, getToken } = useContext(AuthContext)
-    
+
     return (
         <ShopStackCreator.Navigator initialRouteName={"Shop"} headerMode={"none"}>
             <ShopStackCreator.Screen options={{ headerTitle: "Tienda" }} name={"Shop"} component={Shop} />

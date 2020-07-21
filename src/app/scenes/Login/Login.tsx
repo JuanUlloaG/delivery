@@ -50,6 +50,7 @@ export function Login({ navigation, route }: AuthNavProps<'Login'>) {
     }
 
     const loginAction = () => {
+        console.log("object");
         if (rut && password) login(rut, password)
         else { Alert.alert("Información", "Debes completar todos los datos para iniciar sesión") }
     }

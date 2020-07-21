@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { Text, TouchableOpacity, FlatList, Button, View } from 'react-native';
+import { Text, TouchableOpacity, FlatList, Button, View, Platform } from 'react-native';
 import { AuthContext } from '../providers/AuthProvider';
 import { HomeParamList, HomeNavProps } from '../types/HomeParamaList';
 import Home from '../scenes/Home/Home';
@@ -78,7 +78,7 @@ function HomeNavigator({ navigation, route }) {
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(35)
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35)
             })
             } />
         </Stack2.Navigator>

@@ -19,7 +19,7 @@ import MapView, { Marker, PROVIDER_GOOGLE, MapViewProps, Polyline } from 'react-
 import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
 import { updateStateAction, clearStateRequest } from '../../actions/DeliveryActions';
-import { RNNotificationBanner } from 'react-native-notification-banner';
+// import { RNNotificationBanner } from 'react-native-notification-banner';
 import Icons from 'react-native-vector-icons/FontAwesome'
 Icons.loadFont('AntDesign.ttf')
 let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
@@ -232,18 +232,18 @@ class DetailAddres extends React.Component<Props, State> {
 
     render() {
 
-        if (this.props.delivery.error) RNNotificationBanner.Show({
-            title: "Error", subTitle: this.props.delivery.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
-                console.log("aqui3");
-                this.props.restart()
-            }
-        })
-        if (this.props.delivery.success) RNNotificationBanner.Show({
-            title: "Mensaje", subTitle: this.props.delivery.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
-                this.props.restart()
-                this.props.navigation.navigate('HomeAddres')
-            }
-        })
+        // if (this.props.delivery.error) RNNotificationBanner.Show({
+        //     title: "Error", subTitle: this.props.delivery.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+        //         console.log("aqui3");
+        //         this.props.restart()
+        //     }
+        // })
+        // if (this.props.delivery.success) RNNotificationBanner.Show({
+        //     title: "Mensaje", subTitle: this.props.delivery.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+        //         this.props.restart()
+        //         this.props.navigation.navigate('HomeAddres')
+        //     }
+        // })
 
 
         // const order = this.filterData()

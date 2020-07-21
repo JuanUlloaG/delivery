@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import colors from '../assets/Colors';
 
 interface CenterProps {
@@ -8,9 +8,9 @@ interface CenterProps {
 
 export const Center: React.FC<CenterProps> = ({ children }) => {
     return (
-        <View style={styles.center}>
+        <SafeAreaView style={styles.center}>
             {children}
-        </View>
+        </SafeAreaView>
     );
 }
 

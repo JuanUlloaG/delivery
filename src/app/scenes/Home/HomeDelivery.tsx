@@ -18,7 +18,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CustomButton } from '../../components/CustomButton';
 import { CustomInput } from '../../components/TextInput';
 import { RNCamera } from 'react-native-camera';
-import { RNNotificationBanner } from 'react-native-notification-banner';
+// import { RNNotificationBanner } from 'react-native-notification-banner';
 import Icons from 'react-native-vector-icons/FontAwesome'
 Icons.loadFont('AntDesign.ttf')
 let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
@@ -302,16 +302,16 @@ class HomeDelivery extends React.Component<Props, State> {
             )
         });
 
-        if (this.props.bags.error && this.props.navigation.isFo) RNNotificationBanner.Show({
-            title: "Error", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+        // if (this.props.bags.error && this.props.navigation.isFo) RNNotificationBanner.Show({
+        //     title: "Error", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
 
-            }
-        })
-        if (this.props.bags.success) RNNotificationBanner.Show({
-            title: "Mensaje", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
-                this.finishClear()
-            }
-        })
+        //     }
+        // })
+        // if (this.props.bags.success) RNNotificationBanner.Show({
+        //     title: "Mensaje", subTitle: this.props.bags.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+        //         this.finishClear()
+        //     }
+        // })
 
         const order = this.state.order
 

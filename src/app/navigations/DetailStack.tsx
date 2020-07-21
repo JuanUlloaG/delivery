@@ -90,7 +90,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Detalles",
                 // headerRight: () => (
 
@@ -118,7 +118,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Detalle",
                 // headerRight: () => (
 
@@ -146,7 +146,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Delivery",
                 // headerRight: () => (
 
@@ -174,7 +174,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Detalle",
                 // headerLeft: () => (
                 //     // platform == "ios" &&
@@ -199,7 +199,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Detalle",
                 // headerLeft: () => (
                 //     // platform == "ios" &&
@@ -224,7 +224,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Delivery",
                 // headerRight: () => (
 
@@ -252,7 +252,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Detalle Delivery",
                 // headerRight: () => (
 
@@ -280,7 +280,7 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Mapa",
                 // headerRight: () => (
 
@@ -299,173 +299,3 @@ export const DetailStack: React.FC<DetailStackProps> = ({ navigation, route }) =
         </Stack.Navigator>
     );
 }
-
-
-{/* <Stack.Screen name={name} component={component} options={(navigation) => ({
-                headerStyle: {
-                    backgroundColor: colors.darkBlue,
-                },
-                headerTitleStyle: {
-                    textAlign: 'center',
-                    flexGrow: 1,
-                    marginRight: 50,
-                    alignSelf: 'center',
-                    color: colors.white,
-                    fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(65),
-                },
-                headerStatusBarHeight: Size(35),
-                headerTitle: title,
-                // headerRight: () => (
-
-                // ),
-                headerLeft: () => (
-                    // platform == "ios" &&
-                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <Antdesing name='left' size={24} color={colors.white} />
-                        </View>
-                    </TouchableOpacity>
-                )
-            })
-            } /> */}
-{/* <Stack.Screen name={"HomeAddres"} component={HomeAddres} options={(navigation) => ({
-                headerStyle: {
-                    backgroundColor: colors.darkBlue,
-                },
-                headerTitleStyle: {
-                    textAlign: 'center',
-                    flexGrow: 1,
-                    marginRight: 50,
-                    alignSelf: 'center',
-                    color: colors.white,
-                    fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(65),
-                },
-                headerStatusBarHeight: Size(35),
-                headerTitle: "Delivery",
-                // headerRight: () => (
-
-                // ),
-                headerLeft: () => (
-                    // platform == "ios" &&
-                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <Antdesing name='left' size={24} color={colors.white} />
-                        </View>
-                    </TouchableOpacity>
-                )
-            })
-            } />
-            <Stack.Screen name={"DetailAddres"} component={DetailAddres} options={(navigation) => ({
-                headerStyle: {
-                    backgroundColor: colors.darkBlue,
-                },
-                headerTitleStyle: {
-                    textAlign: 'center',
-                    flexGrow: 1,
-                    marginRight: 50,
-                    alignSelf: 'center',
-                    color: colors.white,
-                    fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(65),
-                },
-                headerStatusBarHeight: Size(35),
-                headerTitle: "Delivery",
-                // headerRight: () => (
-
-                // ),
-                headerLeft: () => (
-                    // platform == "ios" &&
-                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <Antdesing name='left' size={24} color={colors.white} />
-                        </View>
-                    </TouchableOpacity>
-                )
-            })
-            } />
-            <Stack.Screen name={"Delivery"} component={Delivery} options={(navigation) => ({
-                headerStyle: {
-                    backgroundColor: colors.darkBlue,
-                },
-                headerTitleStyle: {
-                    textAlign: 'center',
-                    flexGrow: 1,
-                    marginRight: 50,
-                    alignSelf: 'center',
-                    color: colors.white,
-                    fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(65),
-                },
-                headerStatusBarHeight: Size(35),
-                headerTitle: title,
-                // headerRight: () => (
-
-                // ),
-                headerLeft: () => (
-                    // platform == "ios" &&
-                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <Antdesing name='left' size={24} color={colors.white} />
-                        </View>
-                    </TouchableOpacity>
-                )
-            })
-            } />
-            <Stack.Screen name={"DeliveryDetail"} component={DeliveryDetail} options={(navigation) => ({
-                headerStyle: {
-                    backgroundColor: colors.darkBlue,
-                },
-                headerTitleStyle: {
-                    textAlign: 'center',
-                    flexGrow: 1,
-                    marginRight: 50,
-                    alignSelf: 'center',
-                    color: colors.white,
-                    fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(65),
-                },
-                headerStatusBarHeight: Size(35),
-                headerTitle: "Recepcion",
-                // headerRight: () => (
-
-                // ),
-                headerLeft: () => (
-                    // platform == "ios" &&
-                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <Antdesing name='left' size={24} color={colors.white} />
-                        </View>
-                    </TouchableOpacity>
-                )
-            })
-            } />
-            <Stack.Screen name={"Detail"} component={Detail} options={(navigation) => ({
-                headerStyle: {
-                    backgroundColor: colors.darkBlue,
-                },
-                headerTitleStyle: {
-                    textAlign: 'center',
-                    flexGrow: 1,
-                    marginRight: 50,
-                    alignSelf: 'center',
-                    color: colors.white,
-                    fontFamily: fonts.primaryFontTitle,
-                    fontSize: Size(65),
-                },
-                headerStatusBarHeight: Size(35),
-                headerTitle: "Detalles",
-                // headerRight: () => (
-
-                // ),
-                headerLeft: () => (
-                    // platform == "ios" &&
-                    <TouchableOpacity onPress={() => navigation.navigation.goBack()} style={{ marginLeft: Size(45) }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            <Antdesing name='left' size={24} color={colors.white} />
-                        </View>
-                    </TouchableOpacity>
-                )
-            })
-            } /> */}

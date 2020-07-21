@@ -39,7 +39,7 @@ export const ProfileStack: React.FC<ProfileStackProps> = ({ navigation, route })
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Perfil"
             })
             } />

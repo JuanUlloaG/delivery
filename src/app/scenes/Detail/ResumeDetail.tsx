@@ -19,7 +19,7 @@ var { width, height } = Dimensions.get('window');
 import { RNCamera } from "react-native-camera";
 const HEIGHT_MODAL = Dimensions.get('window').height * 0.78;
 type Animation = any | Animated.Value;
-import { RNNotificationBanner } from 'react-native-notification-banner';
+// import { RNNotificationBanner } from 'react-native-notification-banner';
 import Icons from 'react-native-vector-icons/FontAwesome'
 Icons.loadFont('AntDesign.ttf')
 let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
@@ -90,16 +90,16 @@ class Detail extends React.Component<Props, State> {
 
     render() {
 
-        if (this.props.detail.error) RNNotificationBanner.Show({
-            title: "Error", subTitle: this.props.detail.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
-                console.log("aqui4");
-            }
-        })
-        if (this.props.detail.success) RNNotificationBanner.Show({
-            title: "Mensaje", subTitle: this.props.detail.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
-                this.finishProcess()
-            }
-        })
+        // if (this.props.detail.error) RNNotificationBanner.Show({
+        //     title: "Error", subTitle: this.props.detail.message, withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+        //         console.log("aqui4");
+        //     }
+        // })
+        // if (this.props.detail.success) RNNotificationBanner.Show({
+        //     title: "Mensaje", subTitle: this.props.detail.message, withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+        //         this.finishProcess()
+        //     }
+        // })
 
         this.props.navigation.setOptions({
             headerTitle: "Resumen",

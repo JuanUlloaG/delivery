@@ -52,7 +52,7 @@ export const SearchStack: React.FC<SearchStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Consulta"
             })
             } />
@@ -69,7 +69,7 @@ export const SearchStack: React.FC<SearchStackProps> = ({ navigation, route }) =
                     fontFamily: fonts.primaryFontTitle,
                     fontSize: Size(65),
                 },
-                headerStatusBarHeight: Size(30),
+                headerStatusBarHeight: Platform.OS == 'ios' ? Size(150) : Size(35),
                 headerTitle: "Detalle Del Bulto",
                 headerLeft: () => (
                     // platform == "ios" &&

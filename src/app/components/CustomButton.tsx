@@ -4,6 +4,7 @@ import { Size } from '../services/Service';
 import colors from '../assets/Colors';
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 
 type size = "xs" | "s" | "m" | "l"
 
@@ -71,9 +72,9 @@ export const CustomButton: React.FC<CustomButtonProps> = (props) => {
     }
 
     return (
-        <TouchableOpacity style={[styles.buttonContainer, buttonStyle]} disabled={propss.disable} onPress={() => { props.onPress() }}>
+        <TouchableHighlight style={[styles.buttonContainer, buttonStyle]} disabled={propss.disable} onPress={() => { props.onPress() }}>
             {props.children}
-        </TouchableOpacity>
+        </TouchableHighlight>
     );
 }
 
