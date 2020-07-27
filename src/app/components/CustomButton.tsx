@@ -1,10 +1,9 @@
 import React from 'react'
-import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { Size } from '../services/Service';
 import colors from '../assets/Colors';
 import { RFValue } from "react-native-responsive-fontsize";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { TouchableHighlight } from 'react-native-gesture-handler';
 
 type size = "xs" | "s" | "m" | "l"
 
@@ -72,9 +71,9 @@ export const CustomButton: React.FC<CustomButtonProps> = (props) => {
     }
 
     return (
-        <TouchableHighlight style={[styles.buttonContainer, buttonStyle]} disabled={propss.disable} onPress={() => { props.onPress() }}>
+        <TouchableOpacity style={[styles.buttonContainer, buttonStyle]} disabled={propss.disable} onPress={() => { props.onPress() }}>
             {props.children}
-        </TouchableHighlight>
+        </TouchableOpacity>
     );
 }
 

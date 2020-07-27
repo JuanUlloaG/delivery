@@ -18,7 +18,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { NavigationProp } from "@react-navigation/native";
 import { CustomButton } from '../../components/CustomButton';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
-// import { RNNotificationBanner } from 'react-native-notification-banner';
+import { RNNotificationBanner } from 'react-native-notification-banner';
 import Icons from 'react-native-vector-icons/FontAwesome'
 Icons.loadFont('AntDesign.ttf')
 let copy = <Icons name="closecircleo" size={24} color="white" family={"AntDesign"} />;
@@ -72,17 +72,17 @@ class Profile extends React.Component<ProfileProps, State> {
 
     render() {
 
-        // if (this.props.auth.error) RNNotificationBanner.Show({
-        //     title: "Error", subTitle: "Error al actualizar el estado", withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
-        //         console.log("aqui5");
-        //         this.props.clearStateAction()
-        //     }
-        // })
-        // if (this.props.auth.success) RNNotificationBanner.Show({
-        //     title: "Mensaje", subTitle: "Estado actualizado correctamente", withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
-        //         this.props.clearStateAction()
-        //     }
-        // })
+        if (this.props.auth.error) RNNotificationBanner.Show({
+            title: "Error", subTitle: "Error al actualizar el estado", withIcon: true, icon: copy, tintColor: colors.highLightRed, onHide: () => {
+                console.log("aqui5");
+                this.props.clearStateAction()
+            }
+        })
+        if (this.props.auth.success) RNNotificationBanner.Show({
+            title: "Mensaje", subTitle: "Estado actualizado correctamente", withIcon: true, icon: copy, tintColor: colors.lightGreen, onHide: () => {
+                this.props.clearStateAction()
+            }
+        })
 
 
         const isfetch = this.props.home.isFetching

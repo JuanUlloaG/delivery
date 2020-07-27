@@ -64,6 +64,7 @@ class Shop extends React.Component<ShopProps, State> {
 
     render() {
         const data = this.props.shop.data
+        // if (this.props.shop.data.length <= 0 && !this.props.shop.isFetching){this.props.fetchData()}
         return (
             <Center>
                 <ScrollView contentContainerStyle={styles.scrollView} >
