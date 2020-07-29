@@ -93,7 +93,7 @@ export const UpdateBag = async (id: string, orderId: string) => {
     })
 }
 
-export const UpdateOrderState = async (id: string, state: {}) => {
+export const UpdateOrderState = async (id: string, state: string) => {
     config.headers["access-token"] = store.getState().auth.token
     let request = { id: id, state: state }
     return axios.post(devURL + '/order/update/state', request, config).then((response: AxiosResponse) => {

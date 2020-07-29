@@ -215,7 +215,7 @@ class DetailAddres extends React.Component<Props, State> {
         this.props.navigation.navigate('DetailMap', { order })
     }
 
-    updateOrderState(state: {}) {
+    updateOrderState(state: string) {
         const order = this.filterData()
         this.props.updateState(order.orderNumber._id, state)
 
@@ -322,12 +322,12 @@ class DetailAddres extends React.Component<Props, State> {
                     <View style={{ flex: 1, width: wp(100) }}>
                         <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
                             <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                <TouchableOpacity onPress={() => { this.updateOrderState({ key: "3", description: "Sin Moradores" }) }}>
+                                <TouchableOpacity onPress={() => { this.updateOrderState("7") }}>
                                     <IconChange name="deleteusergroup" color={colors.lightgray} size={Size(80)} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                <TouchableOpacity onPress={() => { this.updateOrderState({ key: "4", description: "Rechazado por el cliente" }) }}>
+                                <TouchableOpacity onPress={() => { this.updateOrderState("6") }}>
                                     <IconBag name="bag" color={colors.lightgray} size={Size(80)} />
                                 </TouchableOpacity>
                             </View>
@@ -422,7 +422,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 
-    updateState: (id: string, state: {}) => dispatch(updateStateAction(id, state)),
+    updateState: (id: string, state: string) => dispatch(updateStateAction(id, state)),
     restart: () => dispatch(clearStateRequest())
 })
 

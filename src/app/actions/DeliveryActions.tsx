@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 
 
-export const updateStateAction = (id: string, state: {}) => {
+export const updateStateAction = (id: string, state: string) => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(setStateRequest());
         UpdateOrderState(id, state).then((response: any) => {
