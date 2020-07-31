@@ -64,8 +64,9 @@ class Home extends React.Component<HomeProps, State> {
         this.props.fetchData()
     };
 
-
+    
     render() {
+        console.log(this.props.auth);
         const isfetch = this.props.home.isFetching
         return (
             <Center>

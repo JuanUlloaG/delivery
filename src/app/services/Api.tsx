@@ -114,7 +114,7 @@ export const UpdateOrderState = async (id: string, state: string) => {
 
 export const takeOrder = async (id: string) => {
     config.headers["access-token"] = store.getState().auth.token
-    let request = { id: id, pickerId: store.getState().auth.id }
+    let request = { id: id, pickerId: store.getState().auth.id, shopId: store.getState().auth.shop.key }
     return axios.post(devURL + '/orders/take', request, config).then((response: AxiosResponse) => {
         console.log("take:", response.data, devURL);
         if (response.status == 200) {
