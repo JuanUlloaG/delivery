@@ -37,6 +37,7 @@ interface State {
 class Home extends React.Component<HomeProps, State> {
 
     componentDidMount() {
+        this.props.fetchData()
         const unsubscribe = this.props.navigation.addListener('focus', () => {
             this.props.fetchData()
         });
@@ -64,9 +65,9 @@ class Home extends React.Component<HomeProps, State> {
         this.props.fetchData()
     };
 
-    
+
     render() {
-        console.log(this.props.auth);
+        console.log(this.props);
         const isfetch = this.props.home.isFetching
         return (
             <Center>

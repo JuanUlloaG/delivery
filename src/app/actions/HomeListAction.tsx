@@ -9,6 +9,7 @@ export const getHomeItems = () => {
     return (dispatch: Dispatch<Action>) => {
         dispatch(getHomeList());
         HomeList().then((response: any) => {
+            console.log(response);
             if (response.length) dispatch(fetchItemsSuccess(response));
             else { dispatch(fetchItemsFail()); }
         })

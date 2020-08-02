@@ -29,10 +29,16 @@ export const HomeList = async () => {
     config.headers["access-token"] = store.getState().auth.token
     let route = "orders"
     route = getRoute(store.getState().auth.profile.key)
+    console.log(store.getState().auth.company.id);
     let request = { profile: store.getState().auth.profile.key, company: store.getState().auth.company.id }
     return axios.post(devURL + '/orders', request, config).then((response: AxiosResponse) => {
+        console.log(response);
         if (response.status == 200) {
-            return response.data.data;
+            if (response.data.success) {
+                return response.data.data;
+            } else {
+                return []
+            }
         }
         else {
             return [];

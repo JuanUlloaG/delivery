@@ -4,6 +4,7 @@ import { ShopNavProps } from '../../types/ShopParamList'
 import { Center } from '../../components/Center'
 import { FlatList, View, Text, StyleSheet, ScrollView, TouchableWithoutFeedback, TouchableOpacity, Keyboard } from 'react-native'
 import { getShopItems } from '../../actions/ShopAction'
+import { getHomeItems, takeOrderAction } from '../../actions/HomeListAction'
 import { updateShop } from '../../actions/AuthActions'
 import Loading from '../Loading/Loading'
 import store from '../../store/Store';
@@ -21,6 +22,7 @@ interface ShopProps {
     home: { isFetching: boolean, data: [any] },
     shop: { isFetching: boolean, data: [{ _id: string, address: string, number: string }] },
     fetchData: () => {}
+    fetchDataHome: () => {}
     setShop: (shop: { key: string, description: string }) => {}
 }
 
@@ -41,6 +43,8 @@ class Shop extends React.Component<ShopProps, State> {
 
     componentDidMount() {
         this.props.fetchData()
+        this.props.fetchDataHome()
+        
     }
 
     setShop() {
@@ -134,7 +138,8 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
     fetchData: () => dispatch(getShopItems()),
-    setShop: (shop: string) => dispatch(updateShop(shop))
+    fetchDataHome: () => dispatch(getHomeItems()),
+    setShop: (shop: any) => dispatch(updateShop(shop))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Shop)
