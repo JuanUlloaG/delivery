@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView, PermissionsAndroid } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Animated, Dimensions, KeyboardAvoidingView, PermissionsAndroid, Alert } from 'react-native';
 import { connect } from 'react-redux'
 import { Center } from '../../components/Center';
 import colors from '../../assets/Colors';
@@ -229,6 +229,38 @@ class DetailAddres extends React.Component<Props, State> {
         this.mapView.animateToRegion(initialRegion, 2000);
     }
 
+    alertNoPeople() {
+        Alert.alert(
+            "Confirmación",
+            "¿ Desea notificar la ausencia de moradores ?",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => this.updateOrderState("7") }
+            ],
+            { cancelable: false }
+        );
+    }
+
+    alertReject() {
+        Alert.alert(
+            "Confirmación",
+            "¿ Desea notificar el rechazo de la orden ?",
+            [
+                {
+                    text: "Cancelar",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => this.updateOrderState("6") }
+            ],
+            { cancelable: false }
+        );
+    }
+
 
     render() {
 
@@ -322,12 +354,12 @@ class DetailAddres extends React.Component<Props, State> {
                     <View style={{ flex: 1, width: wp(100) }}>
                         <View style={styles.bodyContainerScrollViewContainerButtonsSection}>
                             <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                <TouchableOpacity onPress={() => { this.updateOrderState("7") }}>
+                                <TouchableOpacity onPress={() => { this.alertNoPeople() }}>
                                     <IconChange name="deleteusergroup" color={colors.lightgray} size={Size(80)} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.bodyContainerScrollViewContainerButtonsSectionButton}>
-                                <TouchableOpacity onPress={() => { this.updateOrderState("6") }}>
+                                <TouchableOpacity onPress={() => { this.alertReject() }}>
                                     <IconBag name="bag" color={colors.lightgray} size={Size(80)} />
                                 </TouchableOpacity>
                             </View>
